@@ -2,7 +2,7 @@
 
 [← Back to README](../README.en.md) · <img src="https://flagcdn.com/24x18/id.png" width="22" alt=""> [Bahasa Indonesia](keaslian-dan-kredit.md)
 
-hybrid_susfs is built automatically by GitHub Actions in **[cogan17/hybrid_SusFS](https://github.com/cogan17/hybrid_SusFS)**, a sister repo of [Cogan Kernel](https://github.com/cogan17/Cogan-Kernel). For builds after v0.4, the module ZIP is **digitally signed** (artifact attestation) by this repo's Builder workflow, so anyone can prove where it came from.
+hybrid_susfs is built automatically by GitHub Actions in **[cogan17/hybrid_SusFS](https://github.com/cogan17/hybrid_SusFS)**, a sister repo of [Cogan Kernel](https://github.com/cogan17/Cogan-Kernel). From v0.5 on, the module ZIP is **digitally signed** (artifact attestation) by this repo's Builder workflow, so anyone can prove where it came from.
 
 > What this proves is that **this hybrid_susfs ZIP** was made by Cogan17. The SUSFS engine, the WebUI and the features inside are the work of the contributors in [Credits](#-credits).
 
@@ -16,7 +16,7 @@ hybrid_susfs is built automatically by GitHub Actions in **[cogan17/hybrid_SusFS
    gh attestation verify hybrid_susfs_vX.Y.zip --repo cogan17/hybrid_SusFS
    ```
    Only the original ZIP passes.
-3. **SHA256 in the release notes:** every release lists its ZIP's SHA256 and a link to the build run. Compare it with `sha256sum hybrid_susfs_vX.Y.zip`. This is the only check for **v0.4**, which came out before signing was added.
+3. **SHA256 in the release notes:** every release lists its ZIP's SHA256 and a link to the build run. Compare it with `sha256sum hybrid_susfs_vX.Y.zip`.
 4. **The run page in [Actions](https://github.com/cogan17/hybrid_SusFS/actions):** every build shows the simonpunk SUSFS version used and the ZIP's SHA256.
 5. **On the phone:** the module's action button shows a **Build** line (the repo commit it was built from). The full details are in `/data/adb/modules/hybrid_susfs/MANIFEST.txt`: version, repo commit, SUSFS commit, and the SHA256 of every file in the module. This file is also included in **Send Logs**.
 

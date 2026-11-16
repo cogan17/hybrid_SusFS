@@ -85,7 +85,8 @@ In the Actions tab: **hybrid_susfs Builder** builds, **Rilis dari run** publishe
 
 | Version | Result |
 |---|---|
-| v0.4 | 17 Nov 2026, Cogan Kernel on the 14T Pro, SUSFS v2.4.0. Duck Detector: Danger 0, Warning 0 |
+| v0.5 | ⏳ Waiting for a phone test. Same module contents as v0.4, only the version number |
+| v0.4 (withdrawn) | 17 Nov 2026, Cogan Kernel on the 14T Pro, SUSFS v2.4.0. Duck Detector: Danger 0, Warning 0 |
 
 </details>
 
