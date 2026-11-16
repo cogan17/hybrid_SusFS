@@ -46,3 +46,13 @@ setTimeout(() => {
 	const failed = [...new Set(window.hybridFailed || [])];
 	if (failed.length) toast(`hybrid_susfs: ${failed.length} perintah gagal: ${failed.slice(0, 3).join(" | ")}`);
 }, 5000);
+
+// Router SideX (fade.js) menambah entri history tiap pindah halaman, termasuk tombol Main Menu,
+// sehingga keluar WebUI butuh banyak swipe. Kembali ke menu utama = mundur satu langkah, bukan entri baru.
+document.addEventListener("click", (ev) => {
+	const a = ev.target.closest && ev.target.closest('a[href="index.html"]');
+	if (!a || history.state === null) return; // di entri pertama (menu utama awal): biarkan router
+	ev.preventDefault();
+	ev.stopImmediatePropagation();
+	history.back();
+}, true);
