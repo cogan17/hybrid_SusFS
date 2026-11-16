@@ -1,7 +1,7 @@
-<h1 align="center">hybrid_susfs · SUSFS module for KernelSU</h1>
+<h1 align="center">hybrid_susfs</h1>
 
 <p align="center">
-  KernelSU &nbsp;·&nbsp; SUSFS v2 &nbsp;·&nbsp; arm64 &nbsp;·&nbsp; WebUI
+  SUSFS module for KernelSU &nbsp;·&nbsp; sister of <a href="https://github.com/cogan17/Cogan-Kernel">Cogan Kernel</a>
 </p>
 
 <p align="center">
@@ -11,22 +11,17 @@
 <p align="center">
   <a href="https://github.com/cogan17/hybrid_SusFS/releases"><b>⬇️ Download</b></a>
   &nbsp;·&nbsp;
-  <a href="#-install"><b>📖 Guide</b></a>
-  &nbsp;·&nbsp;
   <a href="CHANGELOG.md"><b>📝 Release notes</b></a>
   &nbsp;·&nbsp;
-  <a href="https://github.com/cogan17/Cogan-Kernel"><b>🐧 Cogan Kernel</b></a>
-  &nbsp;·&nbsp;
-  <a href="https://t.me/coganTWRP"><b>💬 Telegram community</b></a>
+  <a href="https://t.me/coganTWRP"><b>💬 Telegram</b></a>
 </p>
 
 > [!WARNING]
 > The maintainer/developer is not responsible for bootloops or bricks. Device owners are responsible for their own devices! Back up your data.
 
-> [!TIP]
-> **Sister repository:** hybrid_susfs is made for [Cogan Kernel](https://github.com/cogan17/Cogan-Kernel) (Xiaomi 14T Pro), which already ships SUSFS in the kernel. The module also works on other kernels patched with SUSFS v2.
+The sidex15 SUSFS module and BRENE are both good, but you can't run them together, you have to pick one. hybrid_susfs combines them: the engine from simonpunk, the UI from sidex15, the extra features from BRENE. One module, no picking.
 
----
+Made and tested on [Cogan Kernel](https://github.com/cogan17/Cogan-Kernel) (Xiaomi 14T Pro), but it should work on any other kernel with SUSFS v2.
 
 <p align="center">
   <img src="docs/preview/index.png" width="45%" alt="Main page">
@@ -34,87 +29,71 @@
   <img src="docs/preview/brene.png" width="45%" alt="hybrid_susfs settings page">
 </p>
 
-### 📥 Install
+## Install
 
-1. Make sure the kernel has **SUSFS v2** and root is **KernelSU** (arm64). Otherwise the install stops with a clear message.
-2. Download `hybrid_susfs_vX.Y.zip` from [Releases](https://github.com/cogan17/hybrid_SusFS/releases).
-3. Install it in the KernelSU manager, then reboot.
-4. Open the module's WebUI to configure it. Later updates appear as an update button in the manager.
+You need KernelSU and a kernel with SUSFS v2. Without them, the module refuses to install.
 
-|   |   |
-|---|---|
-| 🔄 **Switching from another SUSFS module** | `susfs4ksu` (sidex15), `brene` and `susfs_manager` are disabled on install, so no rule is applied twice |
-| 🗑️ **Uninstall** | Remove it in the manager, then reboot. The previous `ksu_susfs` is only restored to empty paths (never over another module's) |
-| 🩺 **Problems & logs** | The **Send Logs** button in the WebUI. Logs include the build identity (`MANIFEST.txt`) so they can be matched to the ZIP |
+1. Download the ZIP from [Releases](https://github.com/cogan17/hybrid_SusFS/releases).
+2. Install it in the KernelSU manager, reboot.
+3. Set it up from the module's WebUI.
 
----
+Later updates show up right in the manager.
+
+Coming from another SUSFS module? No need to uninstall it first. sidex15's SUSFS, BRENE and susfs_manager are turned off automatically when hybrid_susfs is installed.
+
+Something wrong? Tap **Send Logs** in the WebUI and send the log to the Telegram group.
 
 <details>
-<summary>✨ <b>What's inside</b></summary>
+<summary><b>What comes from where</b></summary>
 
-It combines three sources:
-
-| Part | Source |
+| | From |
 |---|---|
-| Engine (`ksu_susfs`) | [simonpunk/susfs4ksu](https://gitlab.com/simonpunk/susfs4ksu), compiled from source at build time |
-| UI (WebUI) and base scripts | [sidex15/susfs4ksu-module](https://github.com/sidex15/susfs4ksu-module) |
-| Extra features (*hybrid_susfs settings* page) | [rrr333nnn333/BRENE](https://github.com/rrr333nnn333/BRENE) |
+| `ksu_susfs` engine | [simonpunk](https://gitlab.com/simonpunk/susfs4ksu), recompiled on every build |
+| WebUI and base scripts | [sidex15](https://github.com/sidex15/susfs4ksu-module) |
+| *hybrid_susfs settings* page | [BRENE](https://github.com/rrr333nnn333/BRENE) |
 
-- ✅ Features found in both SideX and Brene use the SideX version, so no rule is applied twice: uname spoof, AVC log spoofing, hide sus mounts, cmdline spoof, SUSFS log, custom ROM hiding and the custom lists.
-- ✅ The SideX and Brene system property spoofing is merged into one toggle on the *hybrid_susfs settings* page.
-- ✅ UID filter companion for HMA-OSS: **Refresh UID filter** and **Check UID** buttons.
-- ✅ The binary is not downloaded from the cloud. The module uses the binary shipped in the ZIP.
-- ✅ Transactional install/update: on failure the previous state is restored and verified.
-- ✅ Config is read as data with a per-setting schema, never run as a script. Stored in `/data/adb/hybrid_susfs/config.sh`.
+Features that both sidex15 and BRENE have (uname, cmdline and AVC log spoofing, hide sus mounts, hide custom ROM) only run once, using the sidex15 version. Property spoofing from both is merged into one toggle.
+
+There's also something extra: a UID filter to use alongside HMA-OSS, plus a **Check UID** button to see which app a UID belongs to.
 
 </details>
 
 <details>
-<summary>🔄 <b>Update system</b></summary>
+<summary><b>Updates</b></summary>
 
-| Part | How it updates |
-|---|---|
-| simonpunk engine | Automatic on every build: always the latest branch in `upstream.env`. The build stops if a `ksu_susfs` command used by the module is gone (`tools/check_engine.sh`). |
-| SideX UI and Brene features | Manual. The commits in use are recorded in `upstream.env`. **Cek pembaruan** lists new commits and changed files without changing anything. Useful changes are picked one by one. |
-| To users | `updateJson` in `module.prop` → `update.json` → GitHub release. The KernelSU manager shows an update button. |
+The simonpunk engine always follows the latest version on every build. If simonpunk drops a command the module uses, the build stops until the module is adjusted.
 
-**Versions:** 0.1, 0.2, 0.3 and so on (`versionCode` 1, 2, 3, ...), bumped with every fix.
+Changes from sidex15 and BRENE don't come in automatically. They get checked first, and only the useful ones are taken.
 
 </details>
 
 <details>
-<summary>🛠️ <b>Build & Actions</b></summary>
+<summary><b>Building it yourself</b></summary>
 
-**Local build:** `NDK=/path/android-ndk ./build.sh`. Output goes to `out/`.
+```
+NDK=/path/android-ndk ./build.sh
+```
 
-**Releasing a new version:** bump `version`/`versionCode` in `module/module.prop` and `update.json`, add a `## vX.Y` section to `CHANGELOG.md`, merge into `Utama`, run **hybrid_susfs Builder** (CI), test the artifact ZIP on the phone, then publish that run with **Rilis dari run**. The build stops if these three do not match.
+Output goes to `out/`. The version in `module/module.prop`, `update.json` and `CHANGELOG.md` must match, otherwise the build stops.
 
-| Workflow | Purpose |
-|---|---|
-| hybrid_susfs Builder | Builds from `Utama`. CI = artifact only; Pre-Release/Release = publishes right away. |
-| Rilis dari run | Publishes the ZIP of a green Builder run, exactly the one tested (digest checked). Notes in ID/EN, a **tested on the phone** tick, and **replace**. |
-| Validate | Automatic on every PR to `Utama`: shellcheck, syntax, versions, YAML, WebUI, engine gate. |
-| Cek pembaruan | Check only: new SideX and Brene commits, and whether the latest simonpunk SUSFS passes the engine gate. |
-| Hapus log run lama | Check only by default; type `HAPUS` to delete old runs. |
+In the Actions tab: **hybrid_susfs Builder** builds, **Rilis dari run** publishes a build that's been tested, **Cek pembaruan** shows what's new in sidex15, BRENE and simonpunk. **Validate** runs by itself on every PR.
 
 </details>
 
 <details>
-<summary>🧪 <b>Test status</b></summary>
+<summary><b>Tested</b></summary>
 
-| Build | Result |
+| Version | Result |
 |---|---|
-| `v0.4` (SUSFS v2.4.0 · Cogan Kernel · Xiaomi 14T Pro) | ✅ Tested on the phone 17 Nov 2026: release ZIP installed, Duck Detector Danger 0 · Warning 0 · Ready 20 |
-
-Full history: [Release notes](CHANGELOG.md).
+| v0.4 | 17 Nov 2026, Cogan Kernel on the 14T Pro, SUSFS v2.4.0. Duck Detector: Danger 0, Warning 0 |
 
 </details>
 
 ---
 
 <p align="center">
-  Maintainer <b>Cogan17</b> &nbsp;·&nbsp; engine <b>simonpunk</b> &nbsp;·&nbsp; UI <b>sidex15</b> &nbsp;·&nbsp; features <b>rrr333nnn333</b>
-  <br>AGPL-3.0 license, following SideX and Brene · <code>ksu_susfs</code> from simonpunk (GPL-3.0)
+  <b>Cogan17</b> &nbsp;·&nbsp; thanks to <b>simonpunk</b>, <b>sidex15</b> and <b>rrr333nnn333</b>
+  <br>AGPL-3.0 &nbsp;·&nbsp; <code>ksu_susfs</code> GPL-3.0 (simonpunk)
 </p>
 
-<sub>Sister repositories: [cogan17/Cogan-Kernel](https://github.com/cogan17/Cogan-Kernel) · [cogan17/CoganSU](https://github.com/cogan17/CoganSU) · [cogan17/TWRP-14T-PRO](https://github.com/cogan17/TWRP-14T-PRO)</sub>
+<sub>Sister repos: [Cogan-Kernel](https://github.com/cogan17/Cogan-Kernel) · [CoganSU](https://github.com/cogan17/CoganSU) · [TWRP-14T-PRO](https://github.com/cogan17/TWRP-14T-PRO)</sub>
