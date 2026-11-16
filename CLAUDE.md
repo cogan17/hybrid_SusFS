@@ -18,7 +18,19 @@ Disalin dari `CLAUDE.md` di [cogan17/Cogan-Kernel](https://github.com/cogan17/Co
 - Author dan committer memakai identitas owner: `git config user.name Cogan` dan `git config user.email 79615344+cogan17@users.noreply.github.com`.
 - Pesan commit **tanpa** `Co-Authored-By: Claude …`, `Claude-Session: …` atau atribusi AI lain.
 - Deskripsi PR **tanpa** footer "Generated with Claude Code" atau tautan sesi.
-- Branch kerja memakai nama biasa: `feat/…`, `fix/…`, `docs/…`, `chore/…`. Perubahan masuk ke `main` lewat PR.
+- Branch kerja memakai nama biasa: `feat/…`, `fix/…`, `docs/…`, `chore/…`. Perubahan masuk ke `Utama` (branch default) lewat PR.
+
+## PR, issue, dan syarat rilis (owner, 16 Nov 2026)
+
+- Kutipan owner: "PR dan issue aku serahkan kepada dirimu. Sebelum rilis pastikan benar-benar tidak ada celah/bug/glitch/bootloop/bug visual/dan lain-lain!"
+- **PR dan issue diurus asisten**: membuat PR ke `Utama`, membuat issue untuk hal yang perlu dicek atau diuji, memperbarui, dan menutupnya bila selesai.
+- **Sebelum rilis, wajib bersih dari celah, bug, glitch, bootloop, bug visual, dan masalah lain.** Paling sedikit:
+  - shellcheck tanpa error
+  - simulasi install, **update di atas versi yang terpasang**, boot, toggle, reset, dan uninstall di busybox `ash` (16 Nov 2026: build uji 5 gagal dipasang di atas build 4 karena skenario update tidak diulang)
+  - gate mesin lolos
+  - cek visual semua halaman WebUI di layar sempit dan beberapa bahasa
+  - uji HP sesuai checklist di issue
+- Rilis hanya setelah semua lolos. Yang belum terbukti ditulis jelas, jangan dianggap aman.
 
 ## Waktu
 
@@ -40,5 +52,5 @@ Disalin dari `CLAUDE.md` di [cogan17/Cogan-Kernel](https://github.com/cogan17/Co
 ## Checkpoint
 
 - Bila owner menulis **checkpoint**: hentikan semua pekerjaan saat itu juga, tanpa mengecek apa pun satu per satu.
-- Simpan keadaan terakhir ke [`CHECKPOINT.md`](CHECKPOINT.md): apa yang sedang berjalan, apa yang sudah selesai, apa yang tertunda, dan langkah pertama berikutnya. Commit dan push ke `main` lewat PR.
+- Simpan keadaan terakhir ke [`CHECKPOINT.md`](CHECKPOINT.md): apa yang sedang berjalan, apa yang sudah selesai, apa yang tertunda, dan langkah pertama berikutnya. Commit dan push ke `Utama` lewat PR.
 - Sesi berikutnya **mulai dari `CHECKPOINT.md`**, lalu lanjut hanya setelah owner meminta.

@@ -28,7 +28,7 @@ hide_compat_matrix=0
 fake_service_list=0
 susfs_log=1
 sus_su=2
-[ -f $PERSISTENT_DIR/config.sh ] && . $PERSISTENT_DIR/config.sh
+hybrid_load_config
 
 # SUS_SU 2#
 sus_su_2(){
@@ -43,6 +43,8 @@ sus_su_2(){
 }
 
 # sus_su #
+# sus_su hanya ada di SUSFS v1; di v2 semua cabang di bawah dilewati (config diset -1 di akhir)
+[ "$SUSFS_DECIMAL_MAIN" -ge 2 ] 2>/dev/null && sus_su=v2
 [ $sus_su = -1 ] && {
 	if [ -n "$version" ] && [ "$SUSFS_DECIMAL_MAIN" -ge 1 ] && [ "$SUSFS_DECIMAL_SUB" -ge 5 ] && [ "$SUSFS_DECIMAL_PATCH" -ge 3 ] 2>/dev/null; then
 		# Check if sus_su is supported
@@ -124,7 +126,7 @@ if echo "$susfs_features" | grep -q "CONFIG_KSU_SUSFS_OPEN_REDIRECT"; then
 		[ "$execute_on" != "1" ] && continue
 		# Get inode and device of redirected path
 		SUS_KSTAT=$(stat -c "%i %d default default %X 0 %Y 0 %Z 0 %b %B" "$original_path")
-		if [ "$SUSFS_DECIMAL_MAIN" -ge 2 ] && [ "$SUSFS_DECIMAL_SUB" -ge 1 ] 2>/dev/null; then
+		if [ "$SUSFS_DECIMAL_MAIN" -ge 2 ] 2>/dev/null; then
 			uid_scheme=$(echo "$line" | awk '{print $4}')
 			if [ -z $uid_scheme ]; then
 				${SUSFS_BIN} add_open_redirect "$original_path" "$redirected_path" 2 && echo "[open_redirect]: hybrid_susfs/boot-completed $original_path -> $redirected_path default_uid_scheme: 2" >> $logfile1

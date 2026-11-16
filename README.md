@@ -28,7 +28,7 @@ Modul KernelSU untuk kernel yang sudah di-patch SUSFS v2. Perpaduan tiga sumber:
 | Tampilan SideX dan fitur Brene | Manual. Commit yang dipakai dicatat di `upstream.env`. `tools/check_updates.sh` menampilkan commit baru dan file yang berubah, tanpa mengubah apa pun. Perubahan yang berguna diambil satu per satu, lalu `upstream.env` diperbarui. |
 | Ke pengguna | `updateJson` di `module.prop` → `update.json` → rilis GitHub. Manager KernelSU menampilkan tombol update. |
 
-**Langkah rilis versi baru:** naikkan `version`/`versionCode` di `module/module.prop` dan `update.json` (0.1 → 0.2, 1 → 2), tambah bagian `## v0.2` di `CHANGELOG.md`, gabung ke `main`, lalu jalankan workflow **Rilis hybrid_susfs**. Build berhenti bila ketiganya tidak sama.
+**Langkah rilis versi baru:** naikkan `version`/`versionCode` di `module/module.prop` dan `update.json` (0.1 → 0.2, 1 → 2), tambah bagian `## v0.2` di `CHANGELOG.md`, gabung ke `Utama`, lalu jalankan workflow **Rilis hybrid_susfs**. Build berhenti bila ketiganya tidak sama.
 
 ## English
 
@@ -58,7 +58,7 @@ KernelSU module for kernels patched with SUSFS v2. It combines three sources:
 | SideX UI and Brene features | Manual. The commits in use are recorded in `upstream.env`. `tools/check_updates.sh` lists new commits and changed files without changing anything. Useful changes are picked one by one, then `upstream.env` is updated. |
 | To users | `updateJson` in `module.prop` → `update.json` → GitHub release. The KernelSU manager shows an update button. |
 
-**Releasing a new version:** bump `version`/`versionCode` in `module/module.prop` and `update.json` (0.1 → 0.2, 1 → 2), add a `## v0.2` section to `CHANGELOG.md`, merge into `main`, then run the **Rilis hybrid_susfs** workflow. The build stops if these three do not match.
+**Releasing a new version:** bump `version`/`versionCode` in `module/module.prop` and `update.json` (0.1 → 0.2, 1 → 2), add a `## v0.2` section to `CHANGELOG.md`, merge into `Utama`, then run the **Rilis hybrid_susfs** workflow. The build stops if these three do not match.
 
 ## Lisensi / License
 

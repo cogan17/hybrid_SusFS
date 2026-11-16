@@ -16,7 +16,7 @@ grep -qE "^## $VERSION( |$)" "$ROOT/CHANGELOG.md" || { echo "GAGAL: CHANGELOG.md
 
 rm -rf "$WORK" && mkdir -p "$WORK"
 git clone -q --depth 1 -b "$SUSFS_BRANCH" "$SUSFS_REPO" "$WORK/susfs4ksu"
-SUSFS_COMMIT=$(git -C "$WORK/susfs4ksu" rev-parse --short=8 HEAD)
+SUSFS_COMMIT=$(git -C "$WORK/susfs4ksu" rev-parse HEAD)
 SUSFS_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$WORK/susfs4ksu/kernel_patches/include/linux/susfs.h" | head -1)
 
 "$ROOT/tools/check_engine.sh" "$ROOT/module" "$WORK/susfs4ksu/ksu_susfs/jni/main.c"
@@ -28,12 +28,24 @@ cp -r "$ROOT/module" "$WORK/module"
 mkdir -p "$WORK/module/tools"
 cp "$WORK/susfs4ksu/ksu_susfs/libs/arm64-v8a/ksu_susfs" "$WORK/module/tools/ksu_susfs_arm64"
 
+# Identitas build: ikut di log Send Logs (post-fs-data menyalinnya) supaya log bisa dicocokkan dengan ZIP
+REPO_COMMIT=$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo tidak-diketahui)
+[ -z "$(git -C "$ROOT" status --porcelain 2>/dev/null)" ] || REPO_COMMIT="$REPO_COMMIT+perubahan-lokal"
+{
+	echo "hybrid_susfs $VERSION (versionCode $CODE)"
+	echo "repo: $REPO_COMMIT"
+	echo "susfs: $SUSFS_VERSION ($SUSFS_BRANCH @ $SUSFS_COMMIT)"
+	echo "sha256:"
+	(cd "$WORK/module" && find . -type f ! -name MANIFEST.txt | sort | xargs sha256sum)
+} > "$WORK/module/MANIFEST.txt"
+
 ZIP=$ROOT/out/hybrid_susfs_${VERSION}.zip
 rm -f "$ZIP"
 (cd "$WORK/module" && zip -qr9 "$ZIP" .)
+# build.env dibaca workflow dengan '. out/build.env': setiap nilai dikutip (ada spasi dan tanda kurung)
 {
-	echo "ZIP=$ZIP"
-	echo "VERSION=$VERSION"
-	echo "SUSFS=$SUSFS_VERSION ($SUSFS_BRANCH @ $SUSFS_COMMIT)"
-	echo "SHA256=$(sha256sum "$ZIP" | cut -d' ' -f1)"
+	printf "ZIP='%s'\n" "$ZIP"
+	printf "VERSION='%s'\n" "$VERSION"
+	printf "SUSFS='%s'\n" "$SUSFS_VERSION ($SUSFS_BRANCH @ $SUSFS_COMMIT)"
+	printf "SHA256='%s'\n" "$(sha256sum "$ZIP" | cut -d' ' -f1)"
 } | tee "$ROOT/out/build.env"

@@ -7,6 +7,7 @@ PERSISTENT_DIR=/data/adb/hybrid_susfs
 tmpfolder=/data/adb/ksu/hybrid_susfs
 logfile="$tmpfolder/logs/susfs.log"
 logfile1="$tmpfolder/logs/susfs1.log"
+rm -f $tmpfolder/stats_done
 version=$(${SUSFS_BIN} show version)
 susfs_features=$(${SUSFS_BIN} show enabled_features)
 # SUSFS_DECIMAL_MAIN = '1'
@@ -31,7 +32,7 @@ hide_revanced=0
 spoof_uname=0
 hide_sus_mnts_for_all_or_non_su_procs=0
 emulate_vold_app_data=0
-[ -f $PERSISTENT_DIR/config.sh ] && . $PERSISTENT_DIR/config.sh
+hybrid_load_config
 
 # update description
 if [ -f $tmpfolder/logs/susfs_active ] || dmesg | grep -q "susfs:"; then
@@ -67,7 +68,7 @@ if echo "$susfs_features" | grep -q "CONFIG_KSU_SUSFS_OPEN_REDIRECT"; then
 		[ "$execute_on" != "0" ] && continue
 		# Get inode and device of redirected path
 		SUS_KSTAT=$(stat -c "%i %d default default %X 0 %Y 0 %Z 0 %b %B" "$original_path")
-		if [ "$SUSFS_DECIMAL_MAIN" -ge 2 ] && [ "$SUSFS_DECIMAL_SUB" -ge 1 ] 2>/dev/null; then
+		if [ "$SUSFS_DECIMAL_MAIN" -ge 2 ] 2>/dev/null; then
 			uid_scheme=$(echo "$line" | awk '{print $4}')
 			if [ -z $uid_scheme ]; then
 				${SUSFS_BIN} add_open_redirect "$original_path" "$redirected_path" 2 && echo "[open_redirect]: hybrid_susfs/boot-completed $original_path -> $redirected_path default_uid_scheme: 2" >> $logfile1
@@ -92,48 +93,15 @@ fi
 
 # Add sus_kstat_statically entries from JSON (late v1.5.8+)
 if [ -f "$PERSISTENT_DIR/sus_kstat_statically.json" ]; then
-	# Parse JSON and add sus_kstat_statically entries
-	# Extract each JSON object and process it
-	awk '/^[[:space:]]*\{/,/^[[:space:]]*\}/' "$PERSISTENT_DIR/sus_kstat_statically.json" | {
-		current_obj=""
-		while IFS= read -r line; do
-			if echo "$line" | grep -q '^[[:space:]]*{'; then
-				current_obj=""
-			fi
-			current_obj="$current_obj $line"
-			
-			if echo "$line" | grep -q '^[[:space:]]*}'; then
-				# Process complete JSON object: extract all 13 string fields in a
-				# single awk pass (first occurrence of each key wins), emitted as
-				# one tab-separated record, then read them at once.
-				IFS='	' read -r path ino dev nlink size atime atime_nsec mtime mtime_nsec ctime ctime_nsec blocks blksize <<EOF
-$(echo "$current_obj" | awk '
-				{
-					while (match($0, /"[a-z_]+"[[:space:]]*:[[:space:]]*"[^"]*"/)) {
-						pair = substr($0, RSTART, RLENGTH)
-						$0 = substr($0, RSTART + RLENGTH)
-						k = pair; sub(/"[[:space:]]*:.*/, "", k); sub(/^"/, "", k)
-						v = pair; sub(/^[^:]*:[[:space:]]*"/, "", v); sub(/"$/, "", v)
-						if (!(k in seen)) { seen[k] = 1; val[k] = v }
-					}
-				}
-				END {
-					printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", \
-						val["path"], val["ino"], val["dev"], val["nlink"], val["size"], \
-						val["atime"], val["atime_nsec"], val["mtime"], val["mtime_nsec"], \
-						val["ctime"], val["ctime_nsec"], val["blocks"], val["blksize"]
-				}')
-EOF
-
-				# Execute if path is not empty
-				if [ -n "$path" ]; then
-					${SUSFS_BIN} add_sus_kstat_statically "$path" "$ino" "$dev" "$nlink" "$size" "$atime" "$atime_nsec" "$mtime" "$mtime_nsec" "$ctime" "$ctime_nsec" "$blocks" "$blksize" && \
-					echo "[add_sus_kstat_statically]: hybrid_susfs/boot-completed $path" >> "$logfile1"
-				fi
-				current_obj=""
-			fi
-		done
-	} 2>/dev/null || true
+	# kstat_json.awk membaca JSON sungguhan; hasil ditahan dulu dan hanya diterapkan bila SELURUH file sah
+	kstat_rules=$(mktemp $tmpfolder/kstat.XXXXXX) && \
+	if awk -f ${MODDIR}/kstat_json.awk "$PERSISTENT_DIR/sus_kstat_statically.json" > "$kstat_rules" 2>> "$logfile1"; then
+		while IFS='	' read -r path ino dev nlink size atime atime_nsec mtime mtime_nsec ctime ctime_nsec blocks blksize; do
+			${SUSFS_BIN} add_sus_kstat_statically "$path" "$ino" "$dev" "$nlink" "$size" "$atime" "$atime_nsec" "$mtime" "$mtime_nsec" "$ctime" "$ctime_nsec" "$blocks" "$blksize" && \
+				echo "[add_sus_kstat_statically]: hybrid_susfs/boot-completed $path" >> "$logfile1"
+		done < "$kstat_rules"
+	fi
+	rm -f "$kstat_rules"
 fi
 
 # Auto try_umount (v1.5.5+)
@@ -226,7 +194,7 @@ fi
 # echo "hide_gapps=1" >> /data/adb/hybrid_susfs/config.sh
 [ $hide_gapps = 1 ] && {
 	echo "hybrid_susfs/boot-completed: [hide_gapps]" >> $logfile1
-	for i in $(find /system /vendor /system_ext /product -iname *gapps*xml -o -type d -iname *gapps*) ; do 
+	for i in $(find /system /vendor /system_ext /product -iname '*gapps*xml' -o -type d -iname '*gapps*') ; do 
 		${SUSFS_BIN} add_sus_path $i && echo "[sus_path]: hybrid_susfs/boot-completed $i" >> $logfile1
 	done
 }
@@ -327,7 +295,7 @@ until [ -d "/sdcard/Android/data" ] || [ $count -ge $max_attempts ]; do
 	sleep 1
 	count=$((count + 1))
 done
-if [ -n "$version" ] && [ "$SUSFS_DECIMAL_MAIN" -ge 1 ] && [ "$SUSFS_DECIMAL_SUB" -ge 5 ] && [ "$SUSFS_DECIMAL_PATCH" -ge 8 ] || [ "$SUSFS_DECIMAL_MAIN" -ge 2 ] 2>/dev/null; then
+if [ -n "$version" ] && [ "$SUSFS_DECIMAL_MAIN" -ge 1 ] && [ "$SUSFS_DECIMAL_SUB" -ge 5 ] && [ "$SUSFS_DECIMAL_PATCH" -ge 8 ] && [ "$SUSFS_DECIMAL_MAIN" -lt 2 ] 2>/dev/null; then
 	${SUSFS_BIN} set_sdcard_root_path /sdcard
 	${SUSFS_BIN} set_android_data_root_path /sdcard/Android/data
 fi
@@ -364,7 +332,7 @@ endmsg=$(echo "$dmesg_snapshot" | grep -E '^\[ *[0-9]' | cut -d']' -f1 | sed 's/
 echo "boot_completed=$endmsg" >> $tmpfolder/logs/boot_stage_time.sh
 sleep 15; # this delay is to ensure that all of the susfs logs have been captured
 # Just to be sure, set sdcard and android data root paths again
-if [ -n "$version" ] && [ "$SUSFS_DECIMAL_MAIN" -ge 1 ] && [ "$SUSFS_DECIMAL_SUB" -ge 5 ] && [ "$SUSFS_DECIMAL_PATCH" -ge 8 ] || [ "$SUSFS_DECIMAL_MAIN" -ge 2 ] 2>/dev/null; then
+if [ -n "$version" ] && [ "$SUSFS_DECIMAL_MAIN" -ge 1 ] && [ "$SUSFS_DECIMAL_SUB" -ge 5 ] && [ "$SUSFS_DECIMAL_PATCH" -ge 8 ] && [ "$SUSFS_DECIMAL_MAIN" -lt 2 ] 2>/dev/null; then
 	${SUSFS_BIN} set_sdcard_root_path /sdcard
 	${SUSFS_BIN} set_android_data_root_path /sdcard/Android/data
 fi
@@ -416,6 +384,7 @@ echo try_umount=$(grep -ci 'try_umount' $logfile1 ) >> ${tmpfolder}/susfs_stats1
 	sed -i "s/sus_path=.*/sus_path=$total_sus_paths/" ${tmpfolder}/susfs_stats.txt
 	# Last dmesg logs
 	dmesg | sed -n "/^\[ *$endmsg/,\$p" | grep -iE "susfs_auto_add|ksu_susfs|susfs:" >> $logfile
+	touch $tmpfolder/stats_done
 } & # run in background
 
 # Fitur Brene (brene.sh), di latar belakang karena menunggu storage siap

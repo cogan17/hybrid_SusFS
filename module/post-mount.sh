@@ -18,14 +18,16 @@ post_fs_data=0
 # echo "/system" >> /data/adb/hybrid_susfs/sus_mount.txt
 # this'll make it easier for the webui to do stuff
 # Check and process sus_mount paths
-if grep -v "#" "$PERSISTENT_DIR/sus_mount.txt" > /dev/null; then
+# add_sus_mount/add_try_umount hanya ada di SUSFS v1; di v2 try_umount.txt dipakai boot-completed lewat ksud
+case "$(${SUSFS_BIN} show version)" in v1.*) legacy=1 ;; *) legacy=0 ;; esac
+if [ $legacy = 1 ] && grep -v "#" "$PERSISTENT_DIR/sus_mount.txt" > /dev/null; then
     grep -v "#" "$PERSISTENT_DIR/sus_mount.txt" | while read -r i; do
         [ -z "$i" ] || { ${SUSFS_BIN} add_sus_mount "$i" && echo "[sus_mount]: hybrid_susfs/post-mount $i" >> "$logfile1"; }
     done
 fi
 
 # Check and process try_umount paths
-if grep -v "#" "$PERSISTENT_DIR/try_umount.txt" > /dev/null; then
+if [ $legacy = 1 ] && grep -v "#" "$PERSISTENT_DIR/try_umount.txt" > /dev/null; then
     grep -v "#" "$PERSISTENT_DIR/try_umount.txt" | while read -r i; do
         [ -z "$i" ] || { ${SUSFS_BIN} add_try_umount "$i" 1 && echo "[try_umount]: hybrid_susfs/post-mount $i" >> "$logfile1"; }
     done
