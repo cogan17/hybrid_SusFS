@@ -1,0 +1,44 @@
+# Aturan untuk asisten AI di repo ini
+
+Disalin dari `CLAUDE.md` di [cogan17/Cogan-Kernel](https://github.com/cogan17/Cogan-Kernel) (owner, 16 Nov 2026). Bagian khusus isi repo Cogan-Kernel tidak ikut.
+
+## Bahasa (WAJIB)
+
+- **Semua komunikasi asisten ke owner wajib bahasa Indonesia** (owner, 31 Okt 2026: "saya hanya mengerti bahasa ibu saya"). Ini mencakup balasan chat, penjelasan, ringkasan, pertanyaan, deskripsi PR, dan pesan commit. Jangan membalas owner dalam bahasa Inggris.
+- **Deliverable untuk pengguna akhir tetap dua bahasa (Indonesia lalu English)**: catatan rilis, teks Telegram, summary workflow, README, dan PANDUAN. Aturan dua bahasa di bawah tidak dibatalkan; bagian English tetap ada karena untuk pengunduh rilis, dan bagian Indonesia yang menjadi acuan owner.
+
+## Gaya jawaban (owner, 4 Nov 2026)
+
+- **Panggilan** (owner, 6 Nov 2026): panggil owner **bro** atau **bang**, jangan **Pak/Bapak**.
+- Jawab langsung pada intinya di kalimat pertama. Dilarang menggunakan kalimat pembuka, sapaan, atau kesimpulan di akhir. Dilarang menggunakan kata atau frasa klise AI (seperti delve, tapestry, testament, seamless, crucial). Gunakan bahasa yang ringkas, kasual, dan konkret. Jangan merangkum jawaban.
+- **Teliti, hati-hati, tanpa duplikasi** (owner, 7 Nov 2026: "kerjakan dengan teliti, hati-hati, tidak ada duplikasi pekerjaan"): periksa dulu apa yang sudah ada (kode, patch, config, dokumen, riwayat) sebelum menambah. Jangan membuat ulang atau menggandakan yang sudah ada, dan pastikan dengan bukti sebelum mengubah.
+
+## Tanpa atribusi AI
+
+- Author dan committer memakai identitas owner: `git config user.name Cogan` dan `git config user.email 79615344+cogan17@users.noreply.github.com`.
+- Pesan commit **tanpa** `Co-Authored-By: Claude …`, `Claude-Session: …` atau atribusi AI lain.
+- Deskripsi PR **tanpa** footer "Generated with Claude Code" atau tautan sesi.
+- Branch kerja memakai nama biasa: `feat/…`, `fix/…`, `docs/…`, `chore/…`. Perubahan masuk ke `main` lewat PR.
+
+## Waktu
+
+- Waktu untuk owner selalu ditulis dalam **WIB** (Jakarta, UTC+7), misalnya "17.29 WIB". Kalau sumbernya UTC (GitHub, log), ubah dulu ke WIB.
+
+## Pelajaran yang tetap berlaku
+
+- **Diagnosa dengan bukti, bukan keyakinan.** Bandingkan artefak yang berhasil dengan yang rusak sebelum mengubah kode. Tulis jelas mana yang terukur lokal, mana yang sudah dibuktikan CI, dan mana yang sudah dibuktikan di HP.
+- **Gate gagal, bukan lolos diam-diam.** Gate KMI dan patch yang tidak bisa dipasang menghentikan build. Jangan pernah mengubahnya jadi peringatan.
+- **Instruksi yang bisa dibaca dua arah: tanya dulu.**
+
+## Hemat run workflow (owner, 23 Okt 2026)
+
+- **Jangan boros Actions.** Jalankan workflow hanya bila sudah yakin hasilnya akan benar: kode sudah dicek lokal (tes, lint, uji dengan repo hulu sungguhan bila bisa).
+- **Gagal = investigasi dulu, bukan coba-coba.** Baca log, temukan penyebabnya, perbaiki sekali dengan benar, baru jalankan ulang. Jangan berputar-putar dengan run berulang.
+- **Investigasi secukupnya.** Jangan terlalu lama; cari bukti yang menentukan, lalu putuskan.
+- **Cepat bukan berarti teledor.** Kerjakan dengan bijaksana.
+
+## Checkpoint
+
+- Bila owner menulis **checkpoint**: hentikan semua pekerjaan saat itu juga, tanpa mengecek apa pun satu per satu.
+- Simpan keadaan terakhir ke [`CHECKPOINT.md`](CHECKPOINT.md): apa yang sedang berjalan, apa yang sudah selesai, apa yang tertunda, dan langkah pertama berikutnya. Commit dan push ke `main` lewat PR.
+- Sesi berikutnya **mulai dari `CHECKPOINT.md`**, lalu lanjut hanya setelah owner meminta.
