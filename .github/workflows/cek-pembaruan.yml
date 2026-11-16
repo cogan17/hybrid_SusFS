@@ -1,0 +1,42 @@
+name: Cek pembaruan
+
+# Satu tombol, hanya cek (meniru Cek pembaruan Cogan Kernel; tanpa jadwal, hemat run). Menjalankan
+# tools/check_updates.sh: commit baru SideX dan Brene sejak upstream.env, dan apakah SUSFS simonpunk
+# terbaru lolos gate mesin. Tidak membangun, tidak menerbitkan, tidak menulis apa pun.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cek-pembaruan
+  cancel-in-progress: true
+
+jobs:
+  cek:
+    name: Cek / check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Cek pembaruan / check for updates
+        run: |
+          set -euo pipefail
+          # The same text in the log too: readable when the summary page does not load.
+          rc=0; tools/check_updates.sh | tee updates.txt || rc=$?
+          {
+            echo "## Cek pembaruan / update check"
+            echo
+            echo "- 🇮🇩 Hanya cek: SideX dan Brene diambil manual bila berguna; mesin simonpunk ikut otomatis saat build."
+            echo "- 🇬🇧 Check only: SideX and Brene changes are picked manually when useful; the simonpunk engine follows automatically on build."
+            echo
+            echo '```'
+            cat updates.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          # A gate failure or a failed fetch turns the run red after the summary is written.
+          exit "$rc"
