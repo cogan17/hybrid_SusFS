@@ -85,8 +85,8 @@ Di tab Actions: **hybrid_susfs Builder** untuk build, **Rilis dari run** untuk m
 
 | Versi | Hasil |
 |---|---|
-| v0.5 | ⏳ Menunggu uji HP. Isi modul sama dengan v0.4, hanya nomor versi |
-| v0.4 (ditarik) | 17 Nov 2026, Cogan Kernel di 14T Pro, SUSFS v2.4.0. Duck Detector: Danger 0, Warning 0 |
+| v0.5 | ✅ 17 Nov 2026, Cogan Kernel di 14T Pro, SUSFS v2.4.0. Duck Detector: Danger 0, Warning 0 |
+| v0.4 (ditarik) | Diganti v0.5 (isi sama, kini bertanda tangan) |
 
 </details>
 
