@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.3
+
+- 🇮🇩 Uninstall tidak lagi menyentuh `ksu_susfs`/`susfs` yang sudah menjadi milik modul lain; cadangan hanya dipulihkan ke path yang kosong.
+- 🇬🇧 Uninstall no longer touches `ksu_susfs`/`susfs` once another module owns them; backups are only restored to empty paths.
+- 🇮🇩 Data kstat dibaca sama persis oleh boot dan WebUI: key ganda dan angka seperti `01` ditolak.
+- 🇬🇧 kstat data is read identically by boot and WebUI: duplicate keys and numbers like `01` are rejected.
+- 🇮🇩 Install yang gagal memverifikasi pemulihannya dan melapor jujur bila tidak lengkap (snapshot di `/data/adb/hybrid_susfs.txn`); pratinjau WebUI sebelum reboot tidak lagi bisa tersarang.
+- 🇬🇧 A failed install verifies its restore and reports honestly if incomplete (snapshot in `/data/adb/hybrid_susfs.txn`); the pre-reboot WebUI preview can no longer end up nested.
+- 🇮🇩 Peringatan config tidak sah tetap tercatat di log; deskripsi modul menampilkan "menunggu HP dibuka kunci" selama storage belum siap; keterangan sumber angka statistik di WebUI.
+- 🇬🇧 Invalid-config warnings stay in the log; the module description shows "waiting for unlock" while storage is not ready; the WebUI explains where the stats come from.
+
 ## v0.2
 
 - 🇮🇩 Keamanan: config dibaca sebagai data dengan skema per pengaturan (tidak lagi dijalankan sebagai skrip); impor backup diperiksa ketat dan bisa dibatalkan; semua nilai yang masuk ke perintah WebUI di-escape, termasuk pemilih folder.

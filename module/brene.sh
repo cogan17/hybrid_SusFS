@@ -239,10 +239,13 @@ brene_boot_completed() {
 
 	# Butuh storage: tunggu maksimal 1 jam di latar belakang (mis. HP belum dibuka kunci setelah reboot)
 	local t=0
+	# Status tertunda terlihat di deskripsi modul (manager) selama menunggu, dihapus saat storage siap
+	[ -e /storage/emulated/0/Android ] || sed -i 's/^\(description=.*\)$/\1 | ⏳ menunggu HP dibuka kunci/' $MODDIR_BRENE/module.prop
 	until [ -e /storage/emulated/0/Android ] || [ $t -ge 3600 ]; do sleep 5; t=$((t + 5)); done
 	# Belum siap setelah 1 jam (HP belum dibuka kunci): tetap dicoba tiap 60 detik, fitur lain sudah jalan
 	[ -e /storage/emulated/0/Android ] || brene_log "storage belum siap setelah 1 jam, menunggu sampai HP dibuka kunci"
 	until [ -e /storage/emulated/0/Android ]; do sleep 60; done
+	sed -i 's/ | ⏳ menunggu HP dibuka kunci//' $MODDIR_BRENE/module.prop
 
 	# Jam sudah sinkron saat boot-completed (bukan 1970): pakai tanggal hari ini untuk spoof patch level
 	if [ "$(busybox date +%Y)" -ge 2025 ]; then

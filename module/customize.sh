@@ -45,19 +45,32 @@ fi
 
 # Snapshot transaksi: keadaan ksu_susfs/susfs TEPAT sebelum pemasangan ini (berbeda dengan cadangan uninstall
 # di atas). Bila langkah mana pun gagal, keadaan ini yang dikembalikan persis, termasuk "tidak ada".
-TXN=$MODPATH/.txn
-mkdir -p $TXN || abort "[!] Gagal membuat snapshot / snapshot failed"
+# Disimpan di luar folder update (yang dihapus manager bila install gagal), supaya tetap ada untuk pemulihan manual
+TXN=/data/adb/hybrid_susfs.txn
+rm -rf $TXN && mkdir -p $TXN || abort "[!] Gagal membuat snapshot / snapshot failed"
 for b in ksu_susfs susfs; do
 	if [ -e $DEST_BIN_DIR/$b ] || [ -L $DEST_BIN_DIR/$b ]; then
 		cp -P $DEST_BIN_DIR/$b $TXN/$b || abort "[!] Gagal membuat snapshot $b / snapshot failed"
 	fi
 done
 txn_rollback() {
-	rm -f $DEST_BIN_DIR/.ksu_susfs.new $SUSFS_BIN $DEST_BIN_DIR/susfs
+	local ok=1 b d
+	rm -f $DEST_BIN_DIR/.ksu_susfs.new
 	for b in ksu_susfs susfs; do
-		if [ -e $TXN/$b ] || [ -L $TXN/$b ]; then cp -P $TXN/$b $DEST_BIN_DIR/$b; fi
+		d=$DEST_BIN_DIR/$b
+		rm -f $d || ok=0
+		if [ -e $TXN/$b ] || [ -L $TXN/$b ]; then
+			cp -P $TXN/$b $d.restore && mv -f $d.restore $d || { rm -f $d.restore; ok=0; }
+		fi
+		# Verifikasi: symlink -> target sama, file -> isi sama, dulu tidak ada -> tetap tidak ada
+		if [ -L $TXN/$b ]; then [ "$(readlink $d)" = "$(readlink $TXN/$b)" ] || ok=0
+		elif [ -e $TXN/$b ]; then [ -f $d ] && [ ! -L $d ] && cmp -s $TXN/$b $d || ok=0
+		else [ ! -e $d ] && [ ! -L $d ] || ok=0
+		fi
 	done
-	abort "[!] Gagal memasang ksu_susfs, keadaan sebelumnya dikembalikan / install failed, previous state restored"
+	[ $ok = 1 ] && { rm -rf $TXN; abort "[!] Gagal memasang ksu_susfs, keadaan sebelumnya dikembalikan / install failed, previous state restored"; }
+	# Pemulihan tidak lengkap: snapshot dibiarkan di $TXN untuk dipulihkan manual
+	abort "[!] Gagal memasang ksu_susfs DAN pemulihan tidak lengkap. Snapshot: $TXN (salin ke $DEST_BIN_DIR) / install AND restore failed"
 }
 
 # Binary baru disiapkan di folder yang sama lalu ditukar dengan mv: rename tidak menulis menembus symlink
@@ -142,11 +155,15 @@ if [ "$MODPATH" != "$LIVE_DIR" ]; then
 	# WebUI sebelum reboot: pemasangan sebenarnya tetap dari modules_update oleh manager saat reboot.
 	rm -rf $LIVE_DIR.new $LIVE_DIR.old
 	if cp -rf $MODPATH $LIVE_DIR.new; then
-		[ -d $LIVE_DIR ] && mv $LIVE_DIR $LIVE_DIR.old
-		if mv $LIVE_DIR.new $LIVE_DIR; then
+		if [ -d $LIVE_DIR ] && ! mv $LIVE_DIR $LIVE_DIR.old; then
+			# Rename pertama gagal: jangan lanjut (mv ke folder yang masih ada akan menyarangkan versi baru)
+			rm -rf $LIVE_DIR.new
+			ui_print "[!] WebUI baru bisa dibuka setelah reboot (versi lama tetap aktif) / WebUI available after reboot"
+		elif mv $LIVE_DIR.new $LIVE_DIR && [ -f $LIVE_DIR/module.prop ] && [ ! -e $LIVE_DIR/hybrid_susfs.new ]; then
 			rm -rf $LIVE_DIR.old
 		else
-			[ -d $LIVE_DIR.old ] && [ ! -e $LIVE_DIR ] && mv $LIVE_DIR.old $LIVE_DIR
+			# Versi baru tidak masuk utuh: singkirkan sisanya dan kembalikan versi lama (selama .old masih ada)
+			[ -d $LIVE_DIR.old ] && { rm -rf $LIVE_DIR; mv $LIVE_DIR.old $LIVE_DIR; }
 			rm -rf $LIVE_DIR.new
 			ui_print "[!] WebUI baru bisa dibuka setelah reboot (versi lama tetap aktif) / WebUI available after reboot"
 		fi

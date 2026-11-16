@@ -20,7 +20,8 @@ hybrid_config_canonical() {
 			if (k == "emulate_vold_app_data" || k == "hide_sus_mnts_for_all_or_non_su_procs" || k == "spoof_uname") return "^[012]$"
 			if (k == "config_developer_options" || k == "config_usb_debugging" || k == "config_wireless_debugging") return "^(-1|0|1)$"
 			if (k == "kernel_version" || k == "kernel_build") return "^[A-Za-z0-9 .:_+#()-]+$"
-			if (k == "config_spoof_verified_boot_hash") return "^[0-9a-fA-F]*$"
+			# ro.boot.vbmeta.digest: hash AVB (SHA-256 = 64 hex, SHA-512 = 128 hex) atau kosong
+			if (k == "config_spoof_verified_boot_hash") return "^([0-9a-fA-F]{64}|[0-9a-fA-F]{128})?$"
 			if (k == "CURRENT_YEAR") return "^([0-9][0-9][0-9][0-9])?$"
 			if (k == "CURRENT_MONTH") return "^(0[1-9]|1[0-2])?$"
 			if (k == "CURRENT_DAY") return "^(0[1-9]|[12][0-9]|3[01])?$"

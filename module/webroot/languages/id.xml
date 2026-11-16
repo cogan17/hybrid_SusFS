@@ -129,6 +129,7 @@
   <string id="import_warning_label">Mengimpor konfigurasi akan menimpa setelan Anda saat ini. Apakah Anda yakin ingin melanjutkan?</string>
   <string id="import_backup_label">Cadangkan Konfigurasi Saat Ini</string>
   <!-- hybrid_susfs -->
+  <string id="stats_note_label">Angka dari catatan kernel dan log modul, bukan daftar aturan aktif</string>
   <string id="brene_settings_label">pengaturan hybrid_susfs</string>
   <string id="brene_reboot_label">Perubahan aktif setelah reboot</string>
   <string id="brene_ksu_label">KernelSU</string>

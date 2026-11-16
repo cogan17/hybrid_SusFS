@@ -4,6 +4,7 @@
 # setelah SELURUH file sah sampai akhir; ada satu saja kesalahan -> tidak ada keluaran, exit 1.
 # path harus absolut; field lain "default" atau bilangan bulat >= 0.
 BEGIN {
+	for (j = 1; j < 32; j++) CTRL = CTRL sprintf("%c", j) # karakter kontrol mentah tidak sah di string JSON
 	nf = split("path ino dev nlink size atime atime_nsec mtime mtime_nsec ctime ctime_nsec blocks blksize", FIELDS, " ")
 }
 { s = s $0 "\n" }
@@ -29,6 +30,7 @@ function jstr(   c, out, code) { # i di tanda kutip pembuka
 				if (code < 1 || code > 126) { badval = 1; c = "" } else c = sprintf("%c", code)
 			} else if (c != "\"" && c != "\\" && c != "/") { fatal = "escape tidak sah"; return out }
 		}
+		else if (index(CTRL, c)) { fatal = "karakter kontrol mentah di dalam string"; return out }
 		out = out c; i++
 	}
 	fatal = "string tidak ditutup"; return out
@@ -43,9 +45,10 @@ function obj(   k, v, c, j, line) {
 		ws(); if (substr(s, i, 1) != ":") { fatal = "tanda : hilang setelah key " k; return }
 		i++; ws(); c = substr(s, i, 1)
 		if (c == "\"") { v = jstr(); if (fatal != "") return }
-		else if (match(substr(s, i), /^-?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?/)) { v = substr(s, i, RLENGTH); i += RLENGTH }
+		else if (match(substr(s, i), /^-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?[0-9]+)?/)) { v = substr(s, i, RLENGTH); i += RLENGTH }
 		else { fatal = "nilai field " k " harus string atau angka"; return }
-		if (!(k in val)) val[k] = v
+		if (k in val) { fatal = "key ganda: " k; return }
+		val[k] = v
 		ws(); c = substr(s, i, 1); i++
 		if (c == "}") break
 		if (c != ",") { fatal = "tanda , atau } hilang"; return }

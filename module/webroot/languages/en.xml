@@ -129,6 +129,7 @@
   <string id="import_warning_label">Importing a config will overwrite your current settings. Are you sure you want to proceed?</string>
   <string id="import_backup_label">Backup Current Config</string>
   <!-- hybrid_susfs -->
+  <string id="stats_note_label">Counts from kernel and module logs, not a live rule list</string>
   <string id="brene_settings_label">hybrid_susfs settings</string>
   <string id="brene_reboot_label">Changes apply after reboot</string>
   <string id="brene_ksu_label">KernelSU</string>
