@@ -47,7 +47,9 @@ fi
 # di atas). Bila langkah mana pun gagal, keadaan ini yang dikembalikan persis, termasuk "tidak ada".
 # Disimpan di luar folder update (yang dihapus manager bila install gagal), supaya tetap ada untuk pemulihan manual
 TXN=/data/adb/hybrid_susfs.txn
-rm -rf $TXN && mkdir -p $TXN || abort "[!] Gagal membuat snapshot / snapshot failed"
+# Snapshot dari install yang gagal sebelumnya adalah bahan pemulihan: jangan dihapus diam-diam
+{ [ -e $TXN ] || [ -L $TXN ]; } && abort "[!] Ada snapshot pemulihan dari install yang gagal: $TXN. Salin isinya ke $DEST_BIN_DIR bila binary hilang, lalu hapus folder itu dan pasang ulang / recovery snapshot exists, check it first"
+mkdir -p $TXN || abort "[!] Gagal membuat snapshot / snapshot failed"
 for b in ksu_susfs susfs; do
 	if [ -e $DEST_BIN_DIR/$b ] || [ -L $DEST_BIN_DIR/$b ]; then
 		cp -P $DEST_BIN_DIR/$b $TXN/$b || abort "[!] Gagal membuat snapshot $b / snapshot failed"
@@ -116,7 +118,7 @@ hybrid_config_check() {
 ui_print "[-] Menyiapkan $PERSISTENT_DIR"
 mkdir -p $PERSISTENT_DIR
 cp $MODPATH/config.sh $MODPATH/config.default.sh
-files="sus_mount.txt try_umount.txt sus_path.txt sus_path_loop.txt sus_maps.txt sus_open_redirect.txt legit_mounts.txt sus_kstat_statically.json config.sh"
+files="sus_mount.txt try_umount.txt sus_path.txt sus_path_loop.txt sus_maps.txt sus_open_redirect.txt legit_mounts.txt sus_kstat_statically.json priority_extra_packages.txt config.sh"
 for i in $files; do
 	if [ ! -f $PERSISTENT_DIR/$i ]; then
 		cat $MODPATH/$i > $PERSISTENT_DIR/$i

@@ -6,7 +6,7 @@
 MODDIR=${0%/*}
 PERSISTENT_DIR=/data/adb/hybrid_susfs
 . $MODDIR/utils.sh
-ALLOW="config.sh sus_path.txt sus_path_loop.txt sus_maps.txt sus_mount.txt try_umount.txt sus_open_redirect.txt legit_mounts.txt sus_kstat_statically.json"
+ALLOW="config.sh sus_path.txt sus_path_loop.txt sus_maps.txt sus_mount.txt try_umount.txt sus_open_redirect.txt legit_mounts.txt sus_kstat_statically.json priority_extra_packages.txt"
 
 fail() { echo "$*" >&2; exit 1; }
 [ -f "$HYBRID_DEFAULTS" ] || fail "config default modul tidak ada"

@@ -118,19 +118,26 @@
                     </div>
 				</div>
 				<div class="stats flex flex-col divide-x-0 divide-y-0 white:bg-cyan-100/20 bg-cyan-100/20 dark:bg-black/20 mt-5 border-2 p-4 border-white backdrop-blur-[2.5px] min-w-full sm:min-w-[400px]">
-					<div class="text-white text-xl font-bold mb-3" data-i18n="brene_apps_label">Hide Apps</div>
+					<div class="text-white text-xl font-bold mb-3" data-i18n="brene_apps_label">App UID Filter</div>
                     <div class="form-control">
                         <label class="label cursor-pointer">
-                        <span class="text-white text-base" data-i18n="brene_hide_third_party_apps_label">Hide third party apps (HMA-OSS)</span>
+                        <span class="text-white text-base" data-i18n="brene_hide_third_party_apps_label">Third-party UID filter (HMA-OSS companion)</span>
                         <input type="checkbox" data-brene="config_hide_third_party_apps" data-on="1" data-off="0" class="toggle toggle-md toggle-success" />
                         </label>
                     </div>
                     <div class="form-control">
                         <label class="label cursor-pointer">
-                        <span class="text-white text-base" data-i18n="brene_hide_all_apps_with_uid_10000_and_above_label">Hide all apps (uid 10000+)</span>
+                        <span class="text-white text-base" data-i18n="brene_hide_all_apps_with_uid_10000_and_above_label">Main-user app UID filter (10000–19999)</span>
                         <input type="checkbox" data-brene="config_hide_all_apps_with_uid_10000_and_above" data-on="1" data-off="0" class="toggle toggle-md toggle-warning" />
                         </label>
                     </div>
+                    <p class="text-white/70 text-xs font-sans normal-case mt-2" data-i18n="priority_scope_note">Priority syscalls only; configure package visibility inside HMA-OSS. Both on: main-user mode wins. After turning off, reboot to clear a filter applied earlier.</p>
+                    <div class="flex flex-row gap-2 mt-2" style="flex-wrap:wrap">
+                        <button class="btn btn-sm btn-outline border-white text-white" data-priority-action="apply" data-i18n="priority_refresh">Refresh UID filter</button>
+                        <input type="text" inputmode="numeric" id="priority_uid" placeholder="UID, mis. 10155" class="input input-sm bg-black border-white text-white flex-1 font-sans" />
+                        <button class="btn btn-sm btn-outline border-white text-white" data-priority-action="diagnose" data-i18n="priority_diagnose">Check UID</button>
+                    </div>
+                    <p id="priority_output" class="text-white text-xs font-sans normal-case mt-2" style="white-space:pre-wrap"></p>
 				</div>
 				<div class="stats flex flex-col divide-x-0 divide-y-0 white:bg-cyan-100/20 bg-cyan-100/20 dark:bg-black/20 mt-5 border-2 p-4 border-white backdrop-blur-[2.5px] min-w-full sm:min-w-[400px]">
 					<div class="text-white text-xl font-bold mb-3" data-i18n="brene_spoof_label">Spoofing</div>

@@ -129,6 +129,9 @@
   <string id="import_warning_label">Importing a config will overwrite your current settings. Are you sure you want to proceed?</string>
   <string id="import_backup_label">Backup Current Config</string>
   <!-- hybrid_susfs -->
+  <string id="priority_scope_note">Priority syscalls only; configure package visibility inside HMA-OSS. Both on: main-user mode wins. After turning off, reboot to clear a filter applied earlier.</string>
+  <string id="priority_refresh">Refresh UID filter</string>
+  <string id="priority_diagnose">Check UID</string>
   <string id="stats_note_label">Counts from kernel and module logs, not a live rule list</string>
   <string id="brene_settings_label">hybrid_susfs settings</string>
   <string id="brene_reboot_label">Changes apply after reboot</string>
@@ -147,9 +150,9 @@
   <string id="brene_hide_suspicious_pty_label">Hide suspicious PTYs</string>
   <string id="brene_hide_framework_res_apk_label">Hide framework-res.apk maps</string>
   <string id="brene_hide_vector_injection_label">Hide Vector (Xposed) injection</string>
-  <string id="brene_apps_label">Hide Apps</string>
-  <string id="brene_hide_third_party_apps_label">Hide third party apps (HMA-OSS)</string>
-  <string id="brene_hide_all_apps_with_uid_10000_and_above_label">Hide all apps (uid 10000+)</string>
+  <string id="brene_apps_label">App UID Filter</string>
+  <string id="brene_hide_third_party_apps_label">Third-party UID filter (HMA-OSS companion)</string>
+  <string id="brene_hide_all_apps_with_uid_10000_and_above_label">Main-user app UID filter (10000–19999)</string>
   <string id="brene_spoof_label">Spoofing</string>
   <string id="brene_spoof_system_properties_label">Spoof system properties</string>
   <string id="brene_spoof_os_security_patch_level_property_label">Spoof OS security patch</string>

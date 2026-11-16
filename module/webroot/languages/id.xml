@@ -129,6 +129,9 @@
   <string id="import_warning_label">Mengimpor konfigurasi akan menimpa setelan Anda saat ini. Apakah Anda yakin ingin melanjutkan?</string>
   <string id="import_backup_label">Cadangkan Konfigurasi Saat Ini</string>
   <!-- hybrid_susfs -->
+  <string id="priority_scope_note">Hanya menyaring syscall prioritas; visibilitas aplikasi diatur di HMA-OSS. Dua toggle menyala: mode user utama yang dipakai. Setelah dimatikan, reboot untuk menghapus filter yang sudah diterapkan.</string>
+  <string id="priority_refresh">Perbarui filter UID</string>
+  <string id="priority_diagnose">Cek UID</string>
   <string id="stats_note_label">Angka dari catatan kernel dan log modul, bukan daftar aturan aktif</string>
   <string id="brene_settings_label">pengaturan hybrid_susfs</string>
   <string id="brene_reboot_label">Perubahan aktif setelah reboot</string>
@@ -147,9 +150,9 @@
   <string id="brene_hide_suspicious_pty_label">Sembunyikan PTY mencurigakan</string>
   <string id="brene_hide_framework_res_apk_label">Sembunyikan maps framework-res.apk</string>
   <string id="brene_hide_vector_injection_label">Sembunyikan injeksi Vector (Xposed)</string>
-  <string id="brene_apps_label">Sembunyikan Aplikasi</string>
-  <string id="brene_hide_third_party_apps_label">Sembunyikan aplikasi pihak ketiga (HMA-OSS)</string>
-  <string id="brene_hide_all_apps_with_uid_10000_and_above_label">Sembunyikan semua aplikasi (uid 10000+)</string>
+  <string id="brene_apps_label">Filter UID Aplikasi</string>
+  <string id="brene_hide_third_party_apps_label">Filter UID aplikasi pihak ketiga (pendamping HMA-OSS)</string>
+  <string id="brene_hide_all_apps_with_uid_10000_and_above_label">Filter UID aplikasi user utama (10000–19999)</string>
   <string id="brene_spoof_label">Spoofing</string>
   <string id="brene_spoof_system_properties_label">Spoof system properties</string>
   <string id="brene_spoof_os_security_patch_level_property_label">Spoof security patch OS</string>

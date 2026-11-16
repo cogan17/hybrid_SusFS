@@ -70,3 +70,28 @@ document.addEventListener("click", (ev) => {
 	ev.stopImmediatePropagation();
 	toast("Karakter tidak diizinkan / invalid characters: hanya huruf, angka, spasi, . : _ + # ( ) -");
 }, true);
+
+// Filter UID (pendamping HMA-OSS): tombol Perbarui dan Cek UID; perintah tetap, UID hanya angka
+const PRIORITY = "/data/adb/modules/hybrid_susfs/priority_uid.sh";
+function showPriority(text) { const out = document.getElementById("priority_output"); if (out) out.textContent = text; }
+document.addEventListener("click", async (ev) => {
+	const button = ev.target.closest && ev.target.closest("[data-priority-action]");
+	if (!button || button.disabled) return;
+	let cmd = `sh ${PRIORITY} apply`;
+	if (button.dataset.priorityAction === "diagnose") {
+		const uid = (document.getElementById("priority_uid") || {}).value || "";
+		if (!/^[0-9]{1,6}$/.test(uid.trim())) { toast("UID harus angka / UID must be a number"); return; }
+		cmd = `sh ${PRIORITY} diagnose ${Number(uid.trim())}`;
+	}
+	button.disabled = true;
+	await writes; // tunggu toggle tersimpan dulu
+	const { code, stdout } = await exec(`${cmd} 2>&1`);
+	button.disabled = false;
+	showPriority(stdout.trim());
+	if (code !== 0) toast("Gagal, lihat keterangan / failed, see details");
+});
+// Saat halaman muncul: tampilkan status filter terakhir
+new MutationObserver(() => {
+	const out = document.getElementById("priority_output");
+	if (out && !out.dataset.loaded) { out.dataset.loaded = "1"; exec("cat /data/adb/ksu/hybrid_susfs/priority_uid_status.txt").then((r) => r.code === 0 && showPriority(r.stdout.trim())); }
+}).observe(document.documentElement, { childList: true, subtree: true });

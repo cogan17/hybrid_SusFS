@@ -1,0 +1,4 @@
+# Paket tambahan untuk filter UID (pendamping HMA-OSS), satu nama paket per baris.
+# Dipakai hanya bila salah satu toggle filter UID menyala. Paket harus terpasang dan ber-UID 10000-19999.
+# Cari nama paket dari UID dulu: sh /data/adb/modules/hybrid_susfs/priority_uid.sh diagnose <uid>
+# Extra packages for the UID filter (HMA-OSS companion), one package name per line.

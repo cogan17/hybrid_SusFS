@@ -90,6 +90,8 @@ echo -e "# this contains suspicious mounts you want \n# to be try_umounted at po
 echo -e "# this contains paths you want to redirect with\n# open redirect at boot-completed.sh or service.sh\n# example format\n# 0 = Execute on boot-completed.sh\n# 1 = Execute on service.sh\n# <original_path> <redirected_path> <0 or 1>\n# /system/bin/service /data/adb/hybrid_susfs/service_redirected 0" > "$config/sus_open_redirect.txt"
 # Reset legit_mounts.txt
 printf "$legit_mounts" > "$config/legit_mounts.txt"
+# Reset priority_extra_packages.txt
+printf '%s\n' '# Paket tambahan untuk filter UID (pendamping HMA-OSS), satu nama paket per baris.' '# Dipakai hanya bila salah satu toggle filter UID menyala. Paket harus terpasang dan ber-UID 10000-19999.' '# Cari nama paket dari UID dulu: sh /data/adb/modules/hybrid_susfs/priority_uid.sh diagnose <uid>' '# Extra packages for the UID filter (HMA-OSS companion), one package name per line.' > "$config/priority_extra_packages.txt"
 # Reset sus_kstat_statically.json
 echo "[]" > "$config/sus_kstat_statically.json"
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.4
+
+- 🇮🇩 Filter UID (pendamping HMA-OSS) kini satu pintu: satu mode, satu perintah, daftar divalidasi sebelum dikirim, HMA-OSS ikut disertakan, status tersimpan di Send Logs. Label menjelaskan cakupannya: hanya syscall prioritas; visibilitas aplikasi tetap diatur di HMA-OSS.
+- 🇬🇧 The UID filter (HMA-OSS companion) now has one entry point: one mode, one command, the list is validated before sending, HMA-OSS is included, and the status is saved in Send Logs. Labels state its scope: priority syscalls only; app visibility is still configured in HMA-OSS.
+- 🇮🇩 Tombol "Perbarui filter UID" (untuk aplikasi yang baru dipasang) dan "Cek UID" (memetakan UID ke nama paket) di halaman hybrid_susfs settings dan tombol action; paket tambahan bisa ditulis di `priority_extra_packages.txt`.
+- 🇬🇧 "Refresh UID filter" (for newly installed apps) and "Check UID" (maps a UID to its package) buttons on the hybrid_susfs settings page and the action button; extra packages can be listed in `priority_extra_packages.txt`.
+- 🇮🇩 Install ulang tidak lagi menghapus snapshot pemulihan dari install yang gagal.
+- 🇬🇧 Reinstalling no longer deletes the recovery snapshot left by a failed install.
+
 ## v0.3
 
 - 🇮🇩 Uninstall tidak lagi menyentuh `ksu_susfs`/`susfs` yang sudah menjadi milik modul lain; cadangan hanya dipulihkan ke path yang kosong.

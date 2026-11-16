@@ -231,11 +231,8 @@ brene_boot_completed() {
 		$SUSFS_BIN add_sus_kstat_statically /data/local/tmp 100 default default 4096 default default default default default default 8 4096
 	}
 
-	# Keduanya memakai set_priority_uid_filter; yang kedua (semua uid >= 10000) menang bila dua-duanya aktif
-	[ "$config_hide_third_party_apps" = 1 ] && \
-		$SUSFS_BIN set_priority_uid_filter "$(cmd package list packages -3 | awk -F: '{p = p (p ? "," : "") $2} END {print p}')"
-	[ "$config_hide_all_apps_with_uid_10000_and_above" = 1 ] && \
-		$SUSFS_BIN set_priority_uid_filter "$(awk '$2 >= 10000 {p = p (p ? "," : "") $1} END {print p}' /data/system/packages.list)"
+	# Filter UID prioritas (pendamping HMA-OSS): satu mode, satu panggilan, status di priority_uid_status.txt
+	sh $MODDIR_BRENE/priority_uid.sh apply > /dev/null 2>&1 || brene_log "filter UID gagal, lihat priority_uid_status.txt"
 
 	# Butuh storage: tunggu maksimal 1 jam di latar belakang (mis. HP belum dibuka kunci setelah reboot)
 	local t=0
