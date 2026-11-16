@@ -1,9 +1,9 @@
 id=hybrid_susfs
-name=Hybrid SusFS
+name=hybrid_susfs
 version=v0.1
 versionCode=1
 author=Cogan (sidex15, rrr333nnn333, simonpunk)
-description=Mesin simonpunk, tampilan SideX, fitur Brene / simonpunk engine, SideX UI, Brene features
+description=hybrid_susfs: modul SUSFS untuk KernelSU / SUSFS module for KernelSU
 banner=banner.png
 webuiIcon=susfsicon.png
 actionIcon=susfsicon.png

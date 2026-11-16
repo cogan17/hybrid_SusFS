@@ -36,8 +36,8 @@
   <string id="sus_map_label">SUS MAPS</string>
   <string id="sus_mount_label">SUS MOUNT</string>
   <string id="try_umount_label">TRY UMOUNT</string>
-  <string id="susfs_settings_label">Custom SUSFS Settings</string>
-  <string id="susfs_kernel_status_label">SUSFS Kernel Status</string>
+  <string id="susfs_settings_label">Custom hybrid_susfs Settings</string>
+  <string id="susfs_kernel_status_label">hybrid_susfs Kernel Status</string>
 
   <!-- Status Page -->
   <string id="kernel_features_label">Kernel Features Status</string>
@@ -58,7 +58,7 @@
   <string id="overlayfs_auto_kstat_feature_label">OverlayFS Auto Kstat Support</string>
 
   <!-- Settings -->
-  <string id="susfs_log_label">SUSFS Logs</string>
+  <string id="susfs_log_label">hybrid_susfs Logs</string>
   <string id="sus_su_1_label">SUS SU is on Mode 1</string>
   <string id="sus_su_label">SUS SU</string>
   <string id="sus_su_boot_label">SUS SU on boot</string>
@@ -128,8 +128,8 @@
   <string id="import_config_label">Import Config</string>
   <string id="import_warning_label">Importing a config will overwrite your current settings. Are you sure you want to proceed?</string>
   <string id="import_backup_label">Backup Current Config</string>
-  <!-- Hybrid SusFS: Brene -->
-  <string id="brene_settings_label">brene settings</string>
+  <!-- hybrid_susfs -->
+  <string id="brene_settings_label">hybrid_susfs settings</string>
   <string id="brene_reboot_label">Changes apply after reboot</string>
   <string id="brene_ksu_label">KernelSU</string>
   <string id="brene_su_compat_label">SU Compat</string>

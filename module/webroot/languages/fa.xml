@@ -36,8 +36,8 @@
   <string id="sus_map_label">نقشه SUS</string>
   <string id="sus_mount_label">پیوست SUS</string>
   <string id="try_umount_label">جداسازی</string>
-  <string id="susfs_settings_label">تنظیمات سفارشی SUSFS</string>
-  <string id="susfs_kernel_status_label">وضعیت کرنل SUSFS</string>
+  <string id="susfs_settings_label">تنظیمات سفارشی hybrid_susfs</string>
+  <string id="susfs_kernel_status_label">وضعیت کرنل hybrid_susfs</string>
 
   <!-- Status Page -->
   <string id="kernel_features_label">وضعیت ویژگی های کرنل</string>
@@ -58,7 +58,7 @@
   <string id="overlayfs_auto_kstat_feature_label">پشتیبانی خودکار Kstat برای OverlayFS</string>
 
   <!-- Settings -->
-  <string id="susfs_log_label">گزارشات SUSFS</string>
+  <string id="susfs_log_label">گزارشات hybrid_susfs</string>
   <string id="sus_su_1_label">SUS SU در حالت ۱ است</string>
   <string id="sus_su_label">SUS SU</string>
   <string id="sus_su_boot_label">SUS SU هنگام راه‌اندازی</string>

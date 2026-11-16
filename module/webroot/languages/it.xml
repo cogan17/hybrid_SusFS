@@ -36,8 +36,8 @@
   <string id="sus_map_label">SUS MAPS</string>
   <string id="sus_mount_label">SUS MOUNT</string>
   <string id="try_umount_label">TRY UMOUNT</string>
-  <string id="susfs_settings_label">Impostazioni SUSFS personalizzate</string>
-  <string id="susfs_kernel_status_label">Stato kernel SUSFS</string>
+  <string id="susfs_settings_label">Impostazioni hybrid_susfs personalizzate</string>
+  <string id="susfs_kernel_status_label">Stato kernel hybrid_susfs</string>
 
   <!-- Status Page -->
   <string id="kernel_features_label">Stato Funzionalità kernel</string>
@@ -58,7 +58,7 @@
   <string id="overlayfs_auto_kstat_feature_label">Supporto OverlayFS Auto Kstat</string>
 
   <!-- Settings -->
-  <string id="susfs_log_label">Registri SUSFS</string>
+  <string id="susfs_log_label">Registri hybrid_susfs</string>
   <string id="sus_su_1_label">SUS SU è in Modalità 1</string>
   <string id="sus_su_label">SUS SU</string>
   <string id="sus_su_boot_label">SUS SU all\'avvio</string>

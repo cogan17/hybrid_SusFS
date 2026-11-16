@@ -36,8 +36,8 @@
   <string id="sus_map_label">SUS映射</string>
   <string id="sus_mount_label">SUS挂载</string>
   <string id="try_umount_label">尝试卸载</string>
-  <string id="susfs_settings_label">自定义SUSFS设置</string>
-  <string id="susfs_kernel_status_label">SUSFS内核状态</string>
+  <string id="susfs_settings_label">自定义hybrid_susfs设置</string>
+  <string id="susfs_kernel_status_label">hybrid_susfs内核状态</string>
 
   <!-- Status Page -->
   <string id="kernel_features_label">内核功能状态</string>
@@ -58,7 +58,7 @@
   <string id="overlayfs_auto_kstat_feature_label">OverlayFS自动内核统计支持</string>
 
   <!-- Settings -->
-  <string id="susfs_log_label">SUSFS日志</string>
+  <string id="susfs_log_label">hybrid_susfs日志</string>
   <string id="sus_su_1_label">SUS SU处于模式1</string>
   <string id="sus_su_label">SUS SU</string>
   <string id="sus_su_boot_label">开机时启动SUS SU</string>

@@ -36,8 +36,8 @@
   <string id="sus_map_label">SUS MAPS</string>
   <string id="sus_mount_label">SUS MOUNT</string>
   <string id="try_umount_label">TRY UMOUNT</string>
-  <string id="susfs_settings_label">사용자 지정 SUSFS 설정</string>
-  <string id="susfs_kernel_status_label">SUSFS 커널 상태</string>
+  <string id="susfs_settings_label">사용자 지정 hybrid_susfs 설정</string>
+  <string id="susfs_kernel_status_label">hybrid_susfs 커널 상태</string>
 
   <!-- Status Page -->
   <string id="kernel_features_label">커널 기능 상태</string>
@@ -58,7 +58,7 @@
   <string id="overlayfs_auto_kstat_feature_label">OverlayFS 자동 Kstat 지원</string>
 
   <!-- Settings -->
-  <string id="susfs_log_label">SUSFS 로그</string>
+  <string id="susfs_log_label">hybrid_susfs 로그</string>
   <string id="sus_su_1_label">SUS SU가 모드 1로 설정됨</string>
   <string id="sus_su_label">SUS SU</string>
   <string id="sus_su_boot_label">부팅 시 SUS SU</string>

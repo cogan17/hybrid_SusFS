@@ -8,8 +8,7 @@ PERSISTENT_DIR=/data/adb/hybrid_susfs
 tmpfolder=/data/adb/ksu/hybrid_susfs
 
 ui_print " "
-ui_print "  Hybrid SusFS $(grep '^version=' $MODPATH/module.prop | cut -d= -f2)"
-ui_print "  mesin simonpunk | tampilan SideX | fitur Brene"
+ui_print "  hybrid_susfs $(grep '^version=' $MODPATH/module.prop | cut -d= -f2)"
 ui_print " "
 
 [ -z "$KSU" ] && abort '[!] Hanya untuk KernelSU / only for KernelSU'

@@ -36,8 +36,8 @@
   <string id="sus_map_label">Bản đồ SUS</string>
   <string id="sus_mount_label">Gắn kết SUS</string>
   <string id="try_umount_label">Thử gỡ gắn kết</string>
-  <string id="susfs_settings_label">Tùy chỉnh SUSFS</string>
-  <string id="susfs_kernel_status_label">Trạng thái Kernel SUSFS</string>
+  <string id="susfs_settings_label">Tùy chỉnh hybrid_susfs</string>
+  <string id="susfs_kernel_status_label">Trạng thái Kernel hybrid_susfs</string>
 
   <!-- Status Page -->
   <string id="kernel_features_label">Trạng thái tính năng Kernel</string>
@@ -58,7 +58,7 @@
   <string id="overlayfs_auto_kstat_feature_label">Hỗ trợ OverlayFS Auto Kstat</string>
 
   <!-- Settings -->
-  <string id="susfs_log_label">Nhật ký SUSFS</string>
+  <string id="susfs_log_label">Nhật ký hybrid_susfs</string>
   <string id="sus_su_1_label">SUS SU đang ở chế độ 1</string>
   <string id="sus_su_label">SUS SU</string>
   <string id="sus_su_boot_label">SUS SU khi khởi động</string>

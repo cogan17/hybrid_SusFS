@@ -11,7 +11,7 @@ PERSISTENT_DIR=/data/adb/hybrid_susfs
 BRENE_LOG=/data/adb/ksu/hybrid_susfs/logs/susfs1.log
 MODDIR_BRENE=/data/adb/modules/hybrid_susfs
 
-brene_log() { echo "[brene] $*" >> $BRENE_LOG 2>/dev/null; }
+brene_log() { echo "[hybrid_susfs] $*" >> $BRENE_LOG 2>/dev/null; }
 
 brene_update_config_date() {
 	sed -i "s/^CURRENT_YEAR=.*/CURRENT_YEAR='$(busybox date +%Y)'/" $PERSISTENT_DIR/config.sh
