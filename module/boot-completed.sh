@@ -93,50 +93,12 @@ fi
 
 # Add sus_kstat_statically entries from JSON (late v1.5.8+)
 if [ -f "$PERSISTENT_DIR/sus_kstat_statically.json" ]; then
-	# Parse JSON and add sus_kstat_statically entries
-	# Extract each JSON object and process it
-	# JSON satu baris (compact) dipecah dulu supaya tiap { dan } ada di baris sendiri
-	awk '{gsub(/\{/, "\n{\n"); gsub(/\}/, "\n}\n"); print}' "$PERSISTENT_DIR/sus_kstat_statically.json" | \
-	awk '/^[[:space:]]*\{/,/^[[:space:]]*\}/' | {
-		current_obj=""
-		while IFS= read -r line; do
-			if echo "$line" | grep -q '^[[:space:]]*{'; then
-				current_obj=""
-			fi
-			current_obj="$current_obj $line"
-			
-			if echo "$line" | grep -q '^[[:space:]]*}'; then
-				# Process complete JSON object: extract all 13 string fields in a
-				# single awk pass (first occurrence of each key wins), emitted as
-				# one tab-separated record, then read them at once.
-				IFS='	' read -r path ino dev nlink size atime atime_nsec mtime mtime_nsec ctime ctime_nsec blocks blksize <<EOF
-$(echo "$current_obj" | awk '
-				{
-					while (match($0, /"[a-z_]+"[[:space:]]*:[[:space:]]*("[^"]*"|-?[0-9]+)/)) {
-						pair = substr($0, RSTART, RLENGTH)
-						$0 = substr($0, RSTART + RLENGTH)
-						k = pair; sub(/"[[:space:]]*:.*/, "", k); sub(/^"/, "", k)
-						v = pair; sub(/^[^:]*:[[:space:]]*"?/, "", v); sub(/"$/, "", v)
-						if (!(k in seen)) { seen[k] = 1; val[k] = v }
-					}
-				}
-				END {
-					printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", \
-						val["path"], val["ino"], val["dev"], val["nlink"], val["size"], \
-						val["atime"], val["atime_nsec"], val["mtime"], val["mtime_nsec"], \
-						val["ctime"], val["ctime_nsec"], val["blocks"], val["blksize"]
-				}')
-EOF
-
-				# Execute if path is not empty
-				if [ -n "$path" ]; then
-					${SUSFS_BIN} add_sus_kstat_statically "$path" "$ino" "$dev" "$nlink" "$size" "$atime" "$atime_nsec" "$mtime" "$mtime_nsec" "$ctime" "$ctime_nsec" "$blocks" "$blksize" && \
-					echo "[add_sus_kstat_statically]: hybrid_susfs/boot-completed $path" >> "$logfile1"
-				fi
-				current_obj=""
-			fi
-		done
-	} 2>/dev/null || true
+	# kstat_json.awk membaca JSON sungguhan (string, escape, angka); objek tidak sah dicatat ke log
+	awk -f ${MODDIR}/kstat_json.awk "$PERSISTENT_DIR/sus_kstat_statically.json" 2>> "$logfile1" | \
+	while IFS='	' read -r path ino dev nlink size atime atime_nsec mtime mtime_nsec ctime ctime_nsec blocks blksize; do
+		${SUSFS_BIN} add_sus_kstat_statically "$path" "$ino" "$dev" "$nlink" "$size" "$atime" "$atime_nsec" "$mtime" "$mtime_nsec" "$ctime" "$ctime_nsec" "$blocks" "$blksize" && \
+			echo "[add_sus_kstat_statically]: hybrid_susfs/boot-completed $path" >> "$logfile1"
+	done
 fi
 
 # Auto try_umount (v1.5.5+)

@@ -26,31 +26,41 @@ esac
 
 # Cadangkan ksu_susfs/susfs milik modul lain apa adanya (symlink tetap symlink) untuk dipulihkan saat uninstall.
 # Saat update modul ini, binary yang ada adalah milik kita: cadangan dari instalasi pertama yang dibawa.
+# Cadangan wajib berhasil sebelum ada yang diubah.
 LIVE_DIR=/data/adb/modules/hybrid_susfs
-mkdir -p $MODPATH/.bin_backup
+BAK=$MODPATH/.bin_backup
+mkdir -p $BAK || abort "[!] Gagal membuat cadangan / backup failed"
 if [ -f $LIVE_DIR/.installed_bin.sha256 ] && [ "$(sha256sum $SUSFS_BIN 2>/dev/null | cut -d' ' -f1)" = "$(cat $LIVE_DIR/.installed_bin.sha256)" ]; then
-	cp -P $LIVE_DIR/.bin_backup/* $MODPATH/.bin_backup/ 2>/dev/null
-	cp -f $LIVE_DIR/.disabled_by_hybrid $MODPATH/.disabled_by_hybrid 2>/dev/null
+	if [ -d $LIVE_DIR/.bin_backup ]; then cp -P $LIVE_DIR/.bin_backup/. $BAK/ || abort "[!] Gagal membawa cadangan / backup failed"; fi
+	if [ -f $LIVE_DIR/.disabled_by_hybrid ]; then cp -f $LIVE_DIR/.disabled_by_hybrid $MODPATH/ || abort "[!] Gagal membawa cadangan / backup failed"; fi
 else
 	for b in ksu_susfs susfs; do
-		[ -e $DEST_BIN_DIR/$b ] || [ -L $DEST_BIN_DIR/$b ] && cp -P $DEST_BIN_DIR/$b $MODPATH/.bin_backup/$b
+		if [ -e $DEST_BIN_DIR/$b ] || [ -L $DEST_BIN_DIR/$b ]; then
+			cp -P $DEST_BIN_DIR/$b $BAK/$b || abort "[!] Gagal mencadangkan $b / backup failed"
+		fi
 	done
 fi
 
-# Pasang bersih: hapus dulu supaya tidak menulis menembus symlink modul lain (mis. Brene: ksu_susfs -> susfs)
-rm -f $SUSFS_BIN $DEST_BIN_DIR/susfs
-cp $NEW_BIN $SUSFS_BIN && chmod 755 $SUSFS_BIN || {
-	cp -P $MODPATH/.bin_backup/* $DEST_BIN_DIR/ 2>/dev/null
+# Binary baru disiapkan di folder yang sama lalu ditukar dengan mv: rename tidak menulis menembus symlink
+# modul lain (mis. Brene: ksu_susfs -> susfs) dan binary lama tetap utuh sampai pertukaran berhasil.
+cp $NEW_BIN $DEST_BIN_DIR/.ksu_susfs.new && chmod 755 $DEST_BIN_DIR/.ksu_susfs.new && \
+	mv -f $DEST_BIN_DIR/.ksu_susfs.new $SUSFS_BIN || {
+	rm -f $DEST_BIN_DIR/.ksu_susfs.new
 	abort "[!] Gagal memasang ksu_susfs / failed to install ksu_susfs"
 }
-ln -s $SUSFS_BIN $DEST_BIN_DIR/susfs # nama yang dipakai skrip Brene
+rm -f $DEST_BIN_DIR/susfs && ln -s $SUSFS_BIN $DEST_BIN_DIR/susfs || { # nama yang dipakai skrip Brene
+	rm -f $SUSFS_BIN $DEST_BIN_DIR/susfs
+	for b in $BAK/ksu_susfs $BAK/susfs; do [ -e $b ] || [ -L $b ] && cp -P $b $DEST_BIN_DIR/; done
+	abort "[!] Gagal memasang ksu_susfs / failed to install ksu_susfs"
+}
 sha256sum $SUSFS_BIN | cut -d' ' -f1 > $MODPATH/.installed_bin.sha256
 chmod 755 $MODPATH/inotify.sh
 
-# Modul SUSFS lain bentrok (binary dan aturan ganda): matikan, dan catat untuk diaktifkan lagi saat uninstall
+# Modul SUSFS lain bentrok (binary dan aturan ganda): matikan dengan penanda, dicatat untuk uninstall.
+# Uninstall hanya mengaktifkan lagi bila file disable masih berisi penanda kita (bukan pilihan pemilik).
 for m in susfs4ksu brene susfs_manager; do
 	[ -d /data/adb/modules/$m ] && [ ! -f /data/adb/modules/$m/disable ] && {
-		touch /data/adb/modules/$m/disable
+		echo hybrid_susfs > /data/adb/modules/$m/disable
 		echo $m >> $MODPATH/.disabled_by_hybrid
 		ui_print "[-] Modul $m dimatikan / disabled"
 	}
@@ -114,7 +124,9 @@ rm $MODPATH/customize.sh
 # WebUI bisa dibuka tanpa reboot: salin dari MODPATH asli (path modules_update beda antar manager)
 sed -i "s/^description=.*/description=status: ✅ SuS ඞ/" $MODPATH/module.prop
 if [ "$MODPATH" != "$LIVE_DIR" ]; then
-	mkdir -p $LIVE_DIR && cp -rf $MODPATH/. $LIVE_DIR/ || ui_print "[!] WebUI baru bisa dibuka setelah reboot / WebUI available after reboot"
+	# Tukar utuh (bukan timpa) supaya file yang sudah dicabut dari paket tidak tertinggal
+	rm -rf $LIVE_DIR.new && cp -rf $MODPATH $LIVE_DIR.new && rm -rf $LIVE_DIR && mv $LIVE_DIR.new $LIVE_DIR || \
+		ui_print "[!] WebUI baru bisa dibuka setelah reboot / WebUI available after reboot"
 fi
 
 ui_print " "

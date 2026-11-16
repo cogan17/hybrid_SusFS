@@ -15,11 +15,7 @@ fi
 
 # Modul SUSFS lain yang dimatikan saat install diaktifkan lagi
 [ -f $MODDIR/.disabled_by_hybrid ] && while read -r m; do
-	[ -n "$m" ] && rm -f /data/adb/modules/$m/disable
+	[ -n "$m" ] && [ "$(cat /data/adb/modules/$m/disable 2>/dev/null)" = hybrid_susfs ] && rm -f /data/adb/modules/$m/disable
 done < $MODDIR/.disabled_by_hybrid
-
-# Prop persist yang kita tulis (Disable child process restrictions)
-[ -f /data/adb/hybrid_susfs/.phantom_procs_set ] && \
-	resetprop -p -d persist.sys.fflag.override.settings_enable_monitor_phantom_procs && rm -f /data/adb/hybrid_susfs/.phantom_procs_set
 
 rm -rf /data/adb/ksu/hybrid_susfs

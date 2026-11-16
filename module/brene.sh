@@ -176,12 +176,9 @@ brene_boot_completed() {
 	case "$config_developer_options" in 0|1) settings put global development_settings_enabled $config_developer_options ;; esac
 	case "$config_usb_debugging" in 0|1) settings put global adb_enabled $config_usb_debugging ;; esac
 	case "$config_wireless_debugging" in 0|1) settings put global adb_wifi_enabled $config_wireless_debugging ;; esac
-	# Prop persist: dikembalikan saat toggle dimatikan, hanya bila kita yang menulisnya (penanda)
-	if [ "$config_disable_child_process_restrictions" = 1 ]; then
-		resetprop -n persist.sys.fflag.override.settings_enable_monitor_phantom_procs false && touch $PERSISTENT_DIR/.phantom_procs_set
-	elif [ -f $PERSISTENT_DIR/.phantom_procs_set ]; then
-		resetprop -p -d persist.sys.fflag.override.settings_enable_monitor_phantom_procs && rm -f $PERSISTENT_DIR/.phantom_procs_set
-	fi
+	# Hanya di memori (-n tanpa -p, tidak lewat property_service): nilai tersimpan pemilik tidak disentuh,
+	# jadi saat toggle mati prop otomatis kembali ke nilai asli setelah reboot. Jangan hapus dengan -p.
+	[ "$config_disable_child_process_restrictions" = 1 ] && resetprop -n persist.sys.fflag.override.settings_enable_monitor_phantom_procs false
 	[ "$config_saturation" = 1 ] && service call SurfaceFlinger 1022 f 2.0
 	[ "$config_show_refresh_rate" = 1 ] && service call SurfaceFlinger 1034 i32 1
 	[ "$config_shrink_buffer_size" = 1 ] && logcat -G 64K
@@ -240,10 +237,10 @@ brene_boot_completed() {
 	[ "$config_hide_all_apps_with_uid_10000_and_above" = 1 ] && \
 		$SUSFS_BIN set_priority_uid_filter "$(awk '$2 >= 10000 {p = p (p ? "," : "") $1} END {print p}' /data/system/packages.list)"
 
-	# Butuh storage: tunggu maksimal 5 menit (mis. HP belum dibuka kunci setelah reboot)
+	# Butuh storage: tunggu maksimal 1 jam di latar belakang (mis. HP belum dibuka kunci setelah reboot)
 	local t=0
-	until [ -e /storage/emulated/0/Android ] || [ $t -ge 300 ]; do sleep 1; t=$((t + 1)); done
-	[ -e /storage/emulated/0/Android ] || brene_log "storage belum siap setelah 300 detik, fitur storage dilewati"
+	until [ -e /storage/emulated/0/Android ] || [ $t -ge 3600 ]; do sleep 5; t=$((t + 5)); done
+	[ -e /storage/emulated/0/Android ] || brene_log "storage belum siap setelah 1 jam, fitur storage dilewati"
 
 	brene_spoof_props
 	[ "$config_spoof_system_properties" = 1 ] && brene_prop ro.crypto.state encrypted
@@ -282,12 +279,28 @@ brene_boot_completed() {
 	resetprop -c --force
 	brene_update_config_date
 
-	# Statistik WebUI: tambahkan path dari fitur ini setelah hitungan SideX (boot-completed.sh) selesai
+	# Statistik WebUI ditulis sekali, setelah hitungan SideX (boot-completed.sh) selesai
 	t=0
 	until [ -f /data/adb/ksu/hybrid_susfs/stats_done ] || [ $t -ge 180 ]; do sleep 1; t=$((t + 1)); done
-	local np=$(grep -c '^\[hybrid_susfs\] sus_path' $BRENE_LOG)
+	if [ ! -f /data/adb/ksu/hybrid_susfs/stats_done ]; then
+		brene_log "statistik tidak diperbarui: hitungan SideX belum selesai"
+		return
+	fi
+	local np nm
+	if dmesg | grep -q 'is successfully added to LH_SUS_PATH'; then
+		# Dari catatan kernel: hanya aturan yang diterima kernel, tiap path/map dihitung sekali
+		np=$(dmesg | grep 'is successfully added to LH_SUS_PATH' | sed "s/.*target_pathname: '\(.*\)', is successfully.*/\1/" | sort -u | wc -l)
+		nm=$(dmesg | grep 'is flagged as AS_FLAGS_SUS_MAP' | sed "s/.*pathname: '\(.*\)', is flagged.*/\1/" | sort -u | wc -l)
+	else
+		# Log kernel SUSFS mati: tambahkan hitungan dari log modul ini ke hitungan SideX
+		np=+$(grep -c '^\[hybrid_susfs\] sus_path' $BRENE_LOG)
+		nm=+$(grep -c '^\[hybrid_susfs\] sus_map' $BRENE_LOG)
+	fi
 	for f in /data/adb/ksu/hybrid_susfs/susfs_stats.txt /data/adb/ksu/hybrid_susfs/susfs_stats1.txt; do
 		[ -f $f ] || continue
-		awk -F= -v n=$np '$1 == "sus_path" {$2 += n; seen = 1} {print $1 "=" $2} END {if (!seen) print "sus_path=" n}' $f > $f.tmp && mv -f $f.tmp $f
+		awk -F= -v p="$np" -v m="$nm" '
+			function upd(old, x) { return (substr(x, 1, 1) == "+") ? old + substr(x, 2) : x }
+			$1 == "sus_path" { $2 = upd($2, p); sp = 1 } $1 == "sus_map" { $2 = upd($2, m); sm = 1 } { print $1 "=" $2 }
+			END { if (!sp) print "sus_path=" upd(0, p); if (!sm) print "sus_map=" upd(0, m) }' $f > $f.tmp && mv -f $f.tmp $f
 	done
 }
