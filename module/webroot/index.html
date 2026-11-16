@@ -94,7 +94,7 @@
 		<div class="pb-14" data-router-view="home">
 			<div class="flex justify-between items-center mx-auto ml-4 pt-5 mr-4">
 				<div class="flex flex-col">
-					<h1 class="font-bold text-white font-amongus" style="font-size:2.4rem;line-height:1;white-space:nowrap">HYBRID_SUSFS A</h1>
+					<h1 class="font-bold text-white font-amongus" style="font-size:clamp(1.5rem,7.5vw,2.4rem);line-height:1;white-space:nowrap">HYBRID_SUSFS A</h1>
 					<h3 class="text-2xl text-balance text-white" data-i18n="app_title">WebUI menu</h3>
 					<h4 id="susfs_version" class="text-base text-balance text-white font-amongus2"></h4>
 				</div>
@@ -249,7 +249,7 @@
 							<input type="checkbox" id="uname-spoof-on-postfsdata" class="checkbox checkbox-sm checkbox-primary" checked="checked"/>
 							</label>
 						</div>
-						<div class="flex flex-row gap-4">
+						<div class="flex flex-row gap-4" style="flex-wrap:wrap">
 						<button class="btn btn-md btn-outline w-24 mt-2 border-white text-white text-sm font-normal" id="set_uname">Make it SuS</button>
 						<button class="btn btn-md btn-outline w-auto mt-2 border-white text-white text-sm font-normal" id="set_stock_kernel_build_date" data-i18n="set_stock_kernel_build_date_label">Set Stock Kernel Build Date</button>
 						</div>

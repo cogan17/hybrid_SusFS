@@ -15,17 +15,20 @@ ui_print " "
 [ "$ARCH" != "arm64" ] && abort '[!] Hanya arm64 / arm64 only'
 [ -d $DEST_BIN_DIR ] || abort "[!] $DEST_BIN_DIR tidak ada / not found"
 
-# Mesin: ksu_susfs hasil compile dari source simonpunk (tools/ksu_susfs_arm64)
-cp -f $MODPATH/tools/ksu_susfs_arm64 $SUSFS_BIN
+# Mesin: ksu_susfs hasil compile dari source simonpunk (tools/ksu_susfs_arm64).
+# Cek kernel dulu dari binary di ZIP, supaya binary modul lain tidak tertimpa bila install batal.
+NEW_BIN=$MODPATH/tools/ksu_susfs_arm64
+chmod 755 $NEW_BIN
+SUSFS_VERSION_RAW="$($NEW_BIN show version 2>/dev/null)"
+case "$SUSFS_VERSION_RAW" in
+	v2.*) ui_print "[-] SUSFS kernel: $SUSFS_VERSION_RAW ($($NEW_BIN show variant 2>/dev/null))" ;;
+	*) abort "[!] Kernel tanpa SUSFS v2 / kernel without SUSFS v2 ($SUSFS_VERSION_RAW)" ;;
+esac
+
+cp -f $NEW_BIN $SUSFS_BIN
 chmod 755 $SUSFS_BIN
 ln -sf $SUSFS_BIN $DEST_BIN_DIR/susfs # nama yang dipakai skrip Brene
 chmod 755 $MODPATH/inotify.sh $MODPATH/remove_ksu_directory.sh
-
-SUSFS_VERSION_RAW="$($SUSFS_BIN show version 2>/dev/null)"
-case "$SUSFS_VERSION_RAW" in
-	v2.*) ui_print "[-] SUSFS kernel: $SUSFS_VERSION_RAW ($($SUSFS_BIN show variant 2>/dev/null))" ;;
-	*) abort "[!] Kernel tanpa SUSFS v2 / kernel without SUSFS v2 ($SUSFS_VERSION_RAW)" ;;
-esac
 
 # Modul SUSFS lain bentrok (binary dan aturan ganda): matikan
 for m in susfs4ksu brene susfs_manager; do

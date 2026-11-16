@@ -84,7 +84,9 @@ spoof_system_properties() {
 	brene_prop_contains vendor.boot.bootmode recovery unknown
 	[ -n "$(resetprop ro.kernel.qemu)" ] && resetprop -n ro.kernel.qemu ""
 
-	resetprop -n ro.boot.vbmeta.size "$(blockdev --getsize64 "/dev/block/by-name/vbmeta$(resetprop ro.boot.slot_suffix)")"
+	# Prop kosong lebih mencurigakan daripada tidak diubah: set hanya bila ukuran vbmeta terbaca
+	local vbsize=$(blockdev --getsize64 "/dev/block/by-name/vbmeta$(resetprop ro.boot.slot_suffix)" 2>/dev/null)
+	[ -n "$vbsize" ] && resetprop -n ro.boot.vbmeta.size "$vbsize"
 	resetprop -n ro.boot.vbmeta.avb_version 1.3
 	resetprop -n ro.boot.vbmeta.hash_alg sha256
 	resetprop -n ro.boot.vbmeta.device_state locked

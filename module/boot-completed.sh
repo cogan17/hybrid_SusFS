@@ -226,7 +226,7 @@ fi
 # echo "hide_gapps=1" >> /data/adb/hybrid_susfs/config.sh
 [ $hide_gapps = 1 ] && {
 	echo "hybrid_susfs/boot-completed: [hide_gapps]" >> $logfile1
-	for i in $(find /system /vendor /system_ext /product -iname *gapps*xml -o -type d -iname *gapps*) ; do 
+	for i in $(find /system /vendor /system_ext /product -iname '*gapps*xml' -o -type d -iname '*gapps*') ; do 
 		${SUSFS_BIN} add_sus_path $i && echo "[sus_path]: hybrid_susfs/boot-completed $i" >> $logfile1
 	done
 }
