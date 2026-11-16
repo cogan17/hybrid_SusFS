@@ -28,6 +28,17 @@ cp -r "$ROOT/module" "$WORK/module"
 mkdir -p "$WORK/module/tools"
 cp "$WORK/susfs4ksu/ksu_susfs/libs/arm64-v8a/ksu_susfs" "$WORK/module/tools/ksu_susfs_arm64"
 
+# Identitas build: ikut di log Send Logs (post-fs-data menyalinnya) supaya log bisa dicocokkan dengan ZIP
+REPO_COMMIT=$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo tidak-diketahui)
+[ -z "$(git -C "$ROOT" status --porcelain 2>/dev/null)" ] || REPO_COMMIT="$REPO_COMMIT+perubahan-lokal"
+{
+	echo "hybrid_susfs $VERSION (versionCode $CODE)"
+	echo "repo: $REPO_COMMIT"
+	echo "susfs: $SUSFS_VERSION ($SUSFS_BRANCH @ $SUSFS_COMMIT)"
+	echo "sha256:"
+	(cd "$WORK/module" && find . -type f ! -name MANIFEST.txt | sort | xargs sha256sum)
+} > "$WORK/module/MANIFEST.txt"
+
 ZIP=$ROOT/out/hybrid_susfs_${VERSION}.zip
 rm -f "$ZIP"
 (cd "$WORK/module" && zip -qr9 "$ZIP" .)

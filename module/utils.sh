@@ -3,7 +3,7 @@ PATH=/data/adb/ksu/bin:$PATH
 kernel_version='default'
 kernel_build='default'
 # config.sh TIDAK di-source: dibaca sebagai data. Hanya key yang ada di config default modul yang diterima,
-# dan nilainya hanya boleh huruf, angka, spasi dan . : _ + # ( ) - (cukup untuk semua pengaturan termasuk uname).
+# dan nilainya harus cocok skema per key (rule() di bawah: 0/1, mode terbatas, tanggal, hex, teks uname).
 # Key internal (SUSFS_BIN, PATH, ...) dan nilai berisi ' " ; $ ` \ / & tidak pernah masuk.
 HYBRID_DEFAULTS=/data/adb/modules/hybrid_susfs/config.default.sh
 
@@ -13,9 +13,22 @@ hybrid_config_canonical() {
 	awk -v q="'" '
 		function unquote(s) { if (length(s) >= 2 && (s ~ /^".*"$/ || s ~ ("^" q ".*" q "$"))) s = substr(s, 2, length(s) - 2); return s }
 		function key(s) { return match(s, /^[A-Za-z_][A-Za-z0-9_]*=/) ? substr(s, 1, RLENGTH - 1) : "" }
+		# Skema per key: nilai di luar aturan kembali ke default
+		function rule(k) {
+			if (k == "sus_su" || k == "sus_su_active") return "^(-1|0|1|2)$"
+			if (k == "hide_cusrom") return "^[0-5]$"
+			if (k == "emulate_vold_app_data" || k == "hide_sus_mnts_for_all_or_non_su_procs" || k == "spoof_uname") return "^[012]$"
+			if (k == "config_developer_options" || k == "config_usb_debugging" || k == "config_wireless_debugging") return "^(-1|0|1)$"
+			if (k == "kernel_version" || k == "kernel_build") return "^[A-Za-z0-9 .:_+#()-]+$"
+			if (k == "config_spoof_verified_boot_hash") return "^[0-9a-fA-F]*$"
+			if (k == "CURRENT_YEAR") return "^([0-9][0-9][0-9][0-9])?$"
+			if (k == "CURRENT_MONTH") return "^(0[1-9]|1[0-2])?$"
+			if (k == "CURRENT_DAY") return "^(0[1-9]|[12][0-9]|3[01])?$"
+			return "^[01]$"
+		}
 		FNR == NR { k = key($0); if (k != "") { order[++n] = k; v[k] = unquote(substr($0, length(k) + 2)) } next }
 		{ k = key($0); x = unquote(substr($0, length(k) + 2)) }
-		k != "" && (k in v) && x ~ /^[A-Za-z0-9 .:_+#()-]*$/ { v[k] = x; got++ }
+		k != "" && (k in v) { if (x ~ rule(k)) { v[k] = x; got++ } else print "[config] nilai " k " tidak sah, pakai default" > "/dev/stderr" }
 		END {
 			for (i = 1; i <= n; i++) { k = order[i]; print k "=" (v[k] ~ /^-?[0-9]+$/ ? v[k] : q v[k] q) }
 			if (!got) exit 3
@@ -29,7 +42,7 @@ hybrid_load_config() {
 	[ -L "$f" ] && rm -f "$f"
 	[ -f "$f" ] || return 0
 	tmp=$(mktemp "$f.XXXXXX") || return 0
-	hybrid_config_canonical "$f" > "$tmp"
+	hybrid_config_canonical "$f" > "$tmp" 2>> /data/adb/ksu/hybrid_susfs/logs/susfs1.log
 	case $? in 0|3) ;; *) rm -f "$tmp"; return 0 ;; esac # 3 = tidak ada nilai sah: tetap pakai default
 	[ -s "$tmp" ] || { rm -f "$tmp"; return 0; }
 	# File disamakan dengan bentuk kanonik supaya WebUI juga hanya melihat nilai sah

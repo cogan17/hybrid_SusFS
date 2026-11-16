@@ -240,8 +240,15 @@ brene_boot_completed() {
 	# Butuh storage: tunggu maksimal 1 jam di latar belakang (mis. HP belum dibuka kunci setelah reboot)
 	local t=0
 	until [ -e /storage/emulated/0/Android ] || [ $t -ge 3600 ]; do sleep 5; t=$((t + 5)); done
-	[ -e /storage/emulated/0/Android ] || brene_log "storage belum siap setelah 1 jam, fitur storage dilewati"
+	# Belum siap setelah 1 jam (HP belum dibuka kunci): tetap dicoba tiap 60 detik, fitur lain sudah jalan
+	[ -e /storage/emulated/0/Android ] || brene_log "storage belum siap setelah 1 jam, menunggu sampai HP dibuka kunci"
+	until [ -e /storage/emulated/0/Android ]; do sleep 60; done
 
+	# Jam sudah sinkron saat boot-completed (bukan 1970): pakai tanggal hari ini untuk spoof patch level
+	if [ "$(busybox date +%Y)" -ge 2025 ]; then
+		brene_update_config_date
+		CURRENT_YEAR=$(busybox date +%Y); CURRENT_MONTH=$(busybox date +%m); CURRENT_DAY=$(busybox date +%d)
+	fi
 	brene_spoof_props
 	[ "$config_spoof_system_properties" = 1 ] && brene_prop ro.crypto.state encrypted
 
@@ -291,6 +298,10 @@ brene_boot_completed() {
 		# Dari catatan kernel: hanya aturan yang diterima kernel, tiap path/map dihitung sekali
 		np=$(dmesg | grep 'is successfully added to LH_SUS_PATH' | sed "s/.*target_pathname: '\(.*\)', is successfully.*/\1/" | sort -u | wc -l)
 		nm=$(dmesg | grep 'is flagged as AS_FLAGS_SUS_MAP' | sed "s/.*pathname: '\(.*\)', is flagged.*/\1/" | sort -u | wc -l)
+		# dmesg adalah ring buffer: pesan lama bisa tergeser, jadi jangan lebih kecil dari hitungan log modul
+		local lp=$(grep '^\[hybrid_susfs\] sus_path' $BRENE_LOG | sort -u | wc -l) lm=$(grep '^\[hybrid_susfs\] sus_map' $BRENE_LOG | sort -u | wc -l)
+		[ $lp -gt $np ] && np=$lp
+		[ $lm -gt $nm ] && nm=$lm
 	else
 		# Log kernel SUSFS mati: tambahkan hitungan dari log modul ini ke hitungan SideX
 		np=+$(grep -c '^\[hybrid_susfs\] sus_path' $BRENE_LOG)

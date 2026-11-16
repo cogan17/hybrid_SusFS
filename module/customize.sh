@@ -43,18 +43,29 @@ else
 	done
 fi
 
+# Snapshot transaksi: keadaan ksu_susfs/susfs TEPAT sebelum pemasangan ini (berbeda dengan cadangan uninstall
+# di atas). Bila langkah mana pun gagal, keadaan ini yang dikembalikan persis, termasuk "tidak ada".
+TXN=$MODPATH/.txn
+mkdir -p $TXN || abort "[!] Gagal membuat snapshot / snapshot failed"
+for b in ksu_susfs susfs; do
+	if [ -e $DEST_BIN_DIR/$b ] || [ -L $DEST_BIN_DIR/$b ]; then
+		cp -P $DEST_BIN_DIR/$b $TXN/$b || abort "[!] Gagal membuat snapshot $b / snapshot failed"
+	fi
+done
+txn_rollback() {
+	rm -f $DEST_BIN_DIR/.ksu_susfs.new $SUSFS_BIN $DEST_BIN_DIR/susfs
+	for b in ksu_susfs susfs; do
+		if [ -e $TXN/$b ] || [ -L $TXN/$b ]; then cp -P $TXN/$b $DEST_BIN_DIR/$b; fi
+	done
+	abort "[!] Gagal memasang ksu_susfs, keadaan sebelumnya dikembalikan / install failed, previous state restored"
+}
+
 # Binary baru disiapkan di folder yang sama lalu ditukar dengan mv: rename tidak menulis menembus symlink
 # modul lain (mis. Brene: ksu_susfs -> susfs) dan binary lama tetap utuh sampai pertukaran berhasil.
 cp $NEW_BIN $DEST_BIN_DIR/.ksu_susfs.new && chmod 755 $DEST_BIN_DIR/.ksu_susfs.new && \
-	mv -f $DEST_BIN_DIR/.ksu_susfs.new $SUSFS_BIN || {
-	rm -f $DEST_BIN_DIR/.ksu_susfs.new
-	abort "[!] Gagal memasang ksu_susfs / failed to install ksu_susfs"
-}
-rm -f $DEST_BIN_DIR/susfs && ln -s $SUSFS_BIN $DEST_BIN_DIR/susfs || { # nama yang dipakai skrip Brene
-	rm -f $SUSFS_BIN $DEST_BIN_DIR/susfs
-	for b in $BAK/ksu_susfs $BAK/susfs; do [ -e $b ] || [ -L $b ] && cp -P $b $DEST_BIN_DIR/; done
-	abort "[!] Gagal memasang ksu_susfs / failed to install ksu_susfs"
-}
+	mv -f $DEST_BIN_DIR/.ksu_susfs.new $SUSFS_BIN || txn_rollback
+rm -f $DEST_BIN_DIR/susfs && ln -s $SUSFS_BIN $DEST_BIN_DIR/susfs || txn_rollback # nama yang dipakai skrip Brene
+rm -rf $TXN
 sha256sum $SUSFS_BIN | cut -d' ' -f1 > $MODPATH/.installed_bin.sha256
 chmod 755 $MODPATH/inotify.sh
 
@@ -126,9 +137,23 @@ rm $MODPATH/customize.sh
 # WebUI bisa dibuka tanpa reboot: salin dari MODPATH asli (path modules_update beda antar manager)
 sed -i "s/^description=.*/description=status: ✅ SuS ඞ/" $MODPATH/module.prop
 if [ "$MODPATH" != "$LIVE_DIR" ]; then
-	# Tukar utuh (bukan timpa) supaya file yang sudah dicabut dari paket tidak tertinggal
-	rm -rf $LIVE_DIR.new && cp -rf $MODPATH $LIVE_DIR.new && rm -rf $LIVE_DIR && mv $LIVE_DIR.new $LIVE_DIR || \
+	# Tukar utuh (bukan timpa) supaya file yang sudah dicabut dari paket tidak tertinggal. Versi lama baru
+	# dihapus setelah versi baru berhasil masuk; bila gagal, versi lama dikembalikan. Ini hanya untuk membuka
+	# WebUI sebelum reboot: pemasangan sebenarnya tetap dari modules_update oleh manager saat reboot.
+	rm -rf $LIVE_DIR.new $LIVE_DIR.old
+	if cp -rf $MODPATH $LIVE_DIR.new; then
+		[ -d $LIVE_DIR ] && mv $LIVE_DIR $LIVE_DIR.old
+		if mv $LIVE_DIR.new $LIVE_DIR; then
+			rm -rf $LIVE_DIR.old
+		else
+			[ -d $LIVE_DIR.old ] && [ ! -e $LIVE_DIR ] && mv $LIVE_DIR.old $LIVE_DIR
+			rm -rf $LIVE_DIR.new
+			ui_print "[!] WebUI baru bisa dibuka setelah reboot (versi lama tetap aktif) / WebUI available after reboot"
+		fi
+	else
+		rm -rf $LIVE_DIR.new
 		ui_print "[!] WebUI baru bisa dibuka setelah reboot / WebUI available after reboot"
+	fi
 fi
 
 ui_print " "

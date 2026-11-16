@@ -1,7 +1,8 @@
 # Pembaca sus_kstat_statically.json: array berisi objek dengan 13 field (string atau angka).
 # Paham string JSON (termasuk { } " \ di dalamnya) dan escape; tidak memecah per baris.
-# Keluaran: satu baris per objek sah, 13 nilai dipisah TAB, urutan sesuai FIELDS.
-# Objek yang tidak lengkap/tidak sah dilewati dan dilaporkan ke stderr; JSON rusak menghentikan pembacaan.
+# Keluaran: satu baris per objek, 13 nilai dipisah TAB, urutan sesuai FIELDS. Keluaran baru dicetak
+# setelah SELURUH file sah sampai akhir; ada satu saja kesalahan -> tidak ada keluaran, exit 1.
+# path harus absolut; field lain "default" atau bilangan bulat >= 0.
 BEGIN {
 	nf = split("path ino dev nlink size atime atime_nsec mtime mtime_nsec ctime ctime_nsec blocks blksize", FIELDS, " ")
 }
@@ -35,7 +36,7 @@ function jstr(   c, out, code) { # i di tanda kutip pembuka
 function obj(   k, v, c, j, line) {
 	i++; split("", val); badval = 0
 	ws()
-	if (substr(s, i, 1) == "}") { i++; err("objek kosong dilewati"); return }
+	if (substr(s, i, 1) == "}") { fatal = "objek kosong"; return }
 	while (i <= n) {
 		ws(); if (substr(s, i, 1) != "\"") { fatal = "key harus string"; return }
 		k = jstr(); if (fatal != "") return
@@ -52,23 +53,31 @@ function obj(   k, v, c, j, line) {
 	line = ""
 	for (j = 1; j <= nf; j++) {
 		k = FIELDS[j]
-		if (!(k in val) || val[k] == "") { err("field " k " hilang/kosong, objek dilewati"); return }
-		if (index(val[k], "\t") || index(val[k], "\n") || badval) { err("nilai " k " tidak didukung, objek dilewati"); return }
+		if (!(k in val) || val[k] == "") { fatal = "field " k " hilang/kosong"; return }
+		if (index(val[k], "\t") || index(val[k], "\n") || badval) { fatal = "nilai " k " berisi karakter yang tidak didukung"; return }
+		if (k == "path" && substr(val[k], 1, 1) != "/") { fatal = "path harus absolut: " val[k]; return }
+		if (k != "path" && val[k] != "default" && val[k] !~ /^[0-9]+$/) { fatal = "nilai " k " harus default atau angka: " val[k]; return }
 		line = line (j > 1 ? "\t" : "") val[k]
 	}
-	print line
+	out[++nout] = line
 }
 END {
-	n = length(s); i = 1; fatal = ""
-	ws(); if (substr(s, i, 1) != "[") { if (i <= n) err("JSON harus berupa array"); exit }
-	i++; ws()
-	if (substr(s, i, 1) == "]") exit
-	while (i <= n) {
-		ws(); if (substr(s, i, 1) != "{") { fatal = "elemen array harus objek"; break }
-		obj(); if (fatal != "") break
-		ws(); c = substr(s, i, 1); i++
-		if (c == "]") break
-		if (c != ",") { fatal = "tanda , atau ] hilang"; break }
+	n = length(s); i = 1; fatal = ""; nout = 0
+	ws()
+	if (i > n) exit 0 # file kosong: tidak ada aturan
+	if (substr(s, i, 1) != "[") { fatal = "JSON harus berupa array" }
+	else {
+		i++; ws()
+		if (substr(s, i, 1) == "]") i++
+		else while (1) {
+			ws(); if (substr(s, i, 1) != "{") { fatal = "elemen array harus objek"; break }
+			obj(); if (fatal != "") break
+			ws(); c = substr(s, i, 1); i++
+			if (c == "]") break
+			if (c != ",") { fatal = "tanda , atau ] hilang"; break }
+		}
+		if (fatal == "") { ws(); if (i <= n) fatal = "ada isi setelah akhir array" }
 	}
-	if (fatal != "") err("JSON rusak (" fatal "), pembacaan dihentikan")
+	if (fatal != "") { err("JSON tidak sah (" fatal "), tidak ada aturan yang diterapkan"); exit 1 }
+	for (j = 1; j <= nout; j++) print out[j]
 }

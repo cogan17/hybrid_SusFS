@@ -42,6 +42,8 @@ hide_sus_mnts_for_all_or_non_su_procs=0
 hybrid_load_config
 
 echo "hybrid_susfs/post-fs-data: [logging_initialized]" > $logfile1
+# Identitas build ikut di Send Logs
+cp -f ${MODDIR}/MANIFEST.txt $tmpfolder/MANIFEST.txt 2>/dev/null
 
 [ "$SUSFS_DECIMAL_MAIN" -ge 2 ] && [ -f /data/adb/ksu/hybrid_susfs/using_old_sus_path_layout ] && {
 	echo "hybrid_susfs/post-fs-data: Detected old sus path layout, removing the cache file for rechecking old and new sus_path layout" >> $logfile1

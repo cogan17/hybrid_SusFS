@@ -93,12 +93,15 @@ fi
 
 # Add sus_kstat_statically entries from JSON (late v1.5.8+)
 if [ -f "$PERSISTENT_DIR/sus_kstat_statically.json" ]; then
-	# kstat_json.awk membaca JSON sungguhan (string, escape, angka); objek tidak sah dicatat ke log
-	awk -f ${MODDIR}/kstat_json.awk "$PERSISTENT_DIR/sus_kstat_statically.json" 2>> "$logfile1" | \
-	while IFS='	' read -r path ino dev nlink size atime atime_nsec mtime mtime_nsec ctime ctime_nsec blocks blksize; do
-		${SUSFS_BIN} add_sus_kstat_statically "$path" "$ino" "$dev" "$nlink" "$size" "$atime" "$atime_nsec" "$mtime" "$mtime_nsec" "$ctime" "$ctime_nsec" "$blocks" "$blksize" && \
-			echo "[add_sus_kstat_statically]: hybrid_susfs/boot-completed $path" >> "$logfile1"
-	done
+	# kstat_json.awk membaca JSON sungguhan; hasil ditahan dulu dan hanya diterapkan bila SELURUH file sah
+	kstat_rules=$(mktemp $tmpfolder/kstat.XXXXXX) && \
+	if awk -f ${MODDIR}/kstat_json.awk "$PERSISTENT_DIR/sus_kstat_statically.json" > "$kstat_rules" 2>> "$logfile1"; then
+		while IFS='	' read -r path ino dev nlink size atime atime_nsec mtime mtime_nsec ctime ctime_nsec blocks blksize; do
+			${SUSFS_BIN} add_sus_kstat_statically "$path" "$ino" "$dev" "$nlink" "$size" "$atime" "$atime_nsec" "$mtime" "$mtime_nsec" "$ctime" "$ctime_nsec" "$blocks" "$blksize" && \
+				echo "[add_sus_kstat_statically]: hybrid_susfs/boot-completed $path" >> "$logfile1"
+		done < "$kstat_rules"
+	fi
+	rm -f "$kstat_rules"
 fi
 
 # Auto try_umount (v1.5.5+)
