@@ -11,7 +11,6 @@ hide_loops=0
 force_hide_lsposed=0
 spoof_uname=0
 hide_sus_mnts_for_all_or_non_su_procs=1
-umount_for_zygote_iso_service=0
 auto_try_umount=0
 skip_legit_mounts=0
 avc_log_spoofing=0

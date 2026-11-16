@@ -37,7 +37,6 @@ fi
 
 force_hide_lsposed=0
 spoof_uname=0
-umount_for_zygote_iso_service=0
 avc_log_spoofing=0
 hide_sus_mnts_for_all_or_non_su_procs=0
 [ -f $PERSISTENT_DIR/config.sh ] && . $PERSISTENT_DIR/config.sh
@@ -101,12 +100,6 @@ if [ $force_hide_lsposed = 1 ] && echo "$susfs_features" | grep -q "CONFIG_KSU_S
 	${SUSFS_BIN} add_try_umount /apex/com.android.art/bin/dex2oat64 1
 fi
 
-# - set to 1 to enable umount for all zygote spawned services, but be reminded that
-#   it may break some modules that overlay framework files / overlay apks. Boot into
-#   KSU rescue mode if you encounter bootloop here.
-[ $umount_for_zygote_iso_service = 1 ] && {
-	ksu_susfs umount_for_zygote_iso_service 1 && echo "hybrid_susfs/post-fs-data: [umount_for_zygote_iso_service]" >> $logfile1
-}
 
 
 # Fitur Brene (brene.sh)
