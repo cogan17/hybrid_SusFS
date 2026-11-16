@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5
+
+- 🇮🇩 ZIP kini ditandatangani secara digital oleh GitHub Actions; keasliannya bisa dicek dengan `gh attestation verify` (lihat [Keaslian & Kredit](docs/keaslian-dan-kredit.md)). Isi modul sama dengan v0.4, hanya nomor versi yang naik. v0.4 ditarik supaya semua pengguna memakai build bertanda tangan.
+- 🇬🇧 The ZIP is now digitally signed by GitHub Actions; check it with `gh attestation verify` (see [Authenticity & Credits](docs/keaslian-dan-kredit.en.md)). The module contents are the same as v0.4, only the version number changed. v0.4 was withdrawn so everyone uses a signed build.
+
 ## v0.4
 
 - 🇮🇩 Filter UID (pendamping HMA-OSS) kini satu pintu: satu mode, satu perintah, daftar divalidasi sebelum dikirim, HMA-OSS ikut disertakan, status tersimpan di Send Logs. Label menjelaskan cakupannya: hanya syscall prioritas; visibilitas aplikasi tetap diatur di HMA-OSS.

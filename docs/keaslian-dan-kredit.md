@@ -2,7 +2,7 @@
 
 [← Kembali ke README](../README.md) · <img src="https://flagcdn.com/24x18/gb.png" width="22" alt=""> [English](keaslian-dan-kredit.en.md)
 
-hybrid_susfs dibangun otomatis oleh GitHub Actions di **[cogan17/hybrid_SusFS](https://github.com/cogan17/hybrid_SusFS)**, repo saudara [Cogan Kernel](https://github.com/cogan17/Cogan-Kernel). Mulai build sesudah v0.4, ZIP modul **ditandatangani secara digital** (artifact attestation) oleh workflow Builder repo ini, jadi siapa pun bisa membuktikan asal-usulnya.
+hybrid_susfs dibangun otomatis oleh GitHub Actions di **[cogan17/hybrid_SusFS](https://github.com/cogan17/hybrid_SusFS)**, repo saudara [Cogan Kernel](https://github.com/cogan17/Cogan-Kernel). Mulai v0.5, ZIP modul **ditandatangani secara digital** (artifact attestation) oleh workflow Builder repo ini, jadi siapa pun bisa membuktikan asal-usulnya.
 
 > Yang dibuktikan adalah **ZIP hybrid_susfs ini** dibuat oleh Cogan17. Mesin SUSFS, WebUI dan fitur-fitur di dalamnya adalah karya para kontributor di [Kredit](#-kredit).
 
@@ -16,7 +16,7 @@ hybrid_susfs dibangun otomatis oleh GitHub Actions di **[cogan17/hybrid_SusFS](h
    gh attestation verify hybrid_susfs_vX.Y.zip --repo cogan17/hybrid_SusFS
    ```
    Hanya ZIP asli yang lolos.
-3. **SHA256 di catatan rilis:** setiap rilis menulis SHA256 ZIP-nya dan tautan run build. Cocokkan dengan `sha256sum hybrid_susfs_vX.Y.zip`. Ini satu-satunya cara cek untuk **v0.4**, yang terbit sebelum tanda tangan dipasang.
+3. **SHA256 di catatan rilis:** setiap rilis menulis SHA256 ZIP-nya dan tautan run build. Cocokkan dengan `sha256sum hybrid_susfs_vX.Y.zip`.
 4. **Halaman run di [Actions](https://github.com/cogan17/hybrid_SusFS/actions):** tiap build menampilkan versi SUSFS simonpunk yang dipakai dan SHA256 ZIP-nya.
 5. **Di HP:** tombol action modul menampilkan baris **Build** (commit repo saat dibangun). Isi lengkapnya ada di `/data/adb/modules/hybrid_susfs/MANIFEST.txt`: versi, commit repo, commit SUSFS, dan SHA256 setiap file di modul. File ini juga ikut di **Send Logs**.
 
