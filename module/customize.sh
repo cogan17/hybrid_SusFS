@@ -31,7 +31,9 @@ LIVE_DIR=/data/adb/modules/hybrid_susfs
 BAK=$MODPATH/.bin_backup
 mkdir -p $BAK || abort "[!] Gagal membuat cadangan / backup failed"
 if [ -f $LIVE_DIR/.installed_bin.sha256 ] && [ "$(sha256sum $SUSFS_BIN 2>/dev/null | cut -d' ' -f1)" = "$(cat $LIVE_DIR/.installed_bin.sha256)" ]; then
-	if [ -d $LIVE_DIR/.bin_backup ]; then cp -P $LIVE_DIR/.bin_backup/. $BAK/ || abort "[!] Gagal membawa cadangan / backup failed"; fi
+	for b in $LIVE_DIR/.bin_backup/ksu_susfs $LIVE_DIR/.bin_backup/susfs; do
+		if [ -e $b ] || [ -L $b ]; then cp -P $b $BAK/ || abort "[!] Gagal membawa cadangan / backup failed"; fi
+	done
 	if [ -f $LIVE_DIR/.disabled_by_hybrid ]; then cp -f $LIVE_DIR/.disabled_by_hybrid $MODPATH/ || abort "[!] Gagal membawa cadangan / backup failed"; fi
 else
 	for b in ksu_susfs susfs; do

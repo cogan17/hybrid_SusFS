@@ -26,7 +26,7 @@ Disalin dari `CLAUDE.md` di [cogan17/Cogan-Kernel](https://github.com/cogan17/Co
 - **PR dan issue diurus asisten**: membuat PR ke `Utama`, membuat issue untuk hal yang perlu dicek atau diuji, memperbarui, dan menutupnya bila selesai.
 - **Sebelum rilis, wajib bersih dari celah, bug, glitch, bootloop, bug visual, dan masalah lain.** Paling sedikit:
   - shellcheck tanpa error
-  - simulasi install, boot, toggle, reset, dan uninstall di busybox `ash`
+  - simulasi install, **update di atas versi yang terpasang**, boot, toggle, reset, dan uninstall di busybox `ash` (16 Nov 2026: build uji 5 gagal dipasang di atas build 4 karena skenario update tidak diulang)
   - gate mesin lolos
   - cek visual semua halaman WebUI di layar sempit dan beberapa bahasa
   - uji HP sesuai checklist di issue
