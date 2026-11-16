@@ -1,6 +1,6 @@
 name: Rilis hybrid_susfs
 
-# Tombol manual: build dari main, lalu terbitkan rilis vX.Y dengan ZIP.
+# Tombol manual: build dari Utama, lalu terbitkan rilis vX.Y dengan ZIP.
 # Versi diambil dari module/module.prop; update.json dan CHANGELOG.md harus sudah diperbarui di commit yang sama.
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   release:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/Utama'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
