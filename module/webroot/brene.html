@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+
+
+
+  <script type="module" crossorigin src="/assets/fade-4ApaDT9x.js"></script>
+  <script type="module" crossorigin src="/assets/i18n-CuIujUHf.js"></script>
+  <script type="module" crossorigin src="/assets/index-BS9hEn4H.js"></script>
+  <script type="module" src="/hybrid.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-WyG3q1ly.css">
+</head>
+
+<style>
+	div,p{
+		z-index: 40;	
+	}
+</style>
+
+<body class="bg-black font-amongus2" data-router-wrapper>
+	<main class="max-h-screen relative overflow-auto" data-router-view="brene">
+		<div class="pt-3 pb-14">
+			<div class="flex justify-between items-center mx-auto ml-4 pt-4 mr-4">
+				<div class="flex flex-col">
+					<div class="font-bold text-4xl text-white font-amongus2 uppercase" data-i18n="brene_settings_label">brene settings</div>
+					<div class="text-white text-sm font-amongus2" data-i18n="brene_reboot_label">Changes apply after reboot</div>
+				</div>
+                <div>
+                    <a href="index.html" class="text-white"><button class="btn btn-md btn-outline h-auto text-sm border-white mt-2 text-white" data-i18n="main_menu_label">main menu</button></a>
+				</div>
+			</div>
+			<section class="flex flex-col justify-start items-center min-h-fit ml-4 mr-4 uppercase font-bold">
+				<div class="stats flex flex-col divide-x-0 divide-y-0 white:bg-cyan-100/20 bg-cyan-100/20 dark:bg-black/20 mt-5 border-2 p-4 border-white backdrop-blur-[2.5px] min-w-full sm:min-w-[400px]">
+					<div class="text-white text-xl font-bold mb-3" data-i18n="brene_ksu_label">KernelSU</div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_su_compat_label">SU Compat</span>
+                        <input type="checkbox" data-brene="config_su_compat" data-on="1" data-off="0" class="toggle toggle-md toggle-primary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_kernel_umount_label">Kernel Umount</span>
+                        <input type="checkbox" data-brene="config_kernel_umount" data-on="1" data-off="0" class="toggle toggle-md toggle-secondary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_selinux_hide_label">Hide SELinux Modification</span>
+                        <input type="checkbox" data-brene="config_selinux_hide" data-on="1" data-off="0" class="toggle toggle-md toggle-accent" />
+                        </label>
+                    </div>
+				</div>
+				<div class="stats flex flex-col divide-x-0 divide-y-0 white:bg-cyan-100/20 bg-cyan-100/20 dark:bg-black/20 mt-5 border-2 p-4 border-white backdrop-blur-[2.5px] min-w-full sm:min-w-[400px]">
+					<div class="text-white text-xl font-bold mb-3" data-i18n="brene_paths_label">Hide Paths</div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_paths_hiding__data_local_tmp_label">Hide /data/local/tmp items</span>
+                        <input type="checkbox" data-brene="config_paths_hiding__data_local_tmp" data-on="1" data-off="0" class="toggle toggle-md toggle-success" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_fix_data_local_tmp_inconsistencies_label">Fix /data/local/tmp inconsistencies</span>
+                        <input type="checkbox" data-brene="config_fix_data_local_tmp_inconsistencies" data-on="1" data-off="0" class="toggle toggle-md toggle-warning" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_paths_hiding__non_standard_sdcard_android_label">Hide non-standard Android/ folders</span>
+                        <input type="checkbox" data-brene="config_paths_hiding__non_standard_sdcard_android" data-on="1" data-off="0" class="toggle toggle-md toggle-primary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_paths_hiding__non_standard_sdcard_label">Hide non-standard sdcard folders</span>
+                        <input type="checkbox" data-brene="config_paths_hiding__non_standard_sdcard" data-on="1" data-off="0" class="toggle toggle-md toggle-secondary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_custom_recovery_label">Hide custom recovery folders</span>
+                        <input type="checkbox" data-brene="config_hide_custom_recovery" data-on="1" data-off="0" class="toggle toggle-md toggle-accent" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_ksu_directories_label">Delete root manager app folders</span>
+                        <input type="checkbox" data-brene="config_hide_ksu_directories" data-on="1" data-off="0" class="toggle toggle-md toggle-success" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_addon_d_label">Hide /system/addon.d</span>
+                        <input type="checkbox" data-brene="config_hide_addon_d" data-on="1" data-off="0" class="toggle toggle-md toggle-warning" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_suspicious_pty_label">Hide suspicious PTYs</span>
+                        <input type="checkbox" data-brene="config_hide_suspicious_pty" data-on="1" data-off="0" class="toggle toggle-md toggle-primary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_framework_res_apk_label">Hide framework-res.apk maps</span>
+                        <input type="checkbox" data-brene="config_hide_framework_res_apk" data-on="1" data-off="0" class="toggle toggle-md toggle-secondary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_vector_injection_label">Hide Vector (Xposed) injection</span>
+                        <input type="checkbox" data-brene="config_hide_vector_injection" data-on="1" data-off="0" class="toggle toggle-md toggle-accent" />
+                        </label>
+                    </div>
+				</div>
+				<div class="stats flex flex-col divide-x-0 divide-y-0 white:bg-cyan-100/20 bg-cyan-100/20 dark:bg-black/20 mt-5 border-2 p-4 border-white backdrop-blur-[2.5px] min-w-full sm:min-w-[400px]">
+					<div class="text-white text-xl font-bold mb-3" data-i18n="brene_apps_label">Hide Apps</div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_third_party_apps_label">Hide third party apps (HMA-OSS)</span>
+                        <input type="checkbox" data-brene="config_hide_third_party_apps" data-on="1" data-off="0" class="toggle toggle-md toggle-success" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_all_apps_with_uid_10000_and_above_label">Hide all apps (uid 10000+)</span>
+                        <input type="checkbox" data-brene="config_hide_all_apps_with_uid_10000_and_above" data-on="1" data-off="0" class="toggle toggle-md toggle-warning" />
+                        </label>
+                    </div>
+				</div>
+				<div class="stats flex flex-col divide-x-0 divide-y-0 white:bg-cyan-100/20 bg-cyan-100/20 dark:bg-black/20 mt-5 border-2 p-4 border-white backdrop-blur-[2.5px] min-w-full sm:min-w-[400px]">
+					<div class="text-white text-xl font-bold mb-3" data-i18n="brene_spoof_label">Spoofing</div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_spoof_system_properties_label">Spoof system properties</span>
+                        <input type="checkbox" data-brene="config_spoof_system_properties" data-on="1" data-off="0" class="toggle toggle-md toggle-primary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_spoof_os_security_patch_level_property_label">Spoof OS security patch</span>
+                        <input type="checkbox" data-brene="config_spoof_os_security_patch_level_property" data-on="1" data-off="0" class="toggle toggle-md toggle-secondary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_spoof_vendor_security_patch_level_property_label">Spoof vendor security patch</span>
+                        <input type="checkbox" data-brene="config_spoof_vendor_security_patch_level_property" data-on="1" data-off="0" class="toggle toggle-md toggle-accent" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_oem_unlocking_toggle_label">Hide OEM unlocking toggle</span>
+                        <input type="checkbox" data-brene="config_hide_oem_unlocking_toggle" data-on="1" data-off="0" class="toggle toggle-md toggle-success" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_rom_props_label">Remove custom ROM props</span>
+                        <input type="checkbox" data-brene="config_rom_props" data-on="1" data-off="0" class="toggle toggle-md toggle-warning" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_pif_props_label">Remove Play Integrity Fix props</span>
+                        <input type="checkbox" data-brene="config_pif_props" data-on="1" data-off="0" class="toggle toggle-md toggle-primary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_hide_lineage_strings_label">Hide LineageOS strings</span>
+                        <input type="checkbox" data-brene="config_hide_lineage_strings" data-on="1" data-off="0" class="toggle toggle-md toggle-secondary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_spoof_hosts_label">Spoof /system/etc/hosts</span>
+                        <input type="checkbox" data-brene="config_spoof_hosts" data-on="1" data-off="0" class="toggle toggle-md toggle-accent" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_spoof_libstagefright_label">Spoof libstagefright.so</span>
+                        <input type="checkbox" data-brene="config_spoof_libstagefright" data-on="1" data-off="0" class="toggle toggle-md toggle-success" />
+                        </label>
+                    </div>
+				</div>
+				<div class="stats flex flex-col divide-x-0 divide-y-0 white:bg-cyan-100/20 bg-cyan-100/20 dark:bg-black/20 mt-5 border-2 p-4 border-white backdrop-blur-[2.5px] min-w-full sm:min-w-[400px]">
+					<div class="text-white text-xl font-bold mb-3" data-i18n="brene_android_label">Android</div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_developer_options_label">Turn off Developer options at boot</span>
+                        <input type="checkbox" data-brene="config_developer_options" data-on="0" data-off="-1" class="toggle toggle-md toggle-warning" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_usb_debugging_label">Turn off USB debugging at boot</span>
+                        <input type="checkbox" data-brene="config_usb_debugging" data-on="0" data-off="-1" class="toggle toggle-md toggle-primary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_wireless_debugging_label">Turn off Wireless debugging at boot</span>
+                        <input type="checkbox" data-brene="config_wireless_debugging" data-on="0" data-off="-1" class="toggle toggle-md toggle-secondary" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_disable_child_process_restrictions_label">Disable child process restrictions</span>
+                        <input type="checkbox" data-brene="config_disable_child_process_restrictions" data-on="1" data-off="0" class="toggle toggle-md toggle-accent" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_shrink_buffer_size_label">Logcat buffer 64K</span>
+                        <input type="checkbox" data-brene="config_shrink_buffer_size" data-on="1" data-off="0" class="toggle toggle-md toggle-success" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_saturation_label">Max saturation</span>
+                        <input type="checkbox" data-brene="config_saturation" data-on="1" data-off="0" class="toggle toggle-md toggle-warning" />
+                        </label>
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                        <span class="text-white text-base" data-i18n="brene_show_refresh_rate_label">Show refresh rate</span>
+                        <input type="checkbox" data-brene="config_show_refresh_rate" data-on="1" data-off="0" class="toggle toggle-md toggle-primary" />
+                        </label>
+                    </div>
+				</div>
+			</section>
+		</div>
+	</main>
+</body>
+</html>
