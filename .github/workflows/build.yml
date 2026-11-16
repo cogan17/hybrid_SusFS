@@ -33,6 +33,11 @@ jobs:
   build:
     name: Build (${{ inputs.release_type }})
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     outputs:
       version: ${{ steps.info.outputs.version }}
     steps:
@@ -69,6 +74,12 @@ jobs:
           path: out/hybrid_susfs_*.zip
           archive: false
           retention-days: 90
+
+      # Tanda tangan digital: siapa pun bisa membuktikan ZIP ini dibangun repo ini (docs/keaslian-dan-kredit.md).
+      - name: Tanda tangan / sign the ZIP
+        uses: actions/attest@v4.2.2
+        with:
+          subject-path: out/hybrid_susfs_*.zip
 
       - name: Upload build info
         uses: actions/upload-artifact@v7.0.1

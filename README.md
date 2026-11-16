@@ -94,6 +94,7 @@ Di tab Actions: **hybrid_susfs Builder** untuk build, **Rilis dari run** untuk m
 <p align="center">
   <b>Cogan17</b> &nbsp;·&nbsp; terima kasih untuk <b>simonpunk</b>, <b>sidex15</b> dan <b>rrr333nnn333</b>
   <br>AGPL-3.0 &nbsp;·&nbsp; <code>ksu_susfs</code> GPL-3.0 (simonpunk)
+  <br><a href="docs/keaslian-dan-kredit.md">🔏 Keaslian & kredit lengkap</a>
 </p>
 
 <sub>Repo saudara: [Cogan-Kernel](https://github.com/cogan17/Cogan-Kernel) · [CoganSU](https://github.com/cogan17/CoganSU) · [TWRP-14T-PRO](https://github.com/cogan17/TWRP-14T-PRO)</sub>
