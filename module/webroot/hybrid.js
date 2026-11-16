@@ -40,3 +40,9 @@ function scan() {
 }
 new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });
 scan();
+
+// Perintah baca WebUI yang gagal (dicatat di assets/index-*.js) ditampilkan sekali, sebagai bukti untuk laporan bug
+setTimeout(() => {
+	const failed = [...new Set(window.hybridFailed || [])];
+	if (failed.length) toast(`hybrid_susfs: ${failed.length} perintah gagal: ${failed.slice(0, 3).join(" | ")}`);
+}, 5000);

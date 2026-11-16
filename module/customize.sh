@@ -3,7 +3,6 @@ PATH=/data/adb/ksu/bin:$PATH
 KSU_BIN=/data/adb/ksu/bin/ksud
 DEST_BIN_DIR=/data/adb/ksu/bin
 SUSFS_BIN=$DEST_BIN_DIR/ksu_susfs
-MODULE_UPDATE_DIR=/data/adb/modules_update/hybrid_susfs
 PERSISTENT_DIR=/data/adb/hybrid_susfs
 tmpfolder=/data/adb/ksu/hybrid_susfs
 
@@ -90,14 +89,17 @@ for f in susfs_stats.txt susfs_stats1.txt; do
 done
 touch $tmpfolder/logs/susfs_active
 
-# WebUI bisa dibuka tanpa reboot
+rm -rf $MODPATH/tools
+rm $MODPATH/customize.sh
+
+# WebUI bisa dibuka tanpa reboot: salin dari MODPATH asli (path modules_update beda antar manager)
 sed -i "s/^description=.*/description=status: ✅ SuS ඞ/" $MODPATH/module.prop
-cp -r $MODULE_UPDATE_DIR /data/adb/modules 2>/dev/null
+LIVE_DIR=/data/adb/modules/hybrid_susfs
+if [ "$MODPATH" != "$LIVE_DIR" ]; then
+	mkdir -p $LIVE_DIR && cp -rf $MODPATH/. $LIVE_DIR/ || ui_print "[!] WebUI baru bisa dibuka setelah reboot / WebUI available after reboot"
+fi
 
 ui_print " "
 ui_print "  Selesai. Reboot untuk mengaktifkan."
 ui_print "  Done. Reboot to activate."
 ui_print " "
-
-rm -rf $MODPATH/tools
-rm $MODPATH/customize.sh
