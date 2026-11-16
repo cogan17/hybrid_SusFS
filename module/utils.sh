@@ -2,7 +2,19 @@
 PATH=/data/adb/ksu/bin:$PATH
 kernel_version='default'
 kernel_build='default'
-[ -f $PERSISTENT_DIR/config.sh ] && . $PERSISTENT_DIR/config.sh
+# config.sh di-source sebagai root, jadi hanya baris KEY=nilai-data yang boleh: angka, 'teks', "teks" atau kata,
+# tanpa $ ` \ (cegah perintah dari impor backup atau isian WebUI ikut dijalankan)
+HYBRID_CFG_RE='^[A-Za-z_][A-Za-z0-9_]*=(-?[0-9]+|'"'"'[^'"'"'$`\\]*'"'"'|"[^"$`\\]*"|[A-Za-z0-9_.:+-]*)$'
+hybrid_load_config() {
+	local f=$PERSISTENT_DIR/config.sh
+	[ -L "$f" ] && rm -f "$f"
+	[ -f "$f" ] || return 0
+	if grep -qvE -e "$HYBRID_CFG_RE" -e '^#' -e '^$' "$f"; then
+		grep -E "$HYBRID_CFG_RE" "$f" > "$f.tmp" && mv -f "$f.tmp" "$f"
+		echo "[config] baris tidak sah dibuang dari config.sh" >> /data/adb/ksu/hybrid_susfs/logs/susfs1.log 2>/dev/null
+	fi
+	. "$f"
+}
 ## susfs_clone_perm <file/or/dir/perm/to/be/changed> <file/or/dir/to/clone/from>
 susfs_clone_perm() {
 	TO=$1

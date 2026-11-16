@@ -94,7 +94,7 @@ printf "$legit_mounts" > "$config/legit_mounts.txt"
 echo "[]" > "$config/sus_kstat_statically.json"
 
 # Reset auto hide settings
-[ -f /data/adb/susfs_no_auto_add_sus_ksu_default_mount ] || rm -f /data/adb/susfs_no_auto_add_sus_ksu_default_mount
-[ -f /data/adb/susfs_no_auto_add_sus_bind_mount ] || rm -f /data/adb/susfs_no_auto_add_sus_bind_mount
-[ -f /data/adb/susfs_no_auto_add_try_umount_for_bind_mount ] || rm -f /data/adb/susfs_no_auto_add_try_umount_for_bind_mount
-[ -f /data/adb/susfs_umount_for_zygote_system_process ] || rm -f /data/adb/susfs_umount_for_zygote_system_process
+rm -f /data/adb/susfs_no_auto_add_sus_ksu_default_mount
+rm -f /data/adb/susfs_no_auto_add_sus_bind_mount
+rm -f /data/adb/susfs_no_auto_add_try_umount_for_bind_mount
+rm -f /data/adb/susfs_umount_for_zygote_system_process

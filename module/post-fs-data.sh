@@ -39,7 +39,7 @@ force_hide_lsposed=0
 spoof_uname=0
 avc_log_spoofing=0
 hide_sus_mnts_for_all_or_non_su_procs=0
-[ -f $PERSISTENT_DIR/config.sh ] && . $PERSISTENT_DIR/config.sh
+hybrid_load_config
 
 echo "hybrid_susfs/post-fs-data: [logging_initialized]" > $logfile1
 

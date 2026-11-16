@@ -141,7 +141,7 @@
   <string id="brene_paths_hiding__non_standard_sdcard_android_label">Hide non-standard Android/ folders</string>
   <string id="brene_paths_hiding__non_standard_sdcard_label">Hide non-standard sdcard folders</string>
   <string id="brene_hide_custom_recovery_label">Hide custom recovery folders</string>
-  <string id="brene_hide_ksu_directories_label">Delete root manager app folders</string>
+  <string id="brene_hide_ksu_directories_label">Hide root manager app folders</string>
   <string id="brene_hide_addon_d_label">Hide /system/addon.d</string>
   <string id="brene_hide_suspicious_pty_label">Hide suspicious PTYs</string>
   <string id="brene_hide_framework_res_apk_label">Hide framework-res.apk maps</string>
@@ -155,10 +155,9 @@
   <string id="brene_spoof_vendor_security_patch_level_property_label">Spoof vendor security patch</string>
   <string id="brene_hide_oem_unlocking_toggle_label">Hide OEM unlocking toggle</string>
   <string id="brene_rom_props_label">Remove custom ROM props</string>
-  <string id="brene_pif_props_label">Remove Play Integrity Fix props</string>
+  <string id="brene_pif_props_label">Remove Play Integrity Fix props (permanent)</string>
   <string id="brene_hide_lineage_strings_label">Hide LineageOS strings</string>
   <string id="brene_spoof_hosts_label">Spoof /system/etc/hosts</string>
-  <string id="brene_spoof_libstagefright_label">Spoof libstagefright.so</string>
   <string id="brene_android_label">Android</string>
   <string id="brene_developer_options_label">Turn off Developer options at boot</string>
   <string id="brene_usb_debugging_label">Turn off USB debugging at boot</string>

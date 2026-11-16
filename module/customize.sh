@@ -24,15 +24,34 @@ case "$SUSFS_VERSION_RAW" in
 	*) abort "[!] Kernel tanpa SUSFS v2 / kernel without SUSFS v2 ($SUSFS_VERSION_RAW)" ;;
 esac
 
-cp -f $NEW_BIN $SUSFS_BIN
-chmod 755 $SUSFS_BIN
-ln -sf $SUSFS_BIN $DEST_BIN_DIR/susfs # nama yang dipakai skrip Brene
-chmod 755 $MODPATH/inotify.sh $MODPATH/remove_ksu_directory.sh
+# Cadangkan ksu_susfs/susfs milik modul lain apa adanya (symlink tetap symlink) untuk dipulihkan saat uninstall.
+# Saat update modul ini, binary yang ada adalah milik kita: cadangan dari instalasi pertama yang dibawa.
+LIVE_DIR=/data/adb/modules/hybrid_susfs
+mkdir -p $MODPATH/.bin_backup
+if [ -f $LIVE_DIR/.installed_bin.sha256 ] && [ "$(sha256sum $SUSFS_BIN 2>/dev/null | cut -d' ' -f1)" = "$(cat $LIVE_DIR/.installed_bin.sha256)" ]; then
+	cp -P $LIVE_DIR/.bin_backup/* $MODPATH/.bin_backup/ 2>/dev/null
+	cp -f $LIVE_DIR/.disabled_by_hybrid $MODPATH/.disabled_by_hybrid 2>/dev/null
+else
+	for b in ksu_susfs susfs; do
+		[ -e $DEST_BIN_DIR/$b ] || [ -L $DEST_BIN_DIR/$b ] && cp -P $DEST_BIN_DIR/$b $MODPATH/.bin_backup/$b
+	done
+fi
 
-# Modul SUSFS lain bentrok (binary dan aturan ganda): matikan
+# Pasang bersih: hapus dulu supaya tidak menulis menembus symlink modul lain (mis. Brene: ksu_susfs -> susfs)
+rm -f $SUSFS_BIN $DEST_BIN_DIR/susfs
+cp $NEW_BIN $SUSFS_BIN && chmod 755 $SUSFS_BIN || {
+	cp -P $MODPATH/.bin_backup/* $DEST_BIN_DIR/ 2>/dev/null
+	abort "[!] Gagal memasang ksu_susfs / failed to install ksu_susfs"
+}
+ln -s $SUSFS_BIN $DEST_BIN_DIR/susfs # nama yang dipakai skrip Brene
+sha256sum $SUSFS_BIN | cut -d' ' -f1 > $MODPATH/.installed_bin.sha256
+chmod 755 $MODPATH/inotify.sh
+
+# Modul SUSFS lain bentrok (binary dan aturan ganda): matikan, dan catat untuk diaktifkan lagi saat uninstall
 for m in susfs4ksu brene susfs_manager; do
 	[ -d /data/adb/modules/$m ] && [ ! -f /data/adb/modules/$m/disable ] && {
 		touch /data/adb/modules/$m/disable
+		echo $m >> $MODPATH/.disabled_by_hybrid
 		ui_print "[-] Modul $m dimatikan / disabled"
 	}
 done
@@ -94,7 +113,6 @@ rm $MODPATH/customize.sh
 
 # WebUI bisa dibuka tanpa reboot: salin dari MODPATH asli (path modules_update beda antar manager)
 sed -i "s/^description=.*/description=status: ✅ SuS ඞ/" $MODPATH/module.prop
-LIVE_DIR=/data/adb/modules/hybrid_susfs
 if [ "$MODPATH" != "$LIVE_DIR" ]; then
 	mkdir -p $LIVE_DIR && cp -rf $MODPATH/. $LIVE_DIR/ || ui_print "[!] WebUI baru bisa dibuka setelah reboot / WebUI available after reboot"
 fi

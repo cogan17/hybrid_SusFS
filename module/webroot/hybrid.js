@@ -10,6 +10,9 @@ function exec(cmd) {
 	});
 }
 
+// Penulisan config diantrekan: sed -i menulis ulang seluruh file, dua toggle bersamaan bisa saling menimpa
+let writes = Promise.resolve();
+
 function toast(msg) { try { ksu.toast(msg); } catch (e) {} }
 
 async function bind(inputs) {
@@ -22,12 +25,12 @@ async function bind(inputs) {
 	for (const el of inputs) {
 		const key = el.dataset.brene;
 		el.checked = cfg[key] === el.dataset.on;
-		el.addEventListener("change", async () => {
+		el.addEventListener("change", () => { writes = writes.then(async () => {
 			const val = el.checked ? el.dataset.on : el.dataset.off;
 			const { code } = await exec(`grep -q '^${key}=' ${CONFIG} && sed -i 's/^${key}=.*/${key}=${val}/' ${CONFIG} || echo '${key}=${val}' >> ${CONFIG}`);
 			if (code !== 0) { el.checked = !el.checked; toast("Gagal menyimpan / failed to save"); return; }
 			toast((window.i18n && i18n.getTranslation("brene_reboot_label")) || "Changes apply after reboot");
-		});
+		}); });
 	}
 }
 
@@ -55,4 +58,15 @@ document.addEventListener("click", (ev) => {
 	ev.preventDefault();
 	ev.stopImmediatePropagation();
 	history.back();
+}, true);
+
+// Isian uname WebUI SideX masuk mentah ke perintah shell dan config.sh: tolak karakter di luar nilai uname wajar
+const UNAME_OK = /^[A-Za-z0-9 .:_+#()-]*$/;
+document.addEventListener("click", (ev) => {
+	if (!ev.target.closest || !ev.target.closest("#set_uname")) return;
+	const bad = ["sus_uname", "sus_uname_build"].map((id) => document.getElementById(id)).find((el) => el && !UNAME_OK.test(el.value));
+	if (!bad) return;
+	ev.preventDefault();
+	ev.stopImmediatePropagation();
+	toast("Karakter tidak diizinkan / invalid characters: hanya huruf, angka, spasi, . : _ + # ( ) -");
 }, true);

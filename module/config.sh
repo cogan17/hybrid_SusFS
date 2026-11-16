@@ -39,7 +39,6 @@ config_hide_suspicious_pty=0
 config_hide_lineage_strings=0
 config_hide_framework_res_apk=0
 config_spoof_hosts=0
-config_spoof_libstagefright=0
 config_rom_props=0
 config_pif_props=0
 config_disable_child_process_restrictions=1
