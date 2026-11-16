@@ -78,7 +78,7 @@ jobs:
           retention-days: 90
 
   release:
-    name: Terbit / publish (${{ inputs.release_type }})
+    name: Terbit / publish
     needs: build
     if: ${{ inputs.release_type != 'CI' }}
     runs-on: ubuntu-24.04
