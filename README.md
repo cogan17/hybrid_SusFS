@@ -18,7 +18,17 @@ Modul KernelSU untuk kernel yang sudah di-patch SUSFS v2. Perpaduan tiga sumber:
 
 **Versi:** 0.1, lalu 0.2, 0.3, dan seterusnya (`versionCode` 1, 2, 3, ...).
 
-**Build:** `NDK=/path/android-ndk ./build.sh [cabang-susfs]` (default `gki-android14-6.1`). Hasilnya ada di `out/`.
+**Build:** `NDK=/path/android-ndk ./build.sh`. Hasilnya ada di `out/`.
+
+### Sistem update
+
+| Bagian | Cara update |
+|---|---|
+| Mesin simonpunk | Otomatis setiap build: selalu cabang terbaru di `upstream.env`. Build berhenti bila perintah `ksu_susfs` yang dipakai modul hilang (`tools/check_engine.sh`). |
+| Tampilan SideX dan fitur Brene | Manual. Commit yang dipakai dicatat di `upstream.env`. `tools/check_updates.sh` menampilkan commit baru dan file yang berubah, tanpa mengubah apa pun. Perubahan yang berguna diambil satu per satu, lalu `upstream.env` diperbarui. |
+| Ke pengguna | `updateJson` di `module.prop` → `update.json` → rilis GitHub. Manager KernelSU menampilkan tombol update. |
+
+**Langkah rilis versi baru:** naikkan `version`/`versionCode` di `module/module.prop` dan `update.json` (0.1 → 0.2, 1 → 2), tambah bagian `## v0.2` di `CHANGELOG.md`, gabung ke `main`, lalu jalankan workflow **Rilis hybrid_susfs**. Build berhenti bila ketiganya tidak sama.
 
 ## English
 
@@ -38,7 +48,17 @@ KernelSU module for kernels patched with SUSFS v2. It combines three sources:
 
 **Versions:** 0.1, then 0.2, 0.3 and so on (`versionCode` 1, 2, 3, ...).
 
-**Build:** `NDK=/path/android-ndk ./build.sh [susfs-branch]` (default `gki-android14-6.1`). Output goes to `out/`.
+**Build:** `NDK=/path/android-ndk ./build.sh`. Output goes to `out/`.
+
+### Update system
+
+| Part | How it updates |
+|---|---|
+| simonpunk engine | Automatic on every build: always the latest branch in `upstream.env`. The build stops if a `ksu_susfs` command used by the module is gone (`tools/check_engine.sh`). |
+| SideX UI and Brene features | Manual. The commits in use are recorded in `upstream.env`. `tools/check_updates.sh` lists new commits and changed files without changing anything. Useful changes are picked one by one, then `upstream.env` is updated. |
+| To users | `updateJson` in `module.prop` → `update.json` → GitHub release. The KernelSU manager shows an update button. |
+
+**Releasing a new version:** bump `version`/`versionCode` in `module/module.prop` and `update.json` (0.1 → 0.2, 1 → 2), add a `## v0.2` section to `CHANGELOG.md`, merge into `main`, then run the **Rilis hybrid_susfs** workflow. The build stops if these three do not match.
 
 ## Lisensi / License
 

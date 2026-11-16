@@ -3,6 +3,7 @@ name=hybrid_susfs
 version=v0.1
 versionCode=1
 author=Cogan (sidex15, rrr333nnn333, simonpunk)
+updateJson=https://raw.githubusercontent.com/cogan17/hybrid_SusFS/main/update.json
 description=hybrid_susfs: modul SUSFS untuk KernelSU / SUSFS module for KernelSU
 banner=banner.png
 webuiIcon=susfsicon.png

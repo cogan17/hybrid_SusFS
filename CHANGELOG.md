@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.1 (belum rilis / unreleased)
+## v0.1
 
-- ID: Versi pertama: mesin simonpunk (SUSFS v2.4.0, `gki-android14-6.1`), WebUI SideX, fitur Brene di halaman *brene settings*.
-- EN: First version: simonpunk engine (SUSFS v2.4.0, `gki-android14-6.1`), SideX WebUI, Brene features on the *brene settings* page.
+- 🇮🇩 Versi pertama: mesin SUSFS simonpunk, tampilan SideX, fitur tambahan di halaman *hybrid_susfs settings*.
+- 🇬🇧 First version: simonpunk SUSFS engine, SideX UI, extra features on the *hybrid_susfs settings* page.
