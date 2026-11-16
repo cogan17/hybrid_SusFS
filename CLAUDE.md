@@ -20,6 +20,18 @@ Disalin dari `CLAUDE.md` di [cogan17/Cogan-Kernel](https://github.com/cogan17/Co
 - Deskripsi PR **tanpa** footer "Generated with Claude Code" atau tautan sesi.
 - Branch kerja memakai nama biasa: `feat/…`, `fix/…`, `docs/…`, `chore/…`. Perubahan masuk ke `Utama` (branch default) lewat PR.
 
+## PR, issue, dan syarat rilis (owner, 16 Nov 2026)
+
+- Kutipan owner: "PR dan issue aku serahkan kepada dirimu. Sebelum rilis pastikan benar-benar tidak ada celah/bug/glitch/bootloop/bug visual/dan lain-lain!"
+- **PR dan issue diurus asisten**: membuat PR ke `Utama`, membuat issue untuk hal yang perlu dicek atau diuji, memperbarui, dan menutupnya bila selesai.
+- **Sebelum rilis, wajib bersih dari celah, bug, glitch, bootloop, bug visual, dan masalah lain.** Paling sedikit:
+  - shellcheck tanpa error
+  - simulasi install, boot, toggle, reset, dan uninstall di busybox `ash`
+  - gate mesin lolos
+  - cek visual semua halaman WebUI di layar sempit dan beberapa bahasa
+  - uji HP sesuai checklist di issue
+- Rilis hanya setelah semua lolos. Yang belum terbukti ditulis jelas, jangan dianggap aman.
+
 ## Waktu
 
 - Waktu untuk owner selalu ditulis dalam **WIB** (Jakarta, UTC+7), misalnya "17.29 WIB". Kalau sumbernya UTC (GitHub, log), ubah dulu ke WIB.
