@@ -28,7 +28,17 @@ Modul KernelSU untuk kernel yang sudah di-patch SUSFS v2. Perpaduan tiga sumber:
 | Tampilan SideX dan fitur Brene | Manual. Commit yang dipakai dicatat di `upstream.env`. `tools/check_updates.sh` menampilkan commit baru dan file yang berubah, tanpa mengubah apa pun. Perubahan yang berguna diambil satu per satu, lalu `upstream.env` diperbarui. |
 | Ke pengguna | `updateJson` di `module.prop` → `update.json` → rilis GitHub. Manager KernelSU menampilkan tombol update. |
 
-**Langkah rilis versi baru:** naikkan `version`/`versionCode` di `module/module.prop` dan `update.json` (0.1 → 0.2, 1 → 2), tambah bagian `## v0.2` di `CHANGELOG.md`, gabung ke `Utama`, lalu jalankan workflow **Rilis hybrid_susfs**. Build berhenti bila ketiganya tidak sama.
+**Langkah rilis versi baru:** naikkan `version`/`versionCode` di `module/module.prop` dan `update.json` (0.1 → 0.2, 1 → 2), tambah bagian `## v0.2` di `CHANGELOG.md`, gabung ke `Utama`, jalankan **hybrid_susfs Builder** (CI), uji ZIP dari artifact di HP, lalu terbitkan run itu dengan **Rilis dari run**. Build berhenti bila ketiganya tidak sama.
+
+### Actions
+
+| Workflow | Fungsi |
+|---|---|
+| hybrid_susfs Builder | Build dari `Utama`. CI = artifact saja; Pre-Release/Release = langsung terbit. |
+| Rilis dari run | Menerbitkan ZIP dari run Builder yang hijau, sama persis dengan yang diuji (digest dicek). Ada catatan ID/EN, centang "diuji di HP", dan timpa. |
+| Validate | Otomatis di setiap PR ke `Utama`: shellcheck, sintaks, versi, YAML, WebUI, gate mesin. |
+| Cek pembaruan | Hanya cek: menjalankan `tools/check_updates.sh`. |
+| Hapus log run lama | Cek saja secara bawaan; ketik `HAPUS` untuk menghapus run lama. |
 
 ## English
 
@@ -58,7 +68,17 @@ KernelSU module for kernels patched with SUSFS v2. It combines three sources:
 | SideX UI and Brene features | Manual. The commits in use are recorded in `upstream.env`. `tools/check_updates.sh` lists new commits and changed files without changing anything. Useful changes are picked one by one, then `upstream.env` is updated. |
 | To users | `updateJson` in `module.prop` → `update.json` → GitHub release. The KernelSU manager shows an update button. |
 
-**Releasing a new version:** bump `version`/`versionCode` in `module/module.prop` and `update.json` (0.1 → 0.2, 1 → 2), add a `## v0.2` section to `CHANGELOG.md`, merge into `Utama`, then run the **Rilis hybrid_susfs** workflow. The build stops if these three do not match.
+**Releasing a new version:** bump `version`/`versionCode` in `module/module.prop` and `update.json` (0.1 → 0.2, 1 → 2), add a `## v0.2` section to `CHANGELOG.md`, merge into `Utama`, run **hybrid_susfs Builder** (CI), test the artifact ZIP on the phone, then publish that run with **Rilis dari run**. The build stops if these three do not match.
+
+### Actions
+
+| Workflow | Purpose |
+|---|---|
+| hybrid_susfs Builder | Builds from `Utama`. CI = artifact only; Pre-Release/Release = publishes right away. |
+| Rilis dari run | Publishes the ZIP of a green Builder run, exactly the one tested (digest checked). Notes in ID/EN, a "tested on the phone" tick, and replace. |
+| Validate | Automatic on every PR to `Utama`: shellcheck, syntax, versions, YAML, WebUI, engine gate. |
+| Cek pembaruan | Check only: runs `tools/check_updates.sh`. |
+| Hapus log run lama | Check only by default; type `HAPUS` to delete old runs. |
 
 ## Lisensi / License
 

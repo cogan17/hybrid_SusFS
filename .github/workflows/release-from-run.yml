@@ -1,0 +1,162 @@
+name: Rilis dari run
+
+# Menerbitkan satu run hybrid_susfs Builder (CI) yang hijau dari Utama sebagai rilis, setelah ZIP-nya
+# diuji di HP (meniru Rilis dari run Cogan Kernel). ZIP diambil apa adanya dari artifact dan dicek
+# digest-nya, jadi yang terbit sama persis dengan yang diuji. Tag = versi di build.env (vX.Y). Tag yang
+# sudah ada menghentikan run kecuali "timpa" dicentang. Artifact hanya bertahan 90 hari.
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "ID run Builder yang hijau / green Builder run ID"
+        required: true
+        type: string
+      release_type:
+        description: "Pre-Release atau / or Release (Release = Latest)"
+        type: choice
+        default: "Pre-Release"
+        options:
+          - "Pre-Release"
+          - "Release"
+      diuji_di_hp:
+        description: "ZIP run ini sudah diuji owner di HP / tested by the owner on the phone"
+        type: boolean
+        default: false
+      catatan:
+        description: "Catatan Bahasa Indonesia (opsional; \\n = baris baru) / Indonesian note (optional; \\n = new line)"
+        type: string
+        default: ""
+      catatan_en:
+        description: "Catatan English (opsional; \\n = baris baru) / English note (optional; \\n = new line)"
+        type: string
+        default: ""
+      timpa:
+        description: "Timpa rilis bila tag yang sama sudah ada / replace the release if the same tag exists"
+        type: boolean
+        default: false
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: release-from-run
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Rilis dari run ${{ inputs.run_id }} (${{ inputs.release_type }})
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN: ${{ inputs.run_id }}
+      RELEASE_TYPE: ${{ inputs.release_type }}
+      TESTED: ${{ inputs.diuji_di_hp }}
+      NOTE: ${{ inputs.catatan }}
+      NOTE_EN: ${{ inputs.catatan_en }}
+      REPLACE: ${{ inputs.timpa }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Periksa run / check the run
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_RUN" =~ ^[0-9]+$ ]] || { echo "::error::run_id: angka / a number"; exit 1; }
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN" > run.json
+          python3 - <<'PY'
+          import json
+          run = json.load(open("run.json"))
+          want = {"conclusion": "success", "head_branch": "Utama", "path": ".github/workflows/build.yml"}
+          bad = [f"{k} {run.get(k)!r} (harus / must be {v!r})" for k, v in want.items() if run.get(k) != v]
+          if bad:
+              raise SystemExit("Run tidak bisa dirilis / cannot be released: " + "; ".join(bad))
+          PY
+
+      - name: Unduh file / download the files
+        run: |
+          set -euo pipefail
+          mkdir files info
+          gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN/artifacts?per_page=100" \
+            --jq '.artifacts[] | select(.expired == false) | [.id, .name, (.digest // "")] | @tsv' > artifacts.tsv
+          info_id="$(awk -F'\t' '$2 == "build-info" {print $1; exit}' artifacts.tsv)"
+          [ -n "$info_id" ] || { echo "::error::build-info tidak ada atau kedaluwarsa / missing or expired"; exit 1; }
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$info_id/zip" > info.zip
+          unzip -q info.zip build.env -d info
+          version="$(sed -n "s/^VERSION='\(.*\)'\$/\1/p" info/build.env)"
+          sha="$(sed -n "s/^SHA256='\(.*\)'\$/\1/p" info/build.env)"
+          [[ "$version" =~ ^v[0-9]+\.[0-9]+$ ]] || { echo "::error::Versi di build.env tidak sah / invalid version: '$version'"; exit 1; }
+          name="hybrid_susfs_$version.zip"
+          read -r id digest < <(awk -F'\t' -v n="$name" '$2 == n {print $1, $3; exit}' artifacts.tsv) \
+            || { echo "::error::$name tidak ada atau kedaluwarsa / missing or expired"; exit 1; }
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$id/zip" > "files/$name"
+          # An unarchived artifact may still arrive wrapped in a ZIP that holds only itself.
+          if [ "sha256:$(sha256sum "files/$name" | cut -d' ' -f1)" != "$digest" ] \
+             && [ "$(unzip -Z1 "files/$name" 2>/dev/null)" = "$name" ]; then
+            unzip -p "files/$name" "$name" > unwrapped && mv unwrapped "files/$name"
+          fi
+          [ "sha256:$(sha256sum "files/$name" | cut -d' ' -f1)" = "$digest" ] \
+            || { echo "::error::$name: SHA256 berbeda dari artifact / differs from the artifact"; exit 1; }
+          [ "$(sha256sum "files/$name" | cut -d' ' -f1)" = "$sha" ] \
+            || { echo "::error::$name: SHA256 berbeda dari build.env / differs from build.env"; exit 1; }
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          tools/release_notes.sh info/build.env "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN" \
+            "$TESTED" "$NOTE" "$NOTE_EN" > notes.md
+          ls -la files
+
+      - name: Terbitkan / publish
+        run: |
+          set -euo pipefail
+          replaced=false
+          if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            if [ "$REPLACE" != "true" ]; then
+              echo "::error::Rilis $VERSION sudah ada. Centang timpa untuk menggantinya / release $VERSION exists; tick timpa to replace it"
+              exit 1
+            fi
+            replaced=true
+          fi
+          sha="$(python3 -c 'import json; print(json.load(open("run.json"))["head_sha"])')"
+          # GITHUB_TOKEN cannot tag a commit whose .github/workflows differ from this run's (HTTP 403):
+          # then the tag goes on this run's commit; the notes still link the build run.
+          workflows_at() { gh api "repos/$GITHUB_REPOSITORY/contents/.github?ref=$1" --jq '.[] | select(.name == "workflows") | .sha'; }
+          there="$(workflows_at "$sha")"
+          here="$(workflows_at "$GITHUB_SHA")"
+          target="$sha"; [ -n "$there" ] && [ "$there" = "$here" ] || target="$GITHUB_SHA"
+          mode=(--prerelease); [ "$RELEASE_TYPE" = "Release" ] && mode=(--latest)
+          # Replace only now, after every check passed and the files are ready.
+          if [ "$replaced" = true ]; then
+            # Tag first: a tag that cannot be deleted would point the new release at the old commit.
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$VERSION" >/dev/null \
+              || { echo "::error::Tag $VERSION lama tidak bisa dihapus; rilis lama tidak diubah / the old tag could not be deleted; the old release is unchanged"; exit 1; }
+            gh release delete "$VERSION" --repo "$GITHUB_REPOSITORY" --yes
+            touch replaced-old-release
+          fi
+          gh release create "$VERSION" files/* --repo "$GITHUB_REPOSITORY" --target "$target" "${mode[@]}" \
+            --title "hybrid_susfs $VERSION" --notes-file notes.md
+          {
+            echo "## Rilis dari run / release from run"
+            echo "- 🇮🇩 Terbit: [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) ($RELEASE_TYPE)$([ "$TESTED" = "true" ] && echo ", diuji di HP")$([ "$replaced" = true ] && echo ", menimpa rilis lama")"
+            echo "- 🇬🇧 Published: [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) ($RELEASE_TYPE)$([ "$TESTED" = "true" ] && echo ", tested on the phone")$([ "$replaced" = true ] && echo ", replaced the old release")"
+            echo
+            echo '<details><summary>📝 Catatan rilis / Release notes</summary>'
+            echo
+            cat notes.md
+            echo
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Ringkasan bila gagal / summary on failure
+        if: failure() || cancelled()
+        run: |
+          {
+            echo "## ❌ Rilis dari run gagal / Release from run failed"
+            echo
+            echo "- 🇮🇩 Tidak ada rilis yang diterbitkan. Alasannya ada di pesan error di atas (langkah merah pertama)."
+            echo "- 🇬🇧 No release was published. The reason is in the error message above (the first red step)."
+            if [ -e replaced-old-release ]; then
+              echo "- 🇮🇩 Rilis lama dengan tag yang sama sudah dihapus. Jalankan ulang Rilis dari run dengan timpa dicentang; ZIP masih ada di artifact run."
+              echo "- 🇬🇧 The old release with the same tag was already deleted. Run Rilis dari run again with timpa ticked; the ZIP is still in the run's artifacts."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

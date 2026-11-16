@@ -1,0 +1,84 @@
+name: Validate
+
+# Cek ringan otomatis di setiap PR ke Utama (meniru Validate Cogan Kernel): shellcheck, sintaks shell,
+# YAML workflow, sintaks JS dan XML WebUI, serta gate mesin terhadap SUSFS simonpunk terbaru.
+# Tidak membangun ZIP dan tidak menyentuh rilis; sekitar satu menit.
+
+on:
+  pull_request:
+    branches: [Utama]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Shell, YAML, WebUI, gate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Shellcheck dan sintaks shell / shellcheck and shell syntax
+        run: |
+          set -euo pipefail
+          # Module scripts run in busybox ash / Android sh, not bash; config.sh is data read as sh.
+          shellcheck -S error -s sh module/*.sh
+          shellcheck -S error build.sh tools/*.sh
+          for script in module/*.sh; do sh -n "$script"; echo "ok $script"; done
+          for script in build.sh tools/*.sh; do bash -n "$script"; echo "ok $script"; done
+
+      - name: Versi sama / versions match
+        run: |
+          set -euo pipefail
+          version=$(grep '^version=' module/module.prop | cut -d= -f2)
+          code=$(grep '^versionCode=' module/module.prop | cut -d= -f2)
+          grep -q "\"version\": \"$version\"" update.json && grep -q "\"versionCode\": $code," update.json \
+            || { echo "::error::update.json tidak sama dengan module.prop / does not match ($version / $code)"; exit 1; }
+          grep -qE "^## $version( |$)" CHANGELOG.md || { echo "::error::CHANGELOG.md belum punya / has no ## $version"; exit 1; }
+          echo "ok $version ($code)"
+
+      - name: YAML workflow
+        run: |
+          python3 -c 'import yaml' 2>/dev/null || pip install -q pyyaml
+          python3 -c 'import sys, yaml
+          for path in sys.argv[1:]:
+              yaml.safe_load(open(path, encoding="utf-8"))
+              print("ok", path)' .github/workflows/*.yml
+
+      - name: WebUI (JS, XML, JSON)
+        run: |
+          set -euo pipefail
+          # The bundle is an ES module: check it as .mjs.
+          for js in module/webroot/*.js module/webroot/assets/*.js; do
+            cp "$js" check.mjs && node --check check.mjs && echo "ok $js"
+          done
+          python3 -c 'import sys, json, xml.etree.ElementTree as ET
+          for path in sys.argv[1:]:
+              (json.load(open(path, encoding="utf-8")) if path.endswith(".json") else ET.parse(path))
+              print("ok", path)' module/webroot/languages/*.xml module/webroot/*.json update.json
+
+      - name: Gate mesin / engine gate
+        run: |
+          set -euo pipefail
+          . ./upstream.env
+          git clone -q --depth 1 -b "$SUSFS_BRANCH" "$SUSFS_REPO" susfs4ksu
+          tools/check_engine.sh module susfs4ksu/ksu_susfs/jni/main.c
+          echo "ok gate ($SUSFS_BRANCH @ $(git -C susfs4ksu rev-parse --short HEAD))"
+
+      - name: Ringkasan / summary
+        if: always()
+        env:
+          RESULT: ${{ job.status }}
+        run: |
+          if [ "$RESULT" = "success" ]; then
+            echo "✅ Validate: shellcheck, sintaks, versi, YAML, WebUI dan gate mesin lolos / shellcheck, syntax, versions, YAML, WebUI and engine gate passed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "❌ Validate gagal: lihat langkah merah pertama / failed: see the first red step." >> "$GITHUB_STEP_SUMMARY"
+          fi
