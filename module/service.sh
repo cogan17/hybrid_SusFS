@@ -166,7 +166,8 @@ fi
 			[ "$SUSFS_DECIMAL_MAIN" = 2 ] && [ "$SUSFS_DECIMAL_SUB" = 0 ] || [ "$SUSFS_DECIMAL_MAIN" -lt 2 ] && susfs_clone_perm $mntfolder/$cil_name $sepolicy_cil
 			mount --bind $mntfolder/$cil_name $sepolicy_cil && echo "[bind_mount]: hybrid_susfs/service $sepolicy_cil" >> $logfile1
 			[ "$SUSFS_DECIMAL_MAIN" -ge 2 ] && ${SUSFS_BIN} update_sus_kstat $sepolicy_cil && echo "[update_sus_kstat]: hybrid_susfs/service $sepolicy_cil" >> $logfile1
-			${SUSFS_BIN} add_sus_mount $sepolicy_cil && echo "[sus_mount]: hybrid_susfs/service $sepolicy_cil" >> $logfile1
+			# add_sus_mount hanya ada di SUSFS v1; di v2 mount disembunyikan oleh kstat + hide_sus_mnts (engine v2 tidak punya command ini)
+			[ "$SUSFS_DECIMAL_MAIN" -lt 2 ] && ${SUSFS_BIN} add_sus_mount $sepolicy_cil && echo "[sus_mount]: hybrid_susfs/service $sepolicy_cil" >> $logfile1
 		}
 	done
 }
@@ -181,7 +182,8 @@ fi
 		[ "$SUSFS_DECIMAL_MAIN" = 2 ] && [ "$SUSFS_DECIMAL_SUB" = 0 ] || [ "$SUSFS_DECIMAL_MAIN" -lt 2 ] && susfs_clone_perm $mntfolder/compatibility_matrix.device.xml $compatibility_matrix
 		mount --bind $mntfolder/compatibility_matrix.device.xml $compatibility_matrix && echo "[bind_mount]: hybrid_susfs/service $compatibility_matrix" >> $logfile1
 		[ "$SUSFS_DECIMAL_MAIN" -ge 2 ] && ${SUSFS_BIN} update_sus_kstat $compatibility_matrix && echo "[update_sus_kstat]: hybrid_susfs/service $compatibility_matrix" >> $logfile1
-		${SUSFS_BIN} add_sus_mount $compatibility_matrix && echo "[sus_mount]: hybrid_susfs/service $compatibility_matrix" >> $logfile1
+		# add_sus_mount hanya ada di SUSFS v1; di v2 mount disembunyikan oleh kstat + hide_sus_mnts (engine v2 tidak punya command ini)
+		[ "$SUSFS_DECIMAL_MAIN" -lt 2 ] && ${SUSFS_BIN} add_sus_mount $compatibility_matrix && echo "[sus_mount]: hybrid_susfs/service $compatibility_matrix" >> $logfile1
 	}
 }
 	
