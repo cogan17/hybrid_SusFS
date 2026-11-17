@@ -87,7 +87,7 @@ Di tab Actions: **hybrid_susfs Builder** untuk build, **Rilis dari run** untuk m
 
 | Versi | Hasil |
 |---|---|
-| v0.7 | ⏳ Menunggu uji HP. Perbaikan audit: add_sus_mount v2, filter UID literal, status gagal, gate rilis |
+| v0.7 | ✅ 17 Nov 2026, diuji di HP. Perbaikan audit: add_sus_mount v2, filter UID literal, status gagal, gate rilis, opsi engine_commit |
 | v0.6 | ✅ 17 Nov 2026, diuji di HP. Perbaikan overlap SELinux (SEPolicy Vendor vs teks LineageOS) |
 | v0.5 | ✅ 17 Nov 2026, Cogan Kernel di 14T Pro, SUSFS v2.4.0. Duck Detector: Danger 0, Warning 0 |
 | v0.4 (ditarik) | Diganti v0.5 (isi sama, kini bertanda tangan) |
