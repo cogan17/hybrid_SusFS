@@ -3,7 +3,9 @@
 ## v0.7
 
 - 🇮🇩 Perbaikan dari audit v0.6: (1) `add_sus_mount` (hanya ada di SUSFS v1) tidak lagi dipanggil pada engine v2 di cabang Sembunyikan SEPolicy Vendor / Compat Matrix — di v2 mount disembunyikan lewat kstat + hide_sus_mnts; (2) filter UID mencocokkan nama paket secara literal, bukan regex, jadi nama mirip tidak lagi dianggap sama; (3) bila status filter gagal disimpan, yang ditampilkan status baru + kode gagal, bukan status lama. Release (Latest) kini wajib sudah diuji di HP.
+- 🇮🇩 Builder punya isian opsional `engine_commit`: kosong = mesin simonpunk terbaru (seperti biasa), diisi hash = build pakai commit itu (dicek harus ada di cabang simonpunk) untuk mundur ke engine yang terbukti bagus.
 - 🇬🇧 Fixes from the v0.6 audit: (1) `add_sus_mount` (SUSFS v1 only) is no longer called on the v2 engine in the Hide Vendor SEPolicy / Compat Matrix branches — on v2 the mount is hidden via kstat + hide_sus_mnts; (2) the UID filter matches package names literally, not as a regex, so similar names are no longer treated as equal; (3) if the filter status fails to save, the new status + a failure code is shown, not the old one. Release (Latest) now requires a phone test.
+- 🇬🇧 The Builder has an optional `engine_commit` field: empty = the latest simonpunk engine (as before), a hash = build with that commit (checked to exist on the simonpunk branch) to fall back to a known-good engine.
 
 ## v0.6
 

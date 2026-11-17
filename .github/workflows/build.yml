@@ -21,6 +21,10 @@ on:
         description: "Pre-Release/Release: versi ini sudah diuji owner di HP / tested by the owner on the phone"
         type: boolean
         default: false
+      engine_commit:
+        description: "Opsional: commit engine simonpunk (kosong = terbaru; isi hash untuk mundur ke engine yang terbukti) / optional simonpunk engine commit (empty = latest)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -49,7 +53,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Build (mesin simonpunk terbaru + gate) / build (latest simonpunk engine + gate)
+      - name: Build (mesin simonpunk + gate) / build (simonpunk engine + gate)
+        env:
+          ENGINE_COMMIT: ${{ inputs.engine_commit }}
         run: NDK="$ANDROID_NDK_LATEST_HOME" ./build.sh
 
       - name: Info build / build info

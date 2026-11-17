@@ -15,7 +15,18 @@ grep -q "\"version\": \"$VERSION\"" "$ROOT/update.json" && grep -q "\"versionCod
 grep -qE "^## $VERSION( |$)" "$ROOT/CHANGELOG.md" || { echo "GAGAL: CHANGELOG.md belum punya bagian $VERSION"; exit 1; }
 
 rm -rf "$WORK" && mkdir -p "$WORK"
-git clone -q --depth 1 -b "$SUSFS_BRANCH" "$SUSFS_REPO" "$WORK/susfs4ksu"
+# Opsional: pakai commit engine tertentu (mundur ke engine yang terbukti bagus bila simonpunk bermasalah);
+# kosong = cabang terbaru. Commit wajib tercapai dari cabang, jadi bukan commit asing/fork.
+: "${ENGINE_COMMIT:=}"
+if [ -n "$ENGINE_COMMIT" ]; then
+	echo "$ENGINE_COMMIT" | grep -qE '^[0-9a-fA-F]{7,40}$' || { echo "GAGAL: ENGINE_COMMIT harus hash commit (7-40 hex), bukan '$ENGINE_COMMIT'"; exit 1; }
+	git clone -q --filter=blob:none -b "$SUSFS_BRANCH" "$SUSFS_REPO" "$WORK/susfs4ksu"
+	git -C "$WORK/susfs4ksu" merge-base --is-ancestor "$ENGINE_COMMIT" HEAD 2>/dev/null \
+		|| { echo "GAGAL: commit $ENGINE_COMMIT tidak ada di cabang $SUSFS_BRANCH (simonpunk)"; exit 1; }
+	git -C "$WORK/susfs4ksu" checkout -q --detach "$ENGINE_COMMIT"
+else
+	git clone -q --depth 1 -b "$SUSFS_BRANCH" "$SUSFS_REPO" "$WORK/susfs4ksu"
+fi
 SUSFS_COMMIT=$(git -C "$WORK/susfs4ksu" rev-parse HEAD)
 SUSFS_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$WORK/susfs4ksu/kernel_patches/include/linux/susfs.h" | head -1)
 

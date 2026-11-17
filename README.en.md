@@ -78,7 +78,7 @@ NDK=/path/android-ndk ./build.sh
 
 Output goes to `out/`. The version in `module/module.prop`, `update.json` and `CHANGELOG.md` must match, otherwise the build stops.
 
-In the Actions tab: **hybrid_susfs Builder** builds, **Rilis dari run** publishes a build that's been tested, **Cek pembaruan** shows what's new in sidex15, BRENE and simonpunk. **Validate** runs by itself on every PR.
+In the Actions tab: **hybrid_susfs Builder** builds, **Rilis dari run** publishes a build that's been tested, **Cek pembaruan** shows what's new in sidex15, BRENE and simonpunk. **Validate** runs by itself on every PR. The Builder has an optional `engine_commit` field to fall back to a specific simonpunk engine commit (empty = latest).
 
 </details>
 
