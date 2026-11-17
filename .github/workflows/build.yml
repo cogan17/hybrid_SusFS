@@ -117,6 +117,11 @@ jobs:
       - name: Terbitkan / publish
         run: |
           set -euo pipefail
+          # Release (Latest) wajib sudah diuji di HP (aturan repo); Pre-Release boleh belum diuji
+          if [ "$RELEASE_TYPE" = "Release" ] && [ "$TESTED" != "true" ]; then
+            echo "::error::Release (Latest) wajib diuji di HP: centang diuji_di_hp, atau pakai Pre-Release / Release requires a phone test; tick diuji_di_hp or use Pre-Release"
+            exit 1
+          fi
           if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "::error::Rilis $VERSION sudah ada. Naikkan versi di module.prop, update.json dan CHANGELOG.md / release exists, bump the version"
             exit 1

@@ -56,8 +56,17 @@ $line"
 # Status ditulis ke file sementara lalu di-rename (pembaca seperti WebUI tidak melihat file setengah jadi)
 status() {
 	mkdir -p ${STATUS%/*}
-	{ echo "waktu: $(date '+%F %T %Z')"; printf '%s\n' "$@"; } > $STATUS.tmp && mv -f $STATUS.tmp $STATUS
-	cat $STATUS
+	# Tmp unik per proses (hindari bentrok bila dua apply jalan). Bila simpan gagal, tampilkan status BARU
+	# (bukan file lama) dan kembalikan nonzero, supaya pembaca tidak mengira status lama sebagai hasil baru.
+	out=$(echo "waktu: $(date '+%F %T %Z')"; printf '%s\n' "$@")
+	t=$STATUS.$$.tmp
+	if printf '%s\n' "$out" > "$t" && mv -f "$t" $STATUS; then
+		cat $STATUS
+	else
+		rm -f "$t"
+		printf '%s\n' "$out"
+		return 1
+	fi
 }
 
 case "$1" in
@@ -74,7 +83,7 @@ apply)
 	bytes=$(printf '%s' "$csv" | wc -c)
 	[ $bytes -lt 65535 ] || { status "mode: $m" "hasil: GAGAL, daftar ${bytes} byte melebihi batas 65534 byte" "catatan: tidak dipotong atau dipecah (setiap panggilan mengganti seluruh filter)"; exit 1; }
 	if $SUSFS_BIN set_priority_uid_filter "$csv" > /dev/null 2>&1; then
-		status "mode: $m" "paket diminta: $(echo "$list" | wc -l) (${bytes} byte)" "hma_oss disertakan: $(echo "$list" | grep -qx $HMA && echo ya || echo tidak)" \
+		status "mode: $m" "paket diminta: $(echo "$list" | wc -l) (${bytes} byte)" "hma_oss disertakan: $(echo "$list" | grep -Fxq -- "$HMA" && echo ya || echo tidak)" \
 			"hasil: diterima kernel (bukan bukti aplikasi tak terlihat; nama yang tidak terpetakan dilewati kernel)"
 	else
 		status "mode: $m" "paket diminta: $(echo "$list" | wc -l) (${bytes} byte)" "hasil: GAGAL, ksu_susfs menolak permintaan"; exit 1
@@ -89,7 +98,7 @@ diagnose)
 	echo "UID hma_oss: $(uid_of $HMA || true)"
 	echo "mode filter sekarang: $m"
 	if [ $m != off ] && list=$(candidates $m 2>&1); then
-		hit=tidak; for n in $names; do echo "$list" | grep -qx "$n" && hit=ya; done
+		hit=tidak; for n in $names; do echo "$list" | grep -Fxq -- "$n" && hit=ya; done
 		echo "termasuk daftar filter: $hit (jumlah kandidat $(echo "$list" | wc -l))"
 	fi
 	echo "catatan: tidak ada perintah dikirim ke kernel" ;;
