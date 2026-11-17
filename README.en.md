@@ -11,6 +11,8 @@
 <p align="center">
   <a href="https://github.com/cogan17/hybrid_SusFS/releases"><b>⬇️ Download</b></a>
   &nbsp;·&nbsp;
+  <a href="docs/panduan.en.md"><b>📖 Guide</b></a>
+  &nbsp;·&nbsp;
   <a href="CHANGELOG.md"><b>📝 Release notes</b></a>
   &nbsp;·&nbsp;
   <a href="https://t.me/coganTWRP"><b>💬 Telegram</b></a>
@@ -35,7 +37,7 @@ You need KernelSU and a kernel with SUSFS v2. Without them, the module refuses t
 
 1. Download the ZIP from [Releases](https://github.com/cogan17/hybrid_SusFS/releases).
 2. Install it in the KernelSU manager, reboot.
-3. Set it up from the module's WebUI.
+3. Set it up from the module's WebUI. Each feature is explained in the [full guide](docs/panduan.en.md).
 
 Later updates show up right in the manager.
 
