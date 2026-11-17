@@ -11,6 +11,8 @@
 <p align="center">
   <a href="https://github.com/cogan17/hybrid_SusFS/releases"><b>⬇️ Unduh</b></a>
   &nbsp;·&nbsp;
+  <a href="docs/panduan.md"><b>📖 Panduan</b></a>
+  &nbsp;·&nbsp;
   <a href="CHANGELOG.md"><b>📝 Catatan Rilis</b></a>
   &nbsp;·&nbsp;
   <a href="https://t.me/coganTWRP"><b>💬 Telegram</b></a>
@@ -35,7 +37,7 @@ Butuh KernelSU dan kernel dengan SUSFS v2. Kalau belum ada, modul menolak dipasa
 
 1. Unduh ZIP dari [Rilis](https://github.com/cogan17/hybrid_SusFS/releases).
 2. Pasang di manager KernelSU, reboot.
-3. Atur lewat WebUI modul.
+3. Atur lewat WebUI modul. Penjelasan tiap fitur ada di [Panduan lengkap](docs/panduan.md).
 
 Update berikutnya muncul langsung di manager.
 
