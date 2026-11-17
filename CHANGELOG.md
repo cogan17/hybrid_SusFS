@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.6
+
+- 🇮🇩 Hilangkan tumpang tindih SELinux: saat "Sembunyikan SEPolicy Vendor" (SideX) nyala, "Sembunyikan teks LineageOS" (Brene) tidak lagi me-redirect 3 file sepolicy/file_contexts yang sama ke file kosong. SideX menanganinya dengan bind-mount versi bersih (labeling tetap valid), jadi tidak ada dua mekanisme di satu file.
+- 🇬🇧 Removed a SELinux overlap: when "Hide Vendor SEPolicy" (SideX) is on, "Hide LineageOS strings" (Brene) no longer redirects the same 3 sepolicy/file_contexts files to an empty file. SideX handles them with a clean bind-mount (labeling stays valid), so no two mechanisms touch one file.
+
 ## v0.5
 
 - 🇮🇩 ZIP kini ditandatangani secara digital oleh GitHub Actions; keasliannya bisa dicek dengan `gh attestation verify` (lihat [Keaslian & Kredit](docs/keaslian-dan-kredit.md)). Isi modul sama dengan v0.4, hanya nomor versi yang naik. v0.4 ditarik supaya semua pengguna memakai build bertanda tangan.

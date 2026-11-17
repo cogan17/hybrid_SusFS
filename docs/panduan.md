@@ -188,7 +188,7 @@ Fitur tambahan dari Brene. **Perubahan aktif setelah reboot.**
 | **Sembunyikan tombol OEM unlocking** | Sembunyikan status OEM unlocking. |
 | **Hapus prop custom ROM** | Buang properti yang membocorkan custom ROM. |
 | **Hapus prop Play Integrity Fix (permanen)** | Buang properti PIF secara permanen. |
-| **Sembunyikan teks LineageOS** | Sembunyikan string khas LineageOS. |
+| **Sembunyikan teks LineageOS** | Sembunyikan string khas LineageOS. Bila **Sembunyikan SEPolicy Vendor** (bagian 6) juga nyala, 3 file sepolicy/file_contexts yang sama ditangani SideX saja, tidak dobel. |
 | **Spoof /system/etc/hosts** | Palsukan file hosts. |
 
 ### Android
