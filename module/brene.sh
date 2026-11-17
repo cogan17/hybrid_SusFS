@@ -204,6 +204,12 @@ brene_boot_completed() {
 
 	[ "$config_hide_lineage_strings" = 1 ] && {
 		find /system /system_ext /vendor /product \( -iname "*sepolicy.cil" -o -iname "*file_contexts" \) | while read -r path; do
+			# SideX "Sembunyikan SEPolicy Vendor" sudah menangani 3 file ini dengan bind-mount versi bersih
+			# (labeling tetap valid); jangan menimpanya dengan redirect ke file kosong.
+			case "$path" in
+				/vendor/etc/selinux/vendor_sepolicy.cil|/vendor/etc/selinux/vendor_file_contexts|/system_ext/etc/selinux/system_ext_sepolicy.cil)
+					[ "$hide_vendor_sepolicy" = 1 ] && continue ;;
+			esac
 			brene_fake_file_redirect "$path"
 		done
 		find /system /system_ext /vendor /product -iname "*.rc" | while read -r path; do

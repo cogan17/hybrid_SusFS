@@ -188,7 +188,7 @@ Extra features from Brene. **Changes take effect after reboot.**
 | **Hide OEM unlocking toggle** | Hide the OEM-unlocking status. |
 | **Remove custom ROM props** | Drop properties that leak a custom ROM. |
 | **Remove Play Integrity Fix props (permanent)** | Drop PIF properties permanently. |
-| **Hide LineageOS strings** | Hide LineageOS-specific strings. |
+| **Hide LineageOS strings** | Hide LineageOS-specific strings. If **Hide Vendor SEPolicy** (section 6) is also on, the same 3 sepolicy/file_contexts files are handled by SideX only, not twice. |
 | **Spoof /system/etc/hosts** | Fake the hosts file. |
 
 ### Android
