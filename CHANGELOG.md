@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.9
+
+- 🇮🇩 Perbaikan dari audit v0.8: (1) pemasangan dibatalkan dengan jelas bila folder/berkas config gagal dibuat (tidak lagi lapor sukses dengan config setengah jadi, dan sumber staging tidak dihapus sebelum salinan sah); (2) saat filter UID mode off, kegagalan menyimpan status kini mengembalikan kode gagal, bukan selalu sukses; (3) tombol Cek UID melaporkan bila daftar kandidat gagal diambil (mis. PackageManager belum siap), bukan menelannya diam-diam.
+- 🇬🇧 Fixes from the v0.8 audit: (1) install now aborts clearly if the config folder/files fail to create (no more success report with a half-made config, and staging sources are not deleted before a valid copy); (2) with the UID filter in off mode, a failed status save now returns a failure code instead of always success; (3) the Check UID button reports when the candidate list cannot be fetched (e.g. PackageManager not ready) instead of swallowing it.
+
 ## v0.8
 
 - 🇮🇩 Diagnostik: blok "Perbaiki kejanggalan /data/local/tmp" kini mencatat inode asli dan hasil (rc) perintah spoof kstat ke log, untuk menelusuri kenapa Duck masih membaca inode asli. Tidak mengubah fitur hiding.

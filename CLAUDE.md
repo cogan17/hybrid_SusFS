@@ -32,6 +32,13 @@ Disalin dari `CLAUDE.md` di [cogan17/Cogan-Kernel](https://github.com/cogan17/Co
   - uji HP sesuai checklist di issue
 - Rilis hanya setelah semua lolos. Yang belum terbukti ditulis jelas, jangan dianggap aman.
 
+## Penomoran versi (khusus repo hybrid_susfs, owner 18 Nov 2026)
+
+- Tiap perbaikan menaikkan versi satu langkah: `v0.8` → `v0.9` → `v0.10` → … → `v0.99`.
+- `versionCode` naik 1 tiap rilis, mengikuti angka minor (`v0.9` = 9, `v0.10` = 10, `v0.99` = 99).
+- Setelah **`v0.99`** (versionCode 99), berikutnya **`v1.00`** (versionCode 100), lalu `v1.01` (101), dan seterusnya.
+- `version` di `module/module.prop`, `update.json`, dan bagian `## vX.Y` di `CHANGELOG.md` wajib sama (dicek Builder dan Validate).
+
 ## Waktu
 
 - Waktu untuk owner selalu ditulis dalam **WIB** (Jakarta, UTC+7), misalnya "17.29 WIB". Kalau sumbernya UTC (GitHub, log), ubah dulu ke WIB.
