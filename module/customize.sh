@@ -116,12 +116,14 @@ hybrid_config_check() {
 [ -d $PERSISTENT_DIR ] && hybrid_config_check
 
 ui_print "[-] Menyiapkan $PERSISTENT_DIR"
-mkdir -p $PERSISTENT_DIR
-cp $MODPATH/config.sh $MODPATH/config.default.sh
+# Kegagalan menyiapkan config harus terlihat (abort), bukan dilaporkan sukses dengan config setengah jadi.
+mkdir -p $PERSISTENT_DIR || abort "[!] Gagal membuat $PERSISTENT_DIR (penyimpanan penuh/izin?); pemasangan dibatalkan / failed to create config dir, install aborted"
+cp $MODPATH/config.sh $MODPATH/config.default.sh || abort "[!] Gagal menyiapkan config.default.sh / failed to write config.default.sh"
 files="sus_mount.txt try_umount.txt sus_path.txt sus_path_loop.txt sus_maps.txt sus_open_redirect.txt legit_mounts.txt sus_kstat_statically.json priority_extra_packages.txt config.sh"
 for i in $files; do
 	if [ ! -f $PERSISTENT_DIR/$i ]; then
-		cat $MODPATH/$i > $PERSISTENT_DIR/$i
+		# Jangan hapus sumber staging sebelum salinan tujuan sah
+		cat $MODPATH/$i > $PERSISTENT_DIR/$i || abort "[!] Gagal menulis $PERSISTENT_DIR/$i; pemasangan dibatalkan / write failed, install aborted"
 	elif [ "$i" = "config.sh" ]; then
 		# Pastikan diakhiri newline, lalu tambah key baru saja
 		[ -s "$PERSISTENT_DIR/$i" ] && [ "$(tail -c1 "$PERSISTENT_DIR/$i" | xxd -p)" != "0a" ] && echo "" >> "$PERSISTENT_DIR/$i"

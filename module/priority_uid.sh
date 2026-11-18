@@ -75,7 +75,7 @@ apply)
 	if [ $m = off ]; then
 		status "mode: off" "hasil: tidak ada perintah dikirim" \
 			"catatan: filter yang sudah diterapkan sejak boot tetap berlaku sampai reboot (kernel tidak punya perintah kosongkan)"
-		exit 0
+		exit $?  # teruskan hasil status(): bila status gagal disimpan, exit nonzero, bukan selalu 0
 	fi
 	list=$(candidates $m 2> $STATUS.err) || { status "mode: $m" "hasil: GAGAL, tidak ada perintah dikirim" "alasan: $(cat $STATUS.err)"; rm -f $STATUS.err; exit 1; }
 	rm -f $STATUS.err
@@ -97,10 +97,18 @@ diagnose)
 	in_range "$2" && echo "dalam rentang filter 10000-19999: ya" || echo "dalam rentang filter 10000-19999: TIDAK (tidak bisa difilter)"
 	echo "UID hma_oss: $(uid_of $HMA || true)"
 	echo "mode filter sekarang: $m"
-	if [ $m != off ] && list=$(candidates $m 2>&1); then
+	rc_diag=0
+	if [ $m = off ]; then
+		echo "termasuk daftar filter: filter mati (mode off), tidak ada evaluasi"
+	elif list=$(candidates $m 2>&1); then
 		hit=tidak; for n in $names; do echo "$list" | grep -Fxq -- "$n" && hit=ya; done
 		echo "termasuk daftar filter: $hit (jumlah kandidat $(echo "$list" | wc -l))"
+	else
+		# Gagal ambil kandidat (mis. PackageManager belum siap): jangan telan errornya
+		echo "termasuk daftar filter: cakupan belum dapat diverifikasi (gagal ambil kandidat: $list)"
+		rc_diag=1
 	fi
-	echo "catatan: tidak ada perintah dikirim ke kernel" ;;
+	echo "catatan: tidak ada perintah dikirim ke kernel"
+	exit $rc_diag ;;
 *) echo "Pakai: priority_uid.sh apply | diagnose <uid>" >&2; exit 2 ;;
 esac

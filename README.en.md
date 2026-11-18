@@ -103,6 +103,7 @@ In the Actions tab: **hybrid_susfs Builder** builds, **Rilis dari run** publishe
 
 | Version | Result |
 |---|---|
+| v0.9 | ⏳ v0.8 audit fixes (abort install on config failure, off-mode status, Check UID) |
 | v0.8 | ✅ 18 Nov 2026, tested on the phone. /data/local/tmp inode diagnostic; Duck Native Root → INFO (inode 100) |
 | v0.7 | ✅ 17 Nov 2026, tested on the phone. Audit fixes: add_sus_mount v2, literal UID filter, status save, release gate, engine_commit option |
 | v0.6 | ✅ 17 Nov 2026, tested on the phone. SELinux overlap fix (Hide Vendor SEPolicy vs Hide LineageOS strings) |
