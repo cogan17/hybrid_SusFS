@@ -2,67 +2,61 @@
 
 ## v0.9
 
-- 🇮🇩 Perbaikan dari audit v0.8: (1) pemasangan dibatalkan dengan jelas bila folder/berkas config gagal dibuat (tidak lagi lapor sukses dengan config setengah jadi, dan sumber staging tidak dihapus sebelum salinan sah); (2) saat filter UID mode off, kegagalan menyimpan status kini mengembalikan kode gagal, bukan selalu sukses; (3) tombol Cek UID melaporkan bila daftar kandidat gagal diambil (mis. PackageManager belum siap), bukan menelannya diam-diam.
-- 🇬🇧 Fixes from the v0.8 audit: (1) install now aborts clearly if the config folder/files fail to create (no more success report with a half-made config, and staging sources are not deleted before a valid copy); (2) with the UID filter in off mode, a failed status save now returns a failure code instead of always success; (3) the Check UID button reports when the candidate list cannot be fetched (e.g. PackageManager not ready) instead of swallowing it.
+- 🇮🇩 Pemasangan lebih aman: kalau penyiapan pengaturan gagal (misalnya penyimpanan penuh), modul berhenti dan memberi tahu, tidak lagi pura-pura berhasil padahal belum. Filter UID dan tombol **Cek UID** juga lebih jujur melaporkan kalau ada yang gagal.
+- 🇬🇧 Safer install: if preparing the settings fails (e.g. storage is full), the module stops and tells you instead of pretending it worked. The UID filter and the **Check UID** button now report failures honestly too.
 
 ## v0.8
 
-- 🇮🇩 Diagnostik: blok "Perbaiki kejanggalan /data/local/tmp" kini mencatat inode asli dan hasil (rc) perintah spoof kstat ke log, untuk menelusuri kenapa Duck masih membaca inode asli. Tidak mengubah fitur hiding.
-- 🇬🇧 Diagnostic: the "Fix /data/local/tmp inconsistencies" block now logs the real inode and the kstat spoof command result (rc), to trace why Duck still reads the real inode. No change to hiding behaviour.
+- 🇮🇩 Menambah catatan di log untuk fitur **Perbaiki kejanggalan /data/local/tmp**, supaya lebih mudah menelusuri kalau ada masalah. Cara kerja penyembunyian tidak berubah.
+- 🇬🇧 Added a log note for the **Fix /data/local/tmp** feature so problems are easier to trace. Hiding behaviour is unchanged.
 
 ## v0.7
 
-- 🇮🇩 Perbaikan dari audit v0.6: (1) `add_sus_mount` (hanya ada di SUSFS v1) tidak lagi dipanggil pada engine v2 di cabang Sembunyikan SEPolicy Vendor / Compat Matrix — di v2 mount disembunyikan lewat kstat + hide_sus_mnts; (2) filter UID mencocokkan nama paket secara literal, bukan regex, jadi nama mirip tidak lagi dianggap sama; (3) bila status filter gagal disimpan, yang ditampilkan status baru + kode gagal, bukan status lama. Release (Latest) kini wajib sudah diuji di HP.
-- 🇮🇩 Builder punya isian opsional `engine_commit`: kosong = mesin simonpunk terbaru (seperti biasa), diisi hash = build pakai commit itu (dicek harus ada di cabang simonpunk) untuk mundur ke engine yang terbukti bagus.
-- 🇬🇧 Fixes from the v0.6 audit: (1) `add_sus_mount` (SUSFS v1 only) is no longer called on the v2 engine in the Hide Vendor SEPolicy / Compat Matrix branches — on v2 the mount is hidden via kstat + hide_sus_mnts; (2) the UID filter matches package names literally, not as a regex, so similar names are no longer treated as equal; (3) if the filter status fails to save, the new status + a failure code is shown, not the old one. Release (Latest) now requires a phone test.
-- 🇬🇧 The Builder has an optional `engine_commit` field: empty = the latest simonpunk engine (as before), a hash = build with that commit (checked to exist on the simonpunk branch) to fall back to a known-good engine.
+- 🇮🇩 Perbaikan kestabilan filter UID dan penyembunyian SELinux (SEPolicy Vendor / Compat Matrix) pada kernel SUSFS v2. Rilis utama (**Latest**) sekarang wajib sudah diuji di HP dulu.
+- 🇬🇧 Stability fixes for the UID filter and SELinux hiding (Vendor SEPolicy / Compat Matrix) on SUSFS v2 kernels. A main (**Latest**) release now requires a phone test first.
+- 🇮🇩 Untuk pembuat build: ada pilihan memakai versi mesin simonpunk tertentu bila yang terbaru bermasalah.
+- 🇬🇧 For builders: an option to use a specific simonpunk engine version if the latest one misbehaves.
 
 ## v0.6
 
-- 🇮🇩 Hilangkan tumpang tindih SELinux: saat "Sembunyikan SEPolicy Vendor" (SideX) nyala, "Sembunyikan teks LineageOS" (Brene) tidak lagi me-redirect 3 file sepolicy/file_contexts yang sama ke file kosong. SideX menanganinya dengan bind-mount versi bersih (labeling tetap valid), jadi tidak ada dua mekanisme di satu file.
-- 🇬🇧 Removed a SELinux overlap: when "Hide Vendor SEPolicy" (SideX) is on, "Hide LineageOS strings" (Brene) no longer redirects the same 3 sepolicy/file_contexts files to an empty file. SideX handles them with a clean bind-mount (labeling stays valid), so no two mechanisms touch one file.
+- 🇮🇩 Menghilangkan tumpang tindih: **Sembunyikan SEPolicy Vendor** dan **Sembunyikan teks LineageOS** tidak lagi menangani berkas yang sama dua kali — lebih rapi dan aman.
+- 🇬🇧 Removed an overlap: **Hide Vendor SEPolicy** and **Hide LineageOS strings** no longer handle the same files twice — cleaner and safer.
 
 ## v0.5
 
-- 🇮🇩 ZIP kini ditandatangani secara digital oleh GitHub Actions; keasliannya bisa dicek dengan `gh attestation verify` (lihat [Keaslian & Kredit](docs/keaslian-dan-kredit.md)). Isi modul sama dengan v0.4, hanya nomor versi yang naik. v0.4 ditarik supaya semua pengguna memakai build bertanda tangan.
-- 🇬🇧 The ZIP is now digitally signed by GitHub Actions; check it with `gh attestation verify` (see [Authenticity & Credits](docs/keaslian-dan-kredit.en.md)). The module contents are the same as v0.4, only the version number changed. v0.4 was withdrawn so everyone uses a signed build.
+- 🇮🇩 ZIP sekarang **ditandatangani secara digital**, jadi keasliannya bisa dibuktikan (lihat [Keaslian & Kredit](docs/keaslian-dan-kredit.md)). Isinya sama dengan v0.4; v0.4 ditarik supaya semua memakai versi bertanda tangan.
+- 🇬🇧 The ZIP is now **digitally signed**, so its authenticity can be proven (see [Authenticity & Credits](docs/keaslian-dan-kredit.en.md)). Contents are the same as v0.4; v0.4 was withdrawn so everyone uses the signed build.
 
 ## v0.4
 
-- 🇮🇩 Filter UID (pendamping HMA-OSS) kini satu pintu: satu mode, satu perintah, daftar divalidasi sebelum dikirim, HMA-OSS ikut disertakan, status tersimpan di Send Logs. Label menjelaskan cakupannya: hanya syscall prioritas; visibilitas aplikasi tetap diatur di HMA-OSS.
-- 🇬🇧 The UID filter (HMA-OSS companion) now has one entry point: one mode, one command, the list is validated before sending, HMA-OSS is included, and the status is saved in Send Logs. Labels state its scope: priority syscalls only; app visibility is still configured in HMA-OSS.
-- 🇮🇩 Tombol "Perbarui filter UID" (untuk aplikasi yang baru dipasang) dan "Cek UID" (memetakan UID ke nama paket) di halaman hybrid_susfs settings dan tombol action; paket tambahan bisa ditulis di `priority_extra_packages.txt`.
-- 🇬🇧 "Refresh UID filter" (for newly installed apps) and "Check UID" (maps a UID to its package) buttons on the hybrid_susfs settings page and the action button; extra packages can be listed in `priority_extra_packages.txt`.
-- 🇮🇩 Install ulang tidak lagi menghapus snapshot pemulihan dari install yang gagal.
-- 🇬🇧 Reinstalling no longer deletes the recovery snapshot left by a failed install.
+- 🇮🇩 Filter UID (pendamping HMA-OSS) dirapikan jadi satu tombol, dan hasilnya tercatat di **Send Logs**. Visibilitas aplikasi tetap diatur di HMA-OSS.
+- 🇬🇧 The UID filter (HMA-OSS companion) is simplified to a single toggle, and its result is saved in **Send Logs**. App visibility is still configured in HMA-OSS.
+- 🇮🇩 Tombol baru **Perbarui filter UID** (untuk aplikasi yang baru dipasang) dan **Cek UID** (lihat UID milik aplikasi apa).
+- 🇬🇧 New **Refresh UID filter** (for newly installed apps) and **Check UID** (see which app a UID belongs to) buttons.
+- 🇮🇩 Install ulang tidak lagi menghapus cadangan pemulihan dari install yang gagal.
+- 🇬🇧 Reinstalling no longer deletes the recovery backup from a failed install.
 
 ## v0.3
 
-- 🇮🇩 Uninstall tidak lagi menyentuh `ksu_susfs`/`susfs` yang sudah menjadi milik modul lain; cadangan hanya dipulihkan ke path yang kosong.
-- 🇬🇧 Uninstall no longer touches `ksu_susfs`/`susfs` once another module owns them; backups are only restored to empty paths.
-- 🇮🇩 Data kstat dibaca sama persis oleh boot dan WebUI: key ganda dan angka seperti `01` ditolak.
-- 🇬🇧 kstat data is read identically by boot and WebUI: duplicate keys and numbers like `01` are rejected.
-- 🇮🇩 Install yang gagal memverifikasi pemulihannya dan melapor jujur bila tidak lengkap (snapshot di `/data/adb/hybrid_susfs.txn`); pratinjau WebUI sebelum reboot tidak lagi bisa tersarang.
-- 🇬🇧 A failed install verifies its restore and reports honestly if incomplete (snapshot in `/data/adb/hybrid_susfs.txn`); the pre-reboot WebUI preview can no longer end up nested.
-- 🇮🇩 Peringatan config tidak sah tetap tercatat di log; deskripsi modul menampilkan "menunggu HP dibuka kunci" selama storage belum siap; keterangan sumber angka statistik di WebUI.
-- 🇬🇧 Invalid-config warnings stay in the log; the module description shows "waiting for unlock" while storage is not ready; the WebUI explains where the stats come from.
+- 🇮🇩 Uninstall lebih aman: tidak menyentuh alat `ksu_susfs` yang sudah dipakai modul SUSFS lain.
+- 🇬🇧 Safer uninstall: it won't touch the `ksu_susfs` tool once another SUSFS module uses it.
+- 🇮🇩 Install yang gagal memulihkan keadaan sebelumnya dan melapor jujur kalau belum lengkap.
+- 🇬🇧 A failed install restores the previous state and reports honestly if it's incomplete.
+- 🇮🇩 Beberapa perbaikan kecil: angka statistik lebih akurat, dan deskripsi modul menampilkan "menunggu HP dibuka kunci" saat penyimpanan belum siap.
+- 🇬🇧 Several small fixes: more accurate stats counts, and the module description shows "waiting for unlock" while storage isn't ready.
 
 ## v0.2
 
-- 🇮🇩 Keamanan: config dibaca sebagai data dengan skema per pengaturan (tidak lagi dijalankan sebagai skrip); impor backup diperiksa ketat dan bisa dibatalkan; semua nilai yang masuk ke perintah WebUI di-escape, termasuk pemilih folder.
-- 🇬🇧 Security: config is read as data with a per-setting schema (no longer run as a script); backup import is strictly checked and rolls back on failure; every value passed to WebUI commands is escaped, including the folder picker.
-- 🇮🇩 Backup dari Export WebUI kini bisa dipulihkan lewat Import, termasuk backup buatan versi sebelumnya.
-- 🇬🇧 Backups made with WebUI Export can now be restored with Import, including backups from the previous version.
-- 🇮🇩 Install/update aman: bila gagal, keadaan sebelumnya dikembalikan persis; update di atas versi lama tidak lagi gagal.
-- 🇬🇧 Safe install/update: on failure the previous state is restored exactly; updating over the previous version no longer fails.
-- 🇮🇩 Folder aplikasi root manager kini disembunyikan, tidak dihapus. Opsi libstagefright dihapus.
-- 🇬🇧 Root manager app folders are now hidden, not deleted. The libstagefright option was removed.
-- 🇮🇩 Statistik SUS PATH/SUS MAPS dihitung dari catatan kernel; WebUI tidak macet bila satu perintah gagal; keluar WebUI cukup sekali kembali.
-- 🇬🇧 SUS PATH/SUS MAPS counts come from kernel logs; WebUI no longer stalls when one command fails; one back gesture exits the WebUI.
-- 🇮🇩 Log Send Logs memuat identitas build (MANIFEST.txt).
-- 🇬🇧 Send Logs includes the build identity (MANIFEST.txt).
+- 🇮🇩 Keamanan diperkuat: pengaturan dibaca sebagai data (bukan dijalankan sebagai skrip), dan impor backup diperiksa ketat sebelum diterapkan.
+- 🇬🇧 Security hardened: settings are read as data (not run as a script), and backup import is strictly checked before it's applied.
+- 🇮🇩 Backup dari **Export** kini bisa dipulihkan lewat **Import**, termasuk backup dari versi sebelumnya.
+- 🇬🇧 Backups made with **Export** can now be restored with **Import**, including backups from an older version.
+- 🇮🇩 Install/update lebih aman: kalau gagal, keadaan lama dikembalikan utuh; update di atas versi lama tidak lagi gagal. Keluar WebUI cukup sekali tekan kembali.
+- 🇬🇧 Safer install/update: on failure the old state is fully restored; updating over an old version no longer fails. One back gesture exits the WebUI.
+- 🇮🇩 Folder aplikasi root manager kini disembunyikan, bukan dihapus.
+- 🇬🇧 Root manager app folders are now hidden, not deleted.
 
 ## v0.1
 
-- 🇮🇩 Versi pertama: mesin SUSFS simonpunk, tampilan SideX, fitur tambahan di halaman *hybrid_susfs settings*. Tidak dirilis.
-- 🇬🇧 First version: simonpunk SUSFS engine, SideX UI, extra features on the *hybrid_susfs settings* page. Not released.
+- 🇮🇩 Versi pertama: mesin SUSFS simonpunk, tampilan SideX, fitur tambahan dari Brene. Tidak dirilis.
+- 🇬🇧 First version: simonpunk SUSFS engine, SideX UI, extra features from Brene. Not released.
