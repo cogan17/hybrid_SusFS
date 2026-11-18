@@ -87,7 +87,7 @@ In the Actions tab: **hybrid_susfs Builder** builds, **Rilis dari run** publishe
 
 | Version | Result |
 |---|---|
-| v0.8 | ⏳ /data/local/tmp inode diagnostic (logs real inode + kstat rc) |
+| v0.8 | ✅ 18 Nov 2026, tested on the phone. /data/local/tmp inode diagnostic; Duck Native Root → INFO (inode 100) |
 | v0.7 | ✅ 17 Nov 2026, tested on the phone. Audit fixes: add_sus_mount v2, literal UID filter, status save, release gate, engine_commit option |
 | v0.6 | ✅ 17 Nov 2026, tested on the phone. SELinux overlap fix (Hide Vendor SEPolicy vs Hide LineageOS strings) |
 | v0.5 | ✅ 17 Nov 2026, Cogan Kernel on the 14T Pro, SUSFS v2.4.0. Duck Detector: Danger 0, Warning 0 |
