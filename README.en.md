@@ -21,7 +21,23 @@
 > [!WARNING]
 > The maintainer/developer is not responsible for bootloops or bricks. Device owners are responsible for their own devices! Back up your data.
 
-The sidex15 SUSFS module and BRENE are both good, but you can't run them together, you have to pick one. hybrid_susfs combines them: the engine from simonpunk, the UI from sidex15, the extra features from BRENE. One module, no picking.
+## What is hybrid_susfs?
+
+If your phone is rooted (KernelSU) or runs a custom kernel, some apps can detect it and then refuse to run, limit features, or ban your account — banking apps, digital wallets, games, streaming, and so on.
+
+**SUSFS** is a feature inside the kernel that hides those traces from apps: files, folders, *mount* points, and kernel info that apps normally use to guess the phone has been modified. **hybrid_susfs is the module that drives SUSFS** — it tells the kernel what to hide, through an easy WebUI. No typing commands; just flip toggles on and off.
+
+**Why "hybrid"?** There are two popular SUSFS modules, **SideX** (sidex15) and **BRENE**, each with its own strengths but you can't install both — you have to pick one. hybrid_susfs merges all three sources into one module:
+- 🔧 **Engine** from **simonpunk** — the SUSFS core, always pulled at its latest version on build.
+- 🎨 **UI** from **SideX** — a clean, complete WebUI to configure everything.
+- ✨ **Extra features** from **BRENE** — spoof system properties, hide custom-ROM, recovery and Xposed traces, and more.
+
+You get the best of all three in one module, no picking and no conflicts.
+
+**So you don't expect too much:**
+- hybrid_susfs works at the **file, mount, and kernel** level. It does **not hide your installed-app list** — that's the job of a separate module like **HMA-OSS**, and the two are usually used together. hybrid_susfs has a *UID filter* as a companion to HMA-OSS, not a replacement.
+- **No module guarantees passing every detector.** Root-detection apps keep evolving, so this is a cat-and-mouse that is never "done". hybrid_susfs closes the common file/mount/kernel vectors and is updated continuously — which is why every release stays a *pre-release*.
+- It is **not** a tool to fool services that check via the phone's security chip (hardware/TEE-level Play Integrity); that is beyond SUSFS's reach.
 
 Made and tested on [Cogan Kernel](https://github.com/cogan17/Cogan-Kernel) (Xiaomi 14T Pro), but it should work on any other kernel with SUSFS v2.
 

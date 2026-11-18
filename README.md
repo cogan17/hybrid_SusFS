@@ -21,7 +21,23 @@
 > [!WARNING]
 > Jika terjadi bootloop atau brick, bukan tanggung jawab maintainer/developer. Pemilik device bertanggung jawab atas devicenya sendiri! Harap cadangkan datamu.
 
-SUSFS sidex15 dan BRENE dua-duanya bagus, tapi tidak bisa dipasang bareng, harus pilih salah satu. hybrid_susfs menggabungkan keduanya: mesin dari simonpunk, tampilan dari sidex15, fitur tambahan dari BRENE. Satu modul, tidak perlu pilih.
+## Apa itu hybrid_susfs?
+
+Kalau HP-mu sudah di-root (KernelSU) atau pakai kernel custom, sebagian aplikasi bisa mendeteksinya lalu menolak jalan, membatasi fitur, atau memblokir akun — misalnya aplikasi bank, dompet digital, game, atau streaming.
+
+**SUSFS** adalah fitur di dalam kernel yang menyembunyikan jejak-jejak itu dari aplikasi: file, folder, titik *mount*, dan info kernel yang biasa dipakai aplikasi untuk menebak HP sudah dimodifikasi. **hybrid_susfs adalah modul pengatur SUSFS** — dialah yang memberi tahu kernel apa saja yang harus disembunyikan, lewat WebUI yang mudah dipakai. Jadi kamu tidak perlu mengetik perintah; cukup nyalakan/matikan lewat tombol.
+
+**Kenapa "hybrid"?** Ada dua modul SUSFS populer, **SideX** (sidex15) dan **BRENE**, masing-masing punya kelebihan tapi tidak bisa dipasang bersamaan — harus pilih salah satu. hybrid_susfs menggabungkan ketiga sumber jadi satu modul:
+- 🔧 **Mesin** dari **simonpunk** — inti SUSFS, selalu diambil versi terbaru saat build.
+- 🎨 **Tampilan** dari **SideX** — WebUI rapi dan lengkap untuk mengatur semuanya.
+- ✨ **Fitur tambahan** dari **BRENE** — samarkan properti sistem, sembunyikan jejak custom ROM, recovery, Xposed, dan lainnya.
+
+Dapat yang terbaik dari ketiganya dalam satu modul, tanpa harus memilih dan tanpa bentrok.
+
+**Biar tidak salah harap:**
+- hybrid_susfs bekerja di **tingkat file, mount, dan kernel**. Ia **tidak menyembunyikan daftar aplikasi terpasang** — itu tugas modul lain seperti **HMA-OSS**, dan keduanya biasa dipakai bersama. hybrid_susfs punya *filter UID* sebagai pendamping HMA-OSS, bukan pengganti.
+- **Tidak ada modul yang menjamin lolos semua detektor.** Aplikasi pendeteksi root terus berkembang, jadi ini kucing-kucingan yang tidak pernah "selesai". hybrid_susfs menutup jalur umum berbasis file/mount/kernel dan terus diperbarui — itulah kenapa rilisnya selalu *pre-release*.
+- Ini **bukan** alat untuk menipu layanan yang mengecek lewat chip keamanan HP (Play Integrity tingkat *hardware*/TEE); yang itu di luar jangkauan SUSFS.
 
 Dibuat dan diuji di [Cogan Kernel](https://github.com/cogan17/Cogan-Kernel) (Xiaomi 14T Pro), tapi harusnya jalan juga di kernel lain yang sudah ada SUSFS v2.
 
