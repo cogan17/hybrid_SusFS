@@ -234,7 +234,10 @@ brene_boot_completed() {
 		chmod 0771 /data/local/tmp
 		chown shell:shell /data/local/tmp
 		chcon u:object_r:shell_data_file:s0 /data/local/tmp
+		# Log inode asli + hasil kstat: bukti apakah spoof inode benar-benar diterima kernel (Duck membaca inode /data/local/tmp)
+		_tmp_ino=$(busybox stat -c %i /data/local/tmp 2>/dev/null)
 		$SUSFS_BIN add_sus_kstat_statically /data/local/tmp 100 default default 4096 default default default default default default 8 4096
+		brene_log "fix_data_local_tmp: ino_asli=$_tmp_ino spoof=100 kstat_rc=$?"
 	}
 
 	# Filter UID prioritas (pendamping HMA-OSS): satu mode, satu panggilan, status di priority_uid_status.txt

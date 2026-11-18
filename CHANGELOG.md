@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.8
+
+- 🇮🇩 Diagnostik: blok "Perbaiki kejanggalan /data/local/tmp" kini mencatat inode asli dan hasil (rc) perintah spoof kstat ke log, untuk menelusuri kenapa Duck masih membaca inode asli. Tidak mengubah fitur hiding.
+- 🇬🇧 Diagnostic: the "Fix /data/local/tmp inconsistencies" block now logs the real inode and the kstat spoof command result (rc), to trace why Duck still reads the real inode. No change to hiding behaviour.
+
 ## v0.7
 
 - 🇮🇩 Perbaikan dari audit v0.6: (1) `add_sus_mount` (hanya ada di SUSFS v1) tidak lagi dipanggil pada engine v2 di cabang Sembunyikan SEPolicy Vendor / Compat Matrix — di v2 mount disembunyikan lewat kstat + hide_sus_mnts; (2) filter UID mencocokkan nama paket secara literal, bukan regex, jadi nama mirip tidak lagi dianggap sama; (3) bila status filter gagal disimpan, yang ditampilkan status baru + kode gagal, bukan status lama. Release (Latest) kini wajib sudah diuji di HP.
