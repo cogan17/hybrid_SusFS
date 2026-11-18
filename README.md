@@ -87,7 +87,7 @@ Di tab Actions: **hybrid_susfs Builder** untuk build, **Rilis dari run** untuk m
 
 | Versi | Hasil |
 |---|---|
-| v0.8 | ⏳ Diagnostik inode /data/local/tmp (log inode asli + rc kstat) |
+| v0.8 | ✅ 18 Nov 2026, diuji di HP. Diagnostik inode /data/local/tmp; Duck Native Root → INFO (inode 100) |
 | v0.7 | ✅ 17 Nov 2026, diuji di HP. Perbaikan audit: add_sus_mount v2, filter UID literal, status gagal, gate rilis, opsi engine_commit |
 | v0.6 | ✅ 17 Nov 2026, diuji di HP. Perbaikan overlap SELinux (SEPolicy Vendor vs teks LineageOS) |
 | v0.5 | ✅ 17 Nov 2026, Cogan Kernel di 14T Pro, SUSFS v2.4.0. Duck Detector: Danger 0, Warning 0 |
