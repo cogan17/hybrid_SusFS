@@ -159,7 +159,7 @@ Extra features from Brene. **Changes take effect after reboot.**
 | Toggle | Function |
 |---|---|
 | **Hide /data/local/tmp items** | Hide files in `/data/local/tmp` (often used by root tools). |
-| **Fix /data/local/tmp inconsistencies** | Tidy up mismatches in that folder. |
+| **Fix /data/local/tmp inconsistencies** | Fix that folder's permissions and disguise its inode number; kept in place until reboot. |
 | **Hide non-standard Android/ folders** | Hide unusual `Android/` folders on the sdcard. |
 | **Hide non-standard sdcard folders** | Hide unusual sdcard folders. |
 | **Hide custom recovery folders** | Hide TWRP/custom-recovery traces. |
