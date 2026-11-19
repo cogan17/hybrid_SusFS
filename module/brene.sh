@@ -163,6 +163,39 @@ brene_fake_file_redirect() {
 	brene_open_redirect "$1" "$fake" 3
 }
 
+brene_tmp_perm() {
+	chmod 0771 /data/local/tmp
+	chown shell:shell /data/local/tmp
+	chcon u:object_r:shell_data_file:s0 /data/local/tmp
+}
+
+## Spoof inode /data/local/tmp (Duck membaca inode-nya; >10000 = WARNING).
+# Kernel SUSFS menyimpan penanda AS_FLAGS_SUS_KSTAT hanya di inode yang ada di memori (i_mapping->flags)
+# dan, beda dengan sus_path_loop, tidak pernah memasangnya ulang. Bila inode dibuang dari cache
+# (tekanan RAM), penanda hilang dan inode asli terlihat lagi. Penjaga di latar belakang:
+# - cwd-nya di /data/local/tmp: inode tetap direferensikan, jadi tidak dibuang dari cache;
+# - tiap 60 detik cek inode asli; bila folder dibuat ulang, rapikan izin, pindah cwd, pasang ulang spoof.
+brene_fix_data_local_tmp() {
+	mkdir -p /data/local/tmp
+	brene_tmp_perm
+	(
+		cd /data/local/tmp || { brene_log "fix_data_local_tmp: gagal masuk /data/local/tmp"; exit 1; }
+		ino=$(busybox stat -c %i .)
+		# Spoof dipasang SETELAH cwd mengunci inode, supaya penanda berada di inode yang dijaga
+		$SUSFS_BIN add_sus_kstat_statically /data/local/tmp 100 default default 4096 default default default default default default 8 4096
+		brene_log "fix_data_local_tmp: ino_asli=$ino spoof=100 kstat_rc=$? (penjaga aktif)"
+		while sleep 60; do
+			now=$(busybox stat -c %i /data/local/tmp 2>/dev/null) || continue
+			[ "$now" = "$ino" ] && continue
+			cd /data/local/tmp || continue
+			brene_tmp_perm
+			$SUSFS_BIN add_sus_kstat_statically /data/local/tmp 100 default default 4096 default default default default default default 8 4096
+			brene_log "fix_data_local_tmp: folder dibuat ulang, ino_asli=$ino->$now kstat_rc=$?"
+			ino=$now
+		done
+	) &
+}
+
 brene_boot_completed() {
 	brene_log "boot-completed"
 
@@ -229,16 +262,7 @@ brene_boot_completed() {
 
 	[ -n "$config_spoof_verified_boot_hash" ] && resetprop -n ro.boot.vbmeta.digest "$config_spoof_verified_boot_hash"
 
-	[ "$config_fix_data_local_tmp_inconsistencies" = 1 ] && {
-		mkdir -p /data/local/tmp
-		chmod 0771 /data/local/tmp
-		chown shell:shell /data/local/tmp
-		chcon u:object_r:shell_data_file:s0 /data/local/tmp
-		# Log inode asli + hasil kstat: bukti apakah spoof inode benar-benar diterima kernel (Duck membaca inode /data/local/tmp)
-		_tmp_ino=$(busybox stat -c %i /data/local/tmp 2>/dev/null)
-		$SUSFS_BIN add_sus_kstat_statically /data/local/tmp 100 default default 4096 default default default default default default 8 4096
-		brene_log "fix_data_local_tmp: ino_asli=$_tmp_ino spoof=100 kstat_rc=$?"
-	}
+	[ "$config_fix_data_local_tmp_inconsistencies" = 1 ] && brene_fix_data_local_tmp
 
 	# Filter UID prioritas (pendamping HMA-OSS): satu mode, satu panggilan, status di priority_uid_status.txt
 	sh $MODDIR_BRENE/priority_uid.sh apply > /dev/null 2>&1 || brene_log "filter UID gagal, lihat priority_uid_status.txt"

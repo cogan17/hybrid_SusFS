@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.10
+
+- 🇮🇩 **Perbaiki kejanggalan /data/local/tmp** tidak lagi "lepas" setelah HP lama menyala. Sebelumnya penyamaran folder ini bisa hilang sendiri (misalnya saat RAM penuh) sehingga Duck Detector kembali memberi peringatan **Shell tmp inode**. Sekarang modul menjaganya sampai reboot, dan memasang ulang bila folder itu dihapus lalu dibuat lagi.
+- 🇬🇧 **Fix /data/local/tmp inconsistencies** no longer "wears off" after the phone has been on for a while. Previously the disguise on this folder could drop by itself (e.g. under memory pressure), so Duck Detector showed the **Shell tmp inode** warning again. The module now keeps it in place until reboot, and reapplies it if the folder is deleted and recreated.
+
 ## v0.9
 
 - 🇮🇩 Pemasangan lebih aman: kalau penyiapan pengaturan gagal (misalnya penyimpanan penuh), modul berhenti dan memberi tahu, tidak lagi pura-pura berhasil padahal belum. Filter UID dan tombol **Cek UID** juga lebih jujur melaporkan kalau ada yang gagal.
