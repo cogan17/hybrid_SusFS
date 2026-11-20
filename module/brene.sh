@@ -196,6 +196,29 @@ brene_fix_data_local_tmp() {
 	) &
 }
 
+## Sembunyikan /data/adb dari aplikasi (uid>=10000). /data/adb yang bisa di-stat (faccessat F_OK)
+# adalah penanda root klasik yang dibaca detektor (mis. App VD: root_dirs_present + synth_paradox).
+# BAHAYA: sus_path menyembunyikan dari SEMUA uid>=10000, termasuk app manager root. Manager membaca
+# /data/adb/modules untuk daftar modul & WebUI, jadi harus dikecualikan dulu lewat set_sus_path_uid_filter
+# (butuh CONFIG_KSU_SUSFS_SUS_PATH_UID_FILTER). Bila manager tak ketemu atau kernel tak dukung filter,
+# penyembunyian DIBATALKAN (fail-safe) — lebih baik /data/adb terlihat daripada manager buta.
+# Catatan: kalau paket manager diacak/di-rename, daftar ini tidak kena; uji di HP dulu.
+brene_hide_data_adb() {
+	local managers="me.weishu.kernelsu com.rifsxd.ksunext com.resukisu.resukisu com.sukisu.ultra com.cogan.su org.frknkrc44.hma_oss"
+	local csv="" pkg u
+	for pkg in $managers; do
+		u=$(busybox awk -v p="$pkg" '$1==p{print $2;exit}' /data/system/packages.list 2>/dev/null)
+		[ -n "$u" ] && csv="$csv${csv:+,}$pkg"
+	done
+	[ -n "$csv" ] || { brene_log "hide_data_adb: DIBATALKAN, tidak ada paket manager dikenal (acak/rename?); /data/adb dibiarkan agar manager tidak buta"; return 1; }
+	if $SUSFS_BIN set_sus_path_uid_filter "$csv" > /dev/null 2>&1; then
+		$SUSFS_BIN add_sus_path /data/adb
+		brene_log "hide_data_adb: /data/adb disembunyikan, manager dikecualikan ($csv) kstat_rc=$?"
+	else
+		brene_log "hide_data_adb: DIBATALKAN, kernel tak dukung set_sus_path_uid_filter (errno 126?); /data/adb dibiarkan agar manager tidak buta"
+	fi
+}
+
 brene_boot_completed() {
 	brene_log "boot-completed"
 
@@ -263,6 +286,8 @@ brene_boot_completed() {
 	[ -n "$config_spoof_verified_boot_hash" ] && resetprop -n ro.boot.vbmeta.digest "$config_spoof_verified_boot_hash"
 
 	[ "$config_fix_data_local_tmp_inconsistencies" = 1 ] && brene_fix_data_local_tmp
+
+	[ "$config_hide_data_adb" = 1 ] && brene_hide_data_adb
 
 	# Filter UID prioritas (pendamping HMA-OSS): satu mode, satu panggilan, status di priority_uid_status.txt
 	sh $MODDIR_BRENE/priority_uid.sh apply > /dev/null 2>&1 || brene_log "filter UID gagal, lihat priority_uid_status.txt"

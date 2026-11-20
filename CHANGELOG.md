@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.11
+
+- 🇮🇩 Toggle baru **Sembunyikan /data/adb** (default mati) untuk melewati detektor yang menandai folder root `/data/adb` yang masih terlihat aplikasi. **Wajib diuji dulu:** setelah dinyalakan, pastikan app manager (KernelSU/SukiSU dll.) masih bisa membuka daftar modul & WebUI. Kalau paket manager kamu diacak/di-rename, atau kernel tidak mendukungnya, penyembunyian otomatis dibatalkan supaya manager tidak ikut buta.
+- 🇬🇧 New **Hide /data/adb** toggle (off by default) to pass detectors that flag the still-visible `/data/adb` root folder. **Test it first:** after turning it on, make sure your manager app (KernelSU/SukiSU, etc.) can still open the module list and WebUI. If your manager package is randomized/renamed, or the kernel lacks support, the hiding is cancelled automatically so the manager does not go blind.
+
 ## v0.10
 
 - 🇮🇩 **Perbaiki kejanggalan /data/local/tmp** tidak lagi "lepas" setelah HP lama menyala. Sebelumnya penyamaran folder ini bisa hilang sendiri (misalnya saat RAM penuh) sehingga Duck Detector kembali memberi peringatan **Shell tmp inode**. Sekarang modul menjaganya sampai reboot, dan memasang ulang bila folder itu dihapus lalu dibuat lagi.

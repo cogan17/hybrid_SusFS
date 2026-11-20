@@ -160,6 +160,7 @@ Fitur tambahan dari Brene. **Perubahan aktif setelah reboot.**
 |---|---|
 | **Sembunyikan isi /data/local/tmp** | Sembunyikan file di `/data/local/tmp` (sering dipakai alat root). |
 | **Perbaiki kejanggalan /data/local/tmp** | Rapikan izin folder itu dan samarkan nomor inode-nya; dijaga sampai reboot. |
+| **Sembunyikan /data/adb** | Sembunyikan folder root `/data/adb` dari aplikasi (default mati). Kecualikan manager dulu; kalau gagal, penyembunyian dibatalkan. Uji manager setelah dinyalakan. |
 | **Sembunyikan folder Android/ tidak standar** | Sembunyikan folder `Android/` tak lazim di sdcard. |
 | **Sembunyikan folder sdcard tidak standar** | Sembunyikan folder sdcard tak lazim. |
 | **Sembunyikan folder custom recovery** | Sembunyikan jejak TWRP/recovery custom. |

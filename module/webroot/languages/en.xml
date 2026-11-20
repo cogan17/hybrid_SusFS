@@ -142,6 +142,7 @@
   <string id="brene_paths_label">Hide Paths</string>
   <string id="brene_paths_hiding__data_local_tmp_label">Hide /data/local/tmp items</string>
   <string id="brene_fix_data_local_tmp_inconsistencies_label">Fix /data/local/tmp inconsistencies</string>
+  <string id="brene_hide_data_adb_label">Hide /data/adb (test manager first)</string>
   <string id="brene_paths_hiding__non_standard_sdcard_android_label">Hide non-standard Android/ folders</string>
   <string id="brene_paths_hiding__non_standard_sdcard_label">Hide non-standard sdcard folders</string>
   <string id="brene_hide_custom_recovery_label">Hide custom recovery folders</string>
