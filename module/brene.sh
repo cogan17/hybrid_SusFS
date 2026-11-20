@@ -298,6 +298,10 @@ brene_boot_completed() {
 
 	[ "$config_hide_data_adb" = 1 ] && brene_hide_data_adb
 
+	# Rapikan cgroup proses root (Futile Test: proses root di cgroup akar/aplikasi = pola non-stok).
+	# Daemon latar, tidak butuh storage; dimulai sekali, menyapu tiap 10 detik.
+	[ "$config_hide_root_cgroup" = 1 ] && { sh $MODDIR_BRENE/cgroup_tidy.sh & brene_log "hide_root_cgroup: daemon cgroup_tidy dijalankan"; }
+
 	# Filter UID prioritas (pendamping HMA-OSS): satu mode, satu panggilan, status di priority_uid_status.txt
 	sh $MODDIR_BRENE/priority_uid.sh apply > /dev/null 2>&1 || brene_log "filter UID gagal, lihat priority_uid_status.txt"
 
