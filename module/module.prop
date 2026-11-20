@@ -1,7 +1,7 @@
 id=hybrid_susfs
 name=hybrid_susfs
-version=v0.11
-versionCode=11
+version=v0.12
+versionCode=12
 author=Cogan (sidex15, rrr333nnn333, simonpunk)
 updateJson=https://raw.githubusercontent.com/cogan17/hybrid_SusFS/Utama/update.json
 description=hybrid_susfs: modul SUSFS untuk KernelSU / SUSFS module for KernelSU

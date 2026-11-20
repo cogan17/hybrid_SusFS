@@ -232,9 +232,15 @@ brene_boot_completed() {
 	case "$config_developer_options" in 0|1) settings put global development_settings_enabled $config_developer_options ;; esac
 	case "$config_usb_debugging" in 0|1) settings put global adb_enabled $config_usb_debugging ;; esac
 	case "$config_wireless_debugging" in 0|1) settings put global adb_wifi_enabled $config_wireless_debugging ;; esac
-	# Hanya di memori (-n tanpa -p, tidak lewat property_service): nilai tersimpan pemilik tidak disentuh,
-	# jadi saat toggle mati prop otomatis kembali ke nilai asli setelah reboot. Jangan hapus dengan -p.
-	[ "$config_disable_child_process_restrictions" = 1 ] && resetprop -n persist.sys.fflag.override.settings_enable_monitor_phantom_procs false
+	# Nonaktifkan phantom process killing lewat device_config (naikkan batas), BUKAN fflag override prop.
+	# Prop persist.sys.fflag.override.settings_enable_monitor_phantom_procs terbaca detektor (mis. App VD:
+	# phantom_monitor_prop + phantom_monitor_setting) sebagai penanda; device_config/max_phantom_processes
+	# tidak diperiksa. set_sync_disabled_for_tests menahan sinkron server menimpa nilai; diterapkan ulang
+	# tiap boot. Nilai lama (-n, hanya memori) hilang sendiri setelah reboot, jadi tidak perlu dihapus.
+	[ "$config_disable_child_process_restrictions" = 1 ] && {
+		cmd device_config set_sync_disabled_for_tests persistent 2>/dev/null
+		cmd device_config put activity_manager max_phantom_processes 2147483647 2>/dev/null
+	}
 	[ "$config_saturation" = 1 ] && service call SurfaceFlinger 1022 f 2.0
 	[ "$config_show_refresh_rate" = 1 ] && service call SurfaceFlinger 1034 i32 1
 	[ "$config_shrink_buffer_size" = 1 ] && logcat -G 64K

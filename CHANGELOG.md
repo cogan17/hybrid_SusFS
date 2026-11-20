@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.12
+
+- 🇮🇩 Fitur **Nonaktifkan batasan proses anak** (phantom process) sekarang pakai cara yang tidak meninggalkan jejak terbaca detektor. Sebelumnya memasang prop `persist.sys.fflag.override...` yang ditandai App VD (phantom_monitor); sekarang lewat `device_config` yang tidak diperiksa. Fungsi tetap sama (proses latar belakang tidak dibunuh), hanya caranya lebih senyap.
+- 🇬🇧 The **Disable child process restrictions** (phantom process) feature now uses a method that leaves no detector-readable trace. It previously set a `persist.sys.fflag.override...` prop that App VD flagged (phantom_monitor); it now goes through `device_config`, which is not probed. Same effect (background processes are not killed), just quieter.
+
 ## v0.11
 
 - 🇮🇩 Toggle baru **Sembunyikan /data/adb** (default mati) untuk melewati detektor yang menandai folder root `/data/adb` yang masih terlihat aplikasi. **Wajib diuji dulu:** setelah dinyalakan, pastikan app manager (KernelSU/SukiSU dll.) masih bisa membuka daftar modul & WebUI. Kalau paket manager kamu diacak/di-rename, atau kernel tidak mendukungnya, penyembunyian otomatis dibatalkan supaya manager tidak ikut buta.
