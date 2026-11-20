@@ -12,13 +12,8 @@ on:
         description: "ID run Builder yang hijau / green Builder run ID"
         required: true
         type: string
-      release_type:
-        description: "Pre-Release atau / or Release (Release = Latest)"
-        type: choice
-        default: "Pre-Release"
-        options:
-          - "Pre-Release"
-          - "Release"
+      # Modul ini SELALU Pre-Release: detektor berkembang tiap hari, tidak ada rilis yang
+      # bisa dianggap final/Latest (owner, 20 Nov 2026). Opsi "Release/Latest" dihapus.
       diuji_di_hp:
         description: "ZIP run ini sudah diuji owner di HP / tested by the owner on the phone"
         type: boolean
@@ -46,12 +41,11 @@ concurrency:
 
 jobs:
   release:
-    name: Rilis dari run ${{ inputs.run_id }} (${{ inputs.release_type }})
+    name: Rilis dari run ${{ inputs.run_id }} (Pre-Release)
     runs-on: ubuntu-24.04
     env:
       GH_TOKEN: ${{ github.token }}
       SOURCE_RUN: ${{ inputs.run_id }}
-      RELEASE_TYPE: ${{ inputs.release_type }}
       TESTED: ${{ inputs.diuji_di_hp }}
       NOTE: ${{ inputs.catatan }}
       NOTE_EN: ${{ inputs.catatan_en }}
@@ -109,11 +103,6 @@ jobs:
       - name: Terbitkan / publish
         run: |
           set -euo pipefail
-          # Release (Latest) wajib sudah diuji di HP (aturan repo); Pre-Release boleh belum diuji
-          if [ "$RELEASE_TYPE" = "Release" ] && [ "$TESTED" != "true" ]; then
-            echo "::error::Release (Latest) wajib diuji di HP: centang diuji_di_hp, atau pakai Pre-Release / Release requires a phone test; tick diuji_di_hp or use Pre-Release"
-            exit 1
-          fi
           replaced=false
           if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             if [ "$REPLACE" != "true" ]; then
@@ -129,7 +118,7 @@ jobs:
           there="$(workflows_at "$sha")"
           here="$(workflows_at "$GITHUB_SHA")"
           target="$sha"; [ -n "$there" ] && [ "$there" = "$here" ] || target="$GITHUB_SHA"
-          mode=(--prerelease); [ "$RELEASE_TYPE" = "Release" ] && mode=(--latest)
+          mode=(--prerelease)  # selalu Pre-Release (lihat input); tidak pernah --latest
           # Replace only now, after every check passed and the files are ready.
           if [ "$replaced" = true ]; then
             # Tag first: a tag that cannot be deleted would point the new release at the old commit.
@@ -142,8 +131,8 @@ jobs:
             --title "hybrid_susfs $VERSION" --notes-file notes.md
           {
             echo "## Rilis dari run / release from run"
-            echo "- 🇮🇩 Terbit: [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) ($RELEASE_TYPE)$([ "$TESTED" = "true" ] && echo ", diuji di HP")$([ "$replaced" = true ] && echo ", menimpa rilis lama")"
-            echo "- 🇬🇧 Published: [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) ($RELEASE_TYPE)$([ "$TESTED" = "true" ] && echo ", tested on the phone")$([ "$replaced" = true ] && echo ", replaced the old release")"
+            echo "- 🇮🇩 Terbit: [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) (Pre-Release)$([ "$TESTED" = "true" ] && echo ", diuji di HP")$([ "$replaced" = true ] && echo ", menimpa rilis lama")"
+            echo "- 🇬🇧 Published: [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) (Pre-Release)$([ "$TESTED" = "true" ] && echo ", tested on the phone")$([ "$replaced" = true ] && echo ", replaced the old release")"
             echo
             echo '<details><summary>📝 Catatan rilis / Release notes</summary>'
             echo

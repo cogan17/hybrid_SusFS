@@ -31,6 +31,7 @@ Disalin dari `CLAUDE.md` di [cogan17/Cogan-Kernel](https://github.com/cogan17/Co
   - cek visual semua halaman WebUI di layar sempit dan beberapa bahasa
   - uji HP sesuai checklist di issue
 - Rilis hanya setelah semua lolos. Yang belum terbukti ditulis jelas, jangan dianggap aman.
+- **Selalu Pre-Release, tidak pernah Release/Latest** (owner, 20 Nov 2026: "tidak bisa release hanya bisa pre-release karena detektor terus berkembang setiap harinya"). Tidak ada rilis hybrid_susfs yang bisa dianggap final: detektor berubah tiap hari. Workflow "Rilis dari run" sudah dikunci ke `--prerelease` (opsi Release/Latest dihapus). Jangan pernah menandai rilis sebagai Latest.
 
 ## Penomoran versi (khusus repo hybrid_susfs, owner 18 Nov 2026)
 
