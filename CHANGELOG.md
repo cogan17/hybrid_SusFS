@@ -1,9 +1,14 @@
 # Changelog
 
+## v0.14
+
+- 🇮🇩 **Membersihkan sisa penanda mode-tes v0.12.** Metode `device_config` di v0.12 memasang `set_sync_disabled_for_tests persistent` dan `max_phantom_processes` yang bertahan lintas reboot; v0.13 hanya berhenti memasang, tidak menghapus. v0.14 mengembalikannya ke default saat boot. (Naik ke v0.14 untuk membedakan dari dua build v0.13 yang sempat beredar.)
+- 🇬🇧 **Cleans up the v0.12 test-mode marker.** The `device_config` method in v0.12 set `set_sync_disabled_for_tests persistent` and `max_phantom_processes`, which survive reboots; v0.13 only stopped setting them, without removing. v0.14 resets them to default at boot. (Bumped to v0.14 to distinguish from the two v0.13 builds that circulated.)
+
 ## v0.13
 
-- 🇮🇩 **Perbaikan regresi v0.12.** Cara baru menonaktifkan phantom process (`device_config`) meninggalkan penanda mode-tes yang bertahan lintas reboot. Dikembalikan ke cara lama (prop di memori), dan **sisa penanda dari v0.12 ikut dibersihkan otomatis** saat boot. Menyembunyikan phantom tidak bisa sepenuhnya tak terlihat di semua detektor; cara ini yang paling kecil jejaknya.
-- 🇬🇧 **Fixes a v0.12 regression.** The new way of disabling phantom process monitoring (`device_config`) left a test-mode marker that persisted across reboots. Reverted to the old in-memory prop method, and **the leftover marker from v0.12 is now cleaned up automatically** at boot. Hiding phantom cannot be fully invisible to every detector; this method leaves the least trace.
+- 🇮🇩 **Perbaikan regresi v0.12.** Metode `device_config` untuk menonaktifkan phantom process dikembalikan ke cara lama (prop di memori) yang jejaknya lebih kecil. Menyembunyikan phantom tidak bisa sepenuhnya tak terlihat di semua detektor.
+- 🇬🇧 **Fixes a v0.12 regression.** The `device_config` method for disabling phantom process monitoring was reverted to the old in-memory prop method, which leaves a smaller footprint. Hiding phantom cannot be fully invisible to every detector.
 
 ## v0.12
 
