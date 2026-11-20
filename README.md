@@ -103,6 +103,7 @@ Di tab Actions: **hybrid_susfs Builder** untuk build, **Rilis dari run** untuk m
 
 | Versi | Hasil |
 |---|---|
+| v0.15 | ✅ 20 Nov 2026, diuji di HP. Toggle Rapikan cgroup root: Futile Test → Normal; manager & WebUI aman, Duck 0/0, VD tanpa regresi (Cogan-Kernel #194) |
 | v0.14 | ✅ 20 Nov 2026, diuji di HP. Pembersih sisa device_config v0.12 (none/null, bertahan reboot); Duck 0/0. App VD/Futile sisa = di luar jangkauan SUSFS (cgroup/TEE/stok ROM) |
 | v0.11 | ✅ 20 Nov 2026, diuji di HP. App VD: `/data/adb` tidak terlihat lagi (root_dirs_present & synth_paradox → MATCH), manager tetap jalan |
 | v0.10 | ✅ 19 Nov 2026, diuji di HP. Duck Detector: `Shell tmp inode` tidak muncul lagi (spoof /data/local/tmp dijaga sampai reboot) |
