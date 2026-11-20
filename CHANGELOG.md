@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.13
+
+- 🇮🇩 **Perbaikan regresi v0.12.** Cara baru menonaktifkan phantom process (`device_config`) ternyata memunculkan penanda mode-tes yang ditandai detektor lain (Futile jadi "Abnormal"). Dikembalikan ke cara lama (prop di memori) yang lebih ringan. Menyembunyikan phantom tidak bisa sepenuhnya tak terlihat di semua detektor; cara ini yang paling kecil jejaknya.
+- 🇬🇧 **Fixes a v0.12 regression.** The new way of disabling phantom process monitoring (`device_config`) introduced a test-mode marker that another detector flagged (Futile turned "Abnormal"). Reverted to the old in-memory prop method, which has a smaller footprint. Hiding phantom cannot be fully invisible to every detector; this method leaves the least trace.
+
 ## v0.12
 
 - 🇮🇩 Fitur **Nonaktifkan batasan proses anak** (phantom process) sekarang pakai cara yang tidak meninggalkan jejak terbaca detektor. Sebelumnya memasang prop `persist.sys.fflag.override...` yang ditandai App VD (phantom_monitor); sekarang lewat `device_config` yang tidak diperiksa. Fungsi tetap sama (proses latar belakang tidak dibunuh), hanya caranya lebih senyap.

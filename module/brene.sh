@@ -232,15 +232,13 @@ brene_boot_completed() {
 	case "$config_developer_options" in 0|1) settings put global development_settings_enabled $config_developer_options ;; esac
 	case "$config_usb_debugging" in 0|1) settings put global adb_enabled $config_usb_debugging ;; esac
 	case "$config_wireless_debugging" in 0|1) settings put global adb_wifi_enabled $config_wireless_debugging ;; esac
-	# Nonaktifkan phantom process killing lewat device_config (naikkan batas), BUKAN fflag override prop.
-	# Prop persist.sys.fflag.override.settings_enable_monitor_phantom_procs terbaca detektor (mis. App VD:
-	# phantom_monitor_prop + phantom_monitor_setting) sebagai penanda; device_config/max_phantom_processes
-	# tidak diperiksa. set_sync_disabled_for_tests menahan sinkron server menimpa nilai; diterapkan ulang
-	# tiap boot. Nilai lama (-n, hanya memori) hilang sendiri setelah reboot, jadi tidak perlu dihapus.
-	[ "$config_disable_child_process_restrictions" = 1 ] && {
-		cmd device_config set_sync_disabled_for_tests persistent 2>/dev/null
-		cmd device_config put activity_manager max_phantom_processes 2147483647 2>/dev/null
-	}
+	# Nonaktifkan phantom process killing lewat fflag override prop (-n: hanya di memori, tidak lewat
+	# property_service; nilai pemilik tak disentuh, kembali sendiri saat reboot bila toggle mati).
+	# CATATAN (v0.13): cara device_config (max_phantom_processes + set_sync_disabled_for_tests) DIBATALKAN
+	# karena set_sync_disabled_for_tests adalah flag mode-tes yang ditandai detektor lain (Futile → Abnormal).
+	# Menyembunyikan phantom itu whack-a-mole: fflag ditandai App VD (phantom_monitor_prop), device_config
+	# ditandai Futile. fflag dipilih karena paling ringan (hanya satu detektor, sinyal lemah).
+	[ "$config_disable_child_process_restrictions" = 1 ] && resetprop -n persist.sys.fflag.override.settings_enable_monitor_phantom_procs false
 	[ "$config_saturation" = 1 ] && service call SurfaceFlinger 1022 f 2.0
 	[ "$config_show_refresh_rate" = 1 ] && service call SurfaceFlinger 1034 i32 1
 	[ "$config_shrink_buffer_size" = 1 ] && logcat -G 64K
