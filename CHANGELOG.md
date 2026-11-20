@@ -2,8 +2,8 @@
 
 ## v0.13
 
-- 🇮🇩 **Perbaikan regresi v0.12.** Cara baru menonaktifkan phantom process (`device_config`) ternyata memunculkan penanda mode-tes yang ditandai detektor lain (Futile jadi "Abnormal"). Dikembalikan ke cara lama (prop di memori) yang lebih ringan. Menyembunyikan phantom tidak bisa sepenuhnya tak terlihat di semua detektor; cara ini yang paling kecil jejaknya.
-- 🇬🇧 **Fixes a v0.12 regression.** The new way of disabling phantom process monitoring (`device_config`) introduced a test-mode marker that another detector flagged (Futile turned "Abnormal"). Reverted to the old in-memory prop method, which has a smaller footprint. Hiding phantom cannot be fully invisible to every detector; this method leaves the least trace.
+- 🇮🇩 **Perbaikan regresi v0.12.** Cara baru menonaktifkan phantom process (`device_config`) meninggalkan penanda mode-tes yang bertahan lintas reboot. Dikembalikan ke cara lama (prop di memori), dan **sisa penanda dari v0.12 ikut dibersihkan otomatis** saat boot. Menyembunyikan phantom tidak bisa sepenuhnya tak terlihat di semua detektor; cara ini yang paling kecil jejaknya.
+- 🇬🇧 **Fixes a v0.12 regression.** The new way of disabling phantom process monitoring (`device_config`) left a test-mode marker that persisted across reboots. Reverted to the old in-memory prop method, and **the leftover marker from v0.12 is now cleaned up automatically** at boot. Hiding phantom cannot be fully invisible to every detector; this method leaves the least trace.
 
 ## v0.12
 
