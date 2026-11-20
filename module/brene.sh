@@ -232,12 +232,17 @@ brene_boot_completed() {
 	case "$config_developer_options" in 0|1) settings put global development_settings_enabled $config_developer_options ;; esac
 	case "$config_usb_debugging" in 0|1) settings put global adb_enabled $config_usb_debugging ;; esac
 	case "$config_wireless_debugging" in 0|1) settings put global adb_wifi_enabled $config_wireless_debugging ;; esac
+	# Bersihkan sisa metode device_config v0.12 (set_sync_disabled_for_tests persistent + max_phantom_processes).
+	# "persistent" bertahan lintas reboot, jadi berhenti memasang saja (v0.13) tidak cukup — harus dikembalikan.
+	# set_sync_disabled_for_tests adalah flag mode-tes yang terbaca detektor; kembalikan ke default. Idempoten,
+	# selalu jalan agar HP yang sempat pakai v0.12 ikut bersih. (Tidak ada hubungannya dengan Futile, yang
+	# mendeteksi lewat cgroup cpu.stat proses, bukan device_config.)
+	cmd device_config set_sync_disabled_for_tests none 2>/dev/null
+	cmd device_config delete activity_manager max_phantom_processes 2>/dev/null
 	# Nonaktifkan phantom process killing lewat fflag override prop (-n: hanya di memori, tidak lewat
 	# property_service; nilai pemilik tak disentuh, kembali sendiri saat reboot bila toggle mati).
-	# CATATAN (v0.13): cara device_config (max_phantom_processes + set_sync_disabled_for_tests) DIBATALKAN
-	# karena set_sync_disabled_for_tests adalah flag mode-tes yang ditandai detektor lain (Futile → Abnormal).
-	# Menyembunyikan phantom itu whack-a-mole: fflag ditandai App VD (phantom_monitor_prop), device_config
-	# ditandai Futile. fflag dipilih karena paling ringan (hanya satu detektor, sinyal lemah).
+	# fflag dipilih (bukan device_config) karena tidak meninggalkan flag mode-tes; hanya ditandai App VD
+	# (phantom_monitor_prop, sinyal lemah). Menyembunyikan phantom tak bisa tak terlihat di semua detektor.
 	[ "$config_disable_child_process_restrictions" = 1 ] && resetprop -n persist.sys.fflag.override.settings_enable_monitor_phantom_procs false
 	[ "$config_saturation" = 1 ] && service call SurfaceFlinger 1022 f 2.0
 	[ "$config_show_refresh_rate" = 1 ] && service call SurfaceFlinger 1034 i32 1
