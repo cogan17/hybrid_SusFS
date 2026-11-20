@@ -29,6 +29,7 @@ config_hide_ksu_directories=0
 config_hide_third_party_apps=1
 config_hide_all_apps_with_uid_10000_and_above=0
 config_fix_data_local_tmp_inconsistencies=1
+config_hide_data_adb=0
 config_spoof_system_properties=1
 config_spoof_os_security_patch_level_property=1
 config_spoof_vendor_security_patch_level_property=1

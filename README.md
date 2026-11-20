@@ -103,6 +103,7 @@ Di tab Actions: **hybrid_susfs Builder** untuk build, **Rilis dari run** untuk m
 
 | Versi | Hasil |
 |---|---|
+| v0.10 | ✅ 19 Nov 2026, diuji di HP. Duck Detector: `Shell tmp inode` tidak muncul lagi (spoof /data/local/tmp dijaga sampai reboot) |
 | v0.9 | ✅ 18 Nov 2026, diuji di HP (install+update, tidak bootloop). Perbaikan audit v0.8 |
 | v0.8 | ✅ 18 Nov 2026, diuji di HP. Diagnostik inode /data/local/tmp; Duck Native Root → INFO (inode 100) |
 | v0.7 | ✅ 17 Nov 2026, diuji di HP. Perbaikan audit: add_sus_mount v2, filter UID literal, status gagal, gate rilis, opsi engine_commit |

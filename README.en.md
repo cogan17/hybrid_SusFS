@@ -103,6 +103,7 @@ In the Actions tab: **hybrid_susfs Builder** builds, **Rilis dari run** publishe
 
 | Version | Result |
 |---|---|
+| v0.10 | ✅ 19 Nov 2026, tested on the phone. Duck Detector: `Shell tmp inode` no longer shows (/data/local/tmp spoof kept until reboot) |
 | v0.9 | ✅ 18 Nov 2026, tested on the phone (install+update, no bootloop). v0.8 audit fixes |
 | v0.8 | ✅ 18 Nov 2026, tested on the phone. /data/local/tmp inode diagnostic; Duck Native Root → INFO (inode 100) |
 | v0.7 | ✅ 17 Nov 2026, tested on the phone. Audit fixes: add_sus_mount v2, literal UID filter, status save, release gate, engine_commit option |
