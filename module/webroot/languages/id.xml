@@ -143,6 +143,7 @@
   <string id="brene_paths_hiding__data_local_tmp_label">Sembunyikan isi /data/local/tmp</string>
   <string id="brene_fix_data_local_tmp_inconsistencies_label">Perbaiki kejanggalan /data/local/tmp</string>
   <string id="brene_hide_data_adb_label">Sembunyikan /data/adb (uji manager dulu)</string>
+  <string id="brene_hide_root_cgroup_label">Rapikan cgroup root (Futile Test)</string>
   <string id="brene_paths_hiding__non_standard_sdcard_android_label">Sembunyikan folder Android/ tidak standar</string>
   <string id="brene_paths_hiding__non_standard_sdcard_label">Sembunyikan folder sdcard tidak standar</string>
   <string id="brene_hide_custom_recovery_label">Sembunyikan folder custom recovery</string>

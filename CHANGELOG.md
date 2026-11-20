@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.15
+
+- 🇮🇩 Toggle baru **Rapikan cgroup root** (default mati) untuk melewati Futile Test. Di HP stok, layanan root ada di `/sys/fs/cgroup/system/uid_0`; KernelSU menaruh skrip modul di cgroup akar dan shell manager di cgroup aplikasi — pola non-stok yang dibaca Futile. Toggle ini memindahkan proses root ke tempat yang sama dengan layanan root bawaan. Diuji: setelah dipindah, Futile Normal. (Dari investigasi Cogan-Kernel #194.)
+- 🇬🇧 New **Tidy root cgroup** toggle (off by default) to pass Futile Test. On a stock phone, root services live under `/sys/fs/cgroup/system/uid_0`; KernelSU puts module scripts in the root cgroup and the manager shell in an app cgroup — a non-stock pattern Futile reads. This toggle moves root processes to where the built-in root services sit. Tested: after moving, Futile is Normal. (From Cogan-Kernel investigation #194.)
+
 ## v0.14
 
 - 🇮🇩 **Membersihkan sisa penanda mode-tes v0.12.** Metode `device_config` di v0.12 memasang `set_sync_disabled_for_tests persistent` dan `max_phantom_processes` yang bertahan lintas reboot; v0.13 hanya berhenti memasang, tidak menghapus. v0.14 mengembalikannya ke default saat boot. (Naik ke v0.14 untuk membedakan dari dua build v0.13 yang sempat beredar.)
