@@ -32,6 +32,14 @@ report Brene "$BRENE_REPO" "$BRENE_BRANCH" "$BRENE_COMMIT"
 echo
 echo "== simonpunk ($SUSFS_BRANCH) — mesin, otomatis setiap build"
 if fetch "$SUSFS_REPO" "$SUSFS_BRANCH" "$TMP/susfs"; then
+	head=$(git -C "$TMP/susfs" rev-parse HEAD)
+	if [ "$head" = "${SUSFS_COMMIT:-}" ]; then
+		echo "   ✅ Tidak ada perubahan (${SUSFS_COMMIT:0:7})"
+	elif [ -n "${SUSFS_COMMIT:-}" ]; then
+		n=$(git -C "$TMP/susfs" rev-list --count "$SUSFS_COMMIT..$head" 2>/dev/null || echo "?")
+		echo "   🆕 $n commit baru sejak rilis terakhir: ${SUSFS_COMMIT:0:7} → ${head:0:7}"
+		git -C "$TMP/susfs" log --format='      %cd  %s' --date=short "$SUSFS_COMMIT..$head" 2>/dev/null | head -20
+	fi
 	git -C "$TMP/susfs" log -1 --format='   Terbaru: %h  %cd  %s' --date=short
 	git -C "$TMP/susfs" show HEAD:kernel_patches/include/linux/susfs.h | grep -oE 'SUSFS_VERSION "v[0-9.]+"' | sed 's/^/   /'
 	git -C "$TMP/susfs" show HEAD:ksu_susfs/jni/main.c > "$TMP/main.c"
