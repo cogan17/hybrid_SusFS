@@ -169,6 +169,7 @@ Extra features from Brene. **Changes take effect after reboot.**
 | **Hide /system/addon.d** | Hide the `addon.d` survival scripts. |
 | **Hide suspicious PTYs** | Hide suspicious PTY terminals. |
 | **Hide framework-res.apk maps** | Hide modified `framework-res.apk` map entries. |
+| **Spoof libstagefright.so** | Redirect `libstagefright.so` to an empty file for apps; the media service is unaffected. Off by default. |
 | **Hide Vector (Xposed) injection** | Hide Vector/Xposed injection traces. |
 
 ### App UID Filter (HMA-OSS companion)

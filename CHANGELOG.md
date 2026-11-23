@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.16
+
+- 🇮🇩 Toggle baru **Samarkan libstagefright.so** (default mati) dari BRENE v0.0.77: mengalihkan `/system/lib64/libstagefright.so` ke file kosong untuk aplikasi (sebagian detektor memindai library ini). Media service yang benar-benar memuatnya tidak terpengaruh.
+- 🇬🇧 New **Spoof libstagefright.so** toggle (off by default) from BRENE v0.0.77: redirects `/system/lib64/libstagefright.so` to an empty file for apps (some detectors scan this library). The media service that actually loads it is unaffected.
+
 ## v0.15
 
 - 🇮🇩 Toggle baru **Rapikan cgroup root** (default mati) untuk melewati Futile Test. Di HP stok, layanan root ada di `/sys/fs/cgroup/system/uid_0`; KernelSU menaruh skrip modul di cgroup akar dan shell manager di cgroup aplikasi — pola non-stok yang dibaca Futile. Toggle ini memindahkan proses root ke tempat yang sama dengan layanan root bawaan. Diuji: setelah dipindah, Futile Normal. (Dari investigasi Cogan-Kernel #194.)

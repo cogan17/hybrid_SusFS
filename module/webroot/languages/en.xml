@@ -151,6 +151,7 @@
   <string id="brene_hide_addon_d_label">Hide /system/addon.d</string>
   <string id="brene_hide_suspicious_pty_label">Hide suspicious PTYs</string>
   <string id="brene_hide_framework_res_apk_label">Hide framework-res.apk maps</string>
+  <string id="brene_spoof_libstagefright_label">Spoof libstagefright.so</string>
   <string id="brene_hide_vector_injection_label">Hide Vector (Xposed) injection</string>
   <string id="brene_apps_label">App UID Filter</string>
   <string id="brene_hide_third_party_apps_label">Third-party UID filter (HMA-OSS companion)</string>

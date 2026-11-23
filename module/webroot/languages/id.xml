@@ -151,6 +151,7 @@
   <string id="brene_hide_addon_d_label">Sembunyikan /system/addon.d</string>
   <string id="brene_hide_suspicious_pty_label">Sembunyikan PTY mencurigakan</string>
   <string id="brene_hide_framework_res_apk_label">Sembunyikan maps framework-res.apk</string>
+  <string id="brene_spoof_libstagefright_label">Samarkan libstagefright.so</string>
   <string id="brene_hide_vector_injection_label">Sembunyikan injeksi Vector (Xposed)</string>
   <string id="brene_apps_label">Filter UID Aplikasi</string>
   <string id="brene_hide_third_party_apps_label">Filter UID aplikasi pihak ketiga (pendamping HMA-OSS)</string>
