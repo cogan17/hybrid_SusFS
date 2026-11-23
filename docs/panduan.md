@@ -169,6 +169,7 @@ Fitur tambahan dari Brene. **Perubahan aktif setelah reboot.**
 | **Sembunyikan /system/addon.d** | Sembunyikan skrip survival `addon.d`. |
 | **Sembunyikan PTY mencurigakan** | Sembunyikan terminal PTY yang mencurigakan. |
 | **Sembunyikan maps framework-res.apk** | Sembunyikan entri maps `framework-res.apk` yang dimodifikasi. |
+| **Samarkan libstagefright.so** | Alihkan `libstagefright.so` ke file kosong untuk aplikasi; media service tidak terpengaruh. Default mati. |
 | **Sembunyikan injeksi Vector (Xposed)** | Sembunyikan jejak injeksi Vector/Xposed. |
 
 ### Filter UID Aplikasi (pendamping HMA-OSS)

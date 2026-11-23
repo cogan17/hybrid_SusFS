@@ -283,6 +283,10 @@ brene_boot_completed() {
 		[ -e /system_ext/etc/permissions/Updater.xml ] && brene_fake_file_redirect /system_ext/etc/permissions/Updater.xml
 	}
 
+	# Alihkan /system/lib64/libstagefright.so ke file kosong untuk aplikasi (detektor memindai lib ini).
+	# Hanya open-redirect untuk uid>=10000; media service (yang benar-benar memuat lib) tidak terpengaruh.
+	[ "$config_spoof_libstagefright" = 1 ] && [ -e /system/lib64/libstagefright.so ] && brene_fake_file_redirect /system/lib64/libstagefright.so
+
 	# Tidak butuh storage: jalan dulu supaya tidak ikut tertahan bila storage belum siap
 	[ "$config_paths_hiding__data_local_tmp" = 1 ] && for i in /data/local/tmp/*; do
 		[ -e "$i" ] && brene_sus_path_loop "$i"
