@@ -103,6 +103,8 @@ In the Actions tab: **hybrid_susfs Builder** builds, **Rilis dari run** publishe
 
 | Version | Result |
 |---|---|
+| v0.17 | ✅ 25 Nov 2026, Pre-Release. SukiSU Nova package support (com.sukisu.nova). Small change, deemed no issue |
+| v0.16 | ✅ 25 Nov 2026, Pre-Release. Spoof libstagefright.so toggle (off by default, from BRENE v0.0.77). Deemed no issue |
 | v0.15 | ✅ 20 Nov 2026, tested on the phone. Tidy root cgroup toggle: Futile Test → Normal; manager & WebUI OK, Duck 0/0, VD no regression (Cogan-Kernel #194) |
 | v0.14 | ✅ 20 Nov 2026, tested on the phone. Cleans up v0.12 device_config leftovers (none/null, persists across reboot); Duck 0/0. Remaining App VD/Futile findings are out of SUSFS scope (cgroup/TEE/stock ROM) |
 | v0.11 | ✅ 20 Nov 2026, tested on the phone. App VD: `/data/adb` no longer visible (root_dirs_present & synth_paradox → MATCH), manager still works |

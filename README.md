@@ -103,6 +103,8 @@ Di tab Actions: **hybrid_susfs Builder** untuk build, **Rilis dari run** untuk m
 
 | Versi | Hasil |
 |---|---|
+| v0.17 | ✅ 25 Nov 2026, Pre-Release. Dukungan paket SukiSU Nova (com.sukisu.nova). Perubahan kecil, dianggap tanpa issue |
+| v0.16 | ✅ 25 Nov 2026, Pre-Release. Toggle Samarkan libstagefright.so (default mati, dari BRENE v0.0.77). Dianggap tanpa issue |
 | v0.15 | ✅ 20 Nov 2026, diuji di HP. Toggle Rapikan cgroup root: Futile Test → Normal; manager & WebUI aman, Duck 0/0, VD tanpa regresi (Cogan-Kernel #194) |
 | v0.14 | ✅ 20 Nov 2026, diuji di HP. Pembersih sisa device_config v0.12 (none/null, bertahan reboot); Duck 0/0. App VD/Futile sisa = di luar jangkauan SUSFS (cgroup/TEE/stok ROM) |
 | v0.11 | ✅ 20 Nov 2026, diuji di HP. App VD: `/data/adb` tidak terlihat lagi (root_dirs_present & synth_paradox → MATCH), manager tetap jalan |
