@@ -1,29 +1,64 @@
 #!/bin/bash
 # Cek pembaruan: hanya membandingkan dan menampilkan, tidak mengubah apa pun.
-# SideX dan Brene: commit baru sejak commit di upstream.env (diambil manual bila berguna).
+# SideX dan Brene: commit baru sejak commit di upstream.env (diambil manual bila berguna). Commit yang
+# sudah ditinjau tapi sengaja tidak diambil dicatat di tidak_diupdate.md dan tampil "⏭️ dilewati".
 # simonpunk: mesin ikut otomatis saat build; di sini hanya dicek apakah lolos gate mesin.
 set -uo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 . "$ROOT/upstream.env"
+SKIP=$ROOT/tidak_diupdate.md
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 
 fetch() { git clone -q --bare --filter=blob:none --single-branch -b "$2" "$1" "$3" 2>/dev/null; }
 
+# skip_reason <sumber> <hash penuh>: alasan dari tidak_diupdate.md, kosong bila tidak tercatat
+skip_reason() {
+	[ -f "$SKIP" ] || return 0
+	awk -F'|' -v s="$1" -v h="$2" '
+		function trim(x) { gsub(/^[ \t]+|[ \t]+$/, "", x); return x }
+		trim($2) == s && trim($3) == h { print trim($5); exit }
+	' "$SKIP"
+}
+
+# skip_count <sumber>: jumlah baris tercatat untuk sumber ini (riwayat keputusan)
+skip_count() {
+	[ -f "$SKIP" ] || { echo 0; return; }
+	awk -F'|' -v s="$1" '
+		function trim(x) { gsub(/^[ \t]+|[ \t]+$/, "", x); return x }
+		trim($2) == s && trim($3) ~ /^[0-9a-f]{40}$/ { n++ }
+		END { print n + 0 }
+	' "$SKIP"
+}
+
 report() { # nama repo cabang commit
-	local dir=$TMP/$1
+	local dir=$TMP/$1 h subj r new=0 skipped=0
 	echo "== $1 ($3)"
 	if ! fetch "$2" "$3" "$dir"; then echo "   gagal mengambil $2"; return; fi
-	local head=$(git -C "$dir" rev-parse HEAD)
+	local head
+	head=$(git -C "$dir" rev-parse HEAD)
 	if [ "$head" = "$4" ]; then
 		echo "   ✅ Tidak ada perubahan (${4:0:7})"
-		return
+	else
+		while read -r h subj; do
+			r=$(skip_reason "$1" "$h")
+			if [ -n "$r" ]; then
+				echo "      ⏭️ ${h:0:7}  $subj — dilewati: $r"
+				skipped=$((skipped + 1))
+			else
+				echo "      🆕 ${h:0:7}  $subj"
+				new=$((new + 1))
+			fi
+		done < <(git -C "$dir" log --format='%H %s' "$4..$head" 2>/dev/null)
+		if [ "$new" -eq 0 ]; then
+			echo "   ✅ Tidak ada pembaruan yang perlu ditinjau ($skipped dilewati): ${4:0:7} → ${head:0:7}"
+		else
+			echo "   🆕 $new commit belum ditinjau, $skipped dilewati: ${4:0:7} → ${head:0:7}"
+			echo "   File berubah:"
+			git -C "$dir" diff --stat=80 "$4" "$head" | tail -n 15 | sed 's/^/     /'
+		fi
 	fi
-	local n=$(git -C "$dir" rev-list --count "$4..$head" 2>/dev/null || echo "?")
-	echo "   🆕 $n commit baru: ${4:0:7} → ${head:0:7}"
-	git -C "$dir" log --format='      %cd  %s' --date=short "$4..$head" | head -20
-	echo "   File berubah:"
-	git -C "$dir" diff --stat=80 "$4" "$head" | tail -n 15 | sed 's/^/     /'
+	echo "   Riwayat dilewati di tidak_diupdate.md: $(skip_count "$1") commit"
 }
 
 report SideX "$SIDEX_REPO" "$SIDEX_BRANCH" "$SIDEX_COMMIT"

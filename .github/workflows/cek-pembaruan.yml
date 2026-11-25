@@ -32,7 +32,9 @@ jobs:
             echo "## Cek pembaruan / update check"
             echo
             echo "- 🇮🇩 Hanya cek: SideX dan Brene diambil manual bila berguna; mesin simonpunk ikut otomatis saat build."
+            echo "- 🇮🇩 🆕 = belum ditinjau. ⏭️ = sudah ditinjau dan sengaja tidak diambil (dicatat di \`tidak_diupdate.md\`)."
             echo "- 🇬🇧 Check only: SideX and Brene changes are picked manually when useful; the simonpunk engine follows automatically on build."
+            echo "- 🇬🇧 🆕 = not reviewed yet. ⏭️ = reviewed and deliberately skipped (recorded in \`tidak_diupdate.md\`)."
             echo
             echo '```'
             cat updates.txt
