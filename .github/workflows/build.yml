@@ -74,6 +74,22 @@ jobs:
             echo "| SHA256 | \`$SHA256\` |"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # Info saja: status pembaruan SideX/Brene (commit yang dicatat di tidak_diupdate.md tampil
+      # "dilewati", bukan "baru"). Tidak pernah menghentikan build, termasuk bila hulu gagal diambil.
+      - name: Status hulu / upstream status
+        continue-on-error: true
+        run: |
+          {
+            echo "### Status hulu / upstream status"
+            echo
+            echo "- 🇮🇩 Info saja, tidak menghentikan build. Commit yang sengaja tidak diambil dicatat di \`tidak_diupdate.md\` dan tampil ⏭️."
+            echo "- 🇬🇧 Info only, never stops the build. Deliberately skipped commits are recorded in \`tidak_diupdate.md\` and shown as ⏭️."
+            echo
+            echo '```'
+            tools/check_updates.sh 2>&1 || echo "(gagal mengambil hulu / failed to fetch upstream)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload ZIP
         uses: actions/upload-artifact@v7.0.1
         with:
