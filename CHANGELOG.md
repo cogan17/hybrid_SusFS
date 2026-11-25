@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.17
+
+- 🇮🇩 Tambah dukungan paket manager **SukiSU Nova** (`com.sukisu.nova`) ke penyembunyian direktori manager & pengecualian /data/adb (dari pembaruan BRENE). Review pembaruan SideX & BRENE lain: tidak ada yang perlu digabung (prop vbmeta SideX sudah tercakup lebih lengkap di modul; sisa BRENE berupa kustomisasi, hapus-direktori yang lebih berisiko, atau khusus WebUI BRENE).
+- 🇬🇧 Add support for the **SukiSU Nova** manager package (`com.sukisu.nova`) to manager-directory hiding & the /data/adb exemption (from a BRENE update). Reviewed other SideX & BRENE updates: nothing else to merge (SideX's vbmeta props are already covered more fully here; the rest of BRENE is customization, a riskier directory-delete, or BRENE-only WebUI).
+
 ## v0.16
 
 - 🇮🇩 Toggle baru **Samarkan libstagefright.so** (default mati) dari BRENE v0.0.77: mengalihkan `/system/lib64/libstagefright.so` ke file kosong untuk aplikasi (sebagian detektor memindai library ini). Media service yang benar-benar memuatnya tidak terpengaruh.

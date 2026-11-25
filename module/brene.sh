@@ -204,7 +204,7 @@ brene_fix_data_local_tmp() {
 # penyembunyian DIBATALKAN (fail-safe) — lebih baik /data/adb terlihat daripada manager buta.
 # Catatan: kalau paket manager diacak/di-rename, daftar ini tidak kena; uji di HP dulu.
 brene_hide_data_adb() {
-	local managers="me.weishu.kernelsu com.rifsxd.ksunext com.resukisu.resukisu com.sukisu.ultra com.cogan.su org.frknkrc44.hma_oss"
+	local managers="me.weishu.kernelsu com.rifsxd.ksunext com.resukisu.resukisu com.sukisu.ultra com.sukisu.nova com.cogan.su org.frknkrc44.hma_oss"
 	local csv="" pkg u
 	for pkg in $managers; do
 		u=$(busybox awk -v p="$pkg" '$1==p{print $2;exit}' /data/system/packages.list 2>/dev/null)
@@ -333,7 +333,7 @@ brene_boot_completed() {
 		inotifyd $MODDIR_BRENE/inotify.sh /storage/emulated/0:n &
 
 		# Sembunyikan (bukan hapus) folder eksternal aplikasi root manager
-		[ "$config_hide_ksu_directories" = 1 ] && for pkg in me.weishu.kernelsu com.rifsxd.ksunext com.resukisu.resukisu com.sukisu.ultra com.cogan.su org.frknkrc44.hma_oss com.termux; do
+		[ "$config_hide_ksu_directories" = 1 ] && for pkg in me.weishu.kernelsu com.rifsxd.ksunext com.resukisu.resukisu com.sukisu.ultra com.sukisu.nova com.cogan.su org.frknkrc44.hma_oss com.termux; do
 			for d in data media obb; do
 				[ -e /storage/emulated/0/Android/$d/$pkg ] && brene_sus_path_loop /storage/emulated/0/Android/$d/$pkg
 			done
